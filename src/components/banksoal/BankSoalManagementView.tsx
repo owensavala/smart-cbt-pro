@@ -40,6 +40,7 @@ import {
   exportBankSoalToExcel,
   exportBankSoalToWord,
 } from '@/lib/bank-soal-excel';
+import AiQuestionGeneratorModal from './AiQuestionGeneratorModal';
 import {
   QuestionBank,
   Question,
@@ -476,6 +477,38 @@ export default function BankSoalManagementView({
   const [viewingBankSoal, setViewingBankSoal] = useState<QuestionBank | null>(null);
   const [questionSearch, setQuestionSearch] = useState('');
   const [filterQuestionType, setFilterQuestionType] = useState<string>('ALL');
+
+  // State: Modal AI Question Generator
+  const [isAiGeneratorOpen, setIsAiGeneratorOpen] = useState(false);
+  const [aiGeneratorTargetBank, setAiGeneratorTargetBank] = useState<QuestionBank | null>(null);
+
+  const handleSaveAiQuestions = (newQuestions: Question[]) => {
+    const target = aiGeneratorTargetBank || viewingBankSoal || questionBanks[0];
+    if (!target) return;
+    const currentQuestions = target.questions || [];
+    const maxNum = currentQuestions.reduce((acc, q) => Math.max(acc, q.number || 0), 0);
+    const renumbered = newQuestions.map((q, idx) => ({
+      ...q,
+      number: maxNum + idx + 1,
+    }));
+    const updatedQuestions = [...currentQuestions, ...renumbered];
+
+    const updatedBank: QuestionBank = {
+      ...target,
+      questions: updatedQuestions,
+      pgCount: updatedQuestions.filter((q) => q.type === 'PG' || q.type === 'PGK').length,
+      essayCount: updatedQuestions.filter((q) => q.type === 'ESSAY' || q.type === 'SHORT').length,
+      updatedAt: new Date().toISOString(),
+    };
+
+    const newBanks = questionBanks.map((b) => (b.id === target.id ? updatedBank : b));
+    setQuestionBanks(newBanks);
+    onQuestionBanksChange?.(newBanks);
+    if (viewingBankSoal && viewingBankSoal.id === target.id) {
+      setViewingBankSoal(updatedBank);
+    }
+    showToast(`Berhasil menambahkan ${newQuestions.length} butir soal dari AI Generator ke "${target.code}"!`, 'success');
+  };
 
   // State: Modal Import Excel
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
@@ -1044,6 +1077,18 @@ export default function BankSoalManagementView({
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
+            <button
+              onClick={() => {
+                setAiGeneratorTargetBank(viewingBankSoal);
+                setIsAiGeneratorOpen(true);
+              }}
+              className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white text-xs font-bold shadow-md shadow-indigo-600/25 transition-all cursor-pointer ring-1 ring-violet-400/40"
+              title="Buat paket soal otomatis menggunakan AI AKM Generator"
+            >
+              <Sparkles className="w-4 h-4 text-amber-300 animate-pulse" />
+              <span>⚡ Buat Soal AI</span>
+            </button>
+
             <button
               onClick={handleOpenAddQuestion}
               className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold shadow-md transition-colors cursor-pointer"
@@ -1811,6 +1856,17 @@ export default function BankSoalManagementView({
             </div>
           </div>
         )}
+        {/* Modal AI Question Generator for Viewing Bank */}
+        <AiQuestionGeneratorModal
+          isOpen={isAiGeneratorOpen}
+          onClose={() => {
+            setIsAiGeneratorOpen(false);
+            setAiGeneratorTargetBank(null);
+          }}
+          targetBankCode={aiGeneratorTargetBank?.code || viewingBankSoal.code}
+          targetSubjectName={aiGeneratorTargetBank?.subjectName || viewingBankSoal.subjectName}
+          onSaveQuestions={handleSaveAiQuestions}
+        />
       </div>
     );
   }
@@ -1858,6 +1914,18 @@ export default function BankSoalManagementView({
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
+            <button
+              onClick={() => {
+                setAiGeneratorTargetBank(questionBanks[0] || null);
+                setIsAiGeneratorOpen(true);
+              }}
+              className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white text-xs font-bold shadow-md shadow-indigo-600/25 transition-all cursor-pointer ring-1 ring-violet-400/40"
+              title="Buat paket soal otomatis menggunakan AI AKM Generator"
+            >
+              <Sparkles className="w-4 h-4 text-amber-300 animate-pulse" />
+              <span>⚡ Buat Soal AI</span>
+            </button>
+
             <button
               onClick={() => {
                 setImportTargetBankId(questionBanks[0]?.id || null);
@@ -2683,6 +2751,18 @@ export default function BankSoalManagementView({
           </div>
         </div>
       )}
+
+      {/* Modal AI Question Generator */}
+      <AiQuestionGeneratorModal
+        isOpen={isAiGeneratorOpen}
+        onClose={() => {
+          setIsAiGeneratorOpen(false);
+          setAiGeneratorTargetBank(null);
+        }}
+        targetBankCode={aiGeneratorTargetBank?.code || 'BANK-SOAL'}
+        targetSubjectName={aiGeneratorTargetBank?.subjectName || 'Mata Pelajaran'}
+        onSaveQuestions={handleSaveAiQuestions}
+      />
     </div>
   );
 }

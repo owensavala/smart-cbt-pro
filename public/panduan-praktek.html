@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SmartCBT Pro - Panduan & SOP Uji Coba Praktek Terarah Per Sesi (POC)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+    
+    * {
+      box-sizing: border-box;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: #080c16;
+      color: #f1f5f9;
+      min-height: 100vh;
+    }
+
+    .glass-card {
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    /* Checkbox custom style */
+    .custom-checkbox {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 22px;
+      height: 22px;
+      border: 2px solid #475569;
+      border-radius: 6px;
+      background: #0f172a;
+      cursor: pointer;
+      display: inline-grid;
+      place-content: center;
+      transition: all 0.2s ease;
+    }
+    .custom-checkbox:checked {
+      background: #10b981;
+      border-color: #10b981;
+    }
+    .custom-checkbox:checked::before {
+      content: "\f00c";
+      font-family: "Font Awesome 6 Free";
+      font-weight: 900;
+      color: #042f2e;
+      font-size: 13px;
+    }
+
+    @media print {
+      body { background: white !important; color: black !important; }
+      .no-print { display: none !important; }
+      .glass-card { background: white !important; border: 1px solid #cbd5e1 !important; color: black !important; }
+      .text-white { color: black !important; }
+      .text-slate-300, .text-slate-400 { color: #334155 !important; }
+      .tab-content { display: block !important; page-break-after: always; }
+    }
+  </style>
+</head>
+<body class="p-4 md:p-8">
+
+  <!-- TOP HEADER -->
+  <header class="max-w-5xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-slate-800 no-print">
+    <div class="flex items-center gap-3.5">
+      <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-400 flex items-center justify-center text-slate-950 font-black shadow-lg shadow-emerald-500/20">
+        <i class="fa-solid fa-clipboard-check text-xl"></i>
+      </div>
+      <div>
+        <div class="flex items-center gap-2">
+          <h1 class="text-xl md:text-2xl font-black text-white tracking-tight">SOP Uji Coba Praktek Terarah (POC)</h1>
+          <span class="text-[10px] bg-emerald-500/15 text-emerald-300 px-2.5 py-0.5 rounded-full font-bold border border-emerald-500/30">4 SESI LENGKAP</span>
+        </div>
+        <p class="text-xs text-slate-400">SmartCBT Pro — Panduan Eksekusi Piloting di Sekolah Tanpa Risiko</p>
+      </div>
+    </div>
+
+    <!-- Quick Navigation & Print -->
+    <div class="flex items-center gap-2">
+      <button onclick="window.print()" class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold flex items-center gap-1.5 border border-slate-700 cursor-pointer transition-all">
+        <i class="fa-solid fa-print"></i>
+        <span>Cetak Lembar Kerja</span>
+      </button>
+      <a href="/pitch-deck.html" class="px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold flex items-center gap-1.5 shadow-md shadow-indigo-600/30 transition-all cursor-pointer">
+        <i class="fa-solid fa-chalkboard-user"></i>
+        <span>Buka Pitch Deck</span>
+      </a>
+      <a href="/" class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold flex items-center gap-1.5 shadow-md shadow-emerald-600/30 transition-all cursor-pointer">
+        <i class="fa-solid fa-arrow-up-right-from-square"></i>
+        <span>Masuk Aplikasi</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- OVERVIEW & PROGRESS METER -->
+  <main class="max-w-5xl mx-auto py-6 space-y-6">
+
+    <!-- Overall Progress Banner -->
+    <div class="glass-card p-5 rounded-2xl border border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div>
+        <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Kemajuan Uji Coba Sekolah:</div>
+        <div class="text-2xl font-black text-white flex items-center gap-2">
+          <span id="completedStepsCount" class="text-emerald-400 font-mono">0</span>
+          <span class="text-slate-500 font-normal text-lg">/ 20 Skenario Terverifikasi</span>
+        </div>
+      </div>
+      <div class="w-full sm:w-64 space-y-1.5">
+        <div class="flex justify-between text-xs font-mono">
+          <span class="text-slate-400">Tingkat Ketuntasan:</span>
+          <span id="percentLabel" class="text-emerald-400 font-bold">0%</span>
+        </div>
+        <div class="w-full h-2.5 bg-slate-800 rounded-full overflow-hidden">
+          <div id="overallProgress" class="h-full bg-gradient-to-r from-emerald-500 to-teal-400 transition-all duration-300" style="width: 0%;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ROLE TABS -->
+    <div class="flex flex-wrap items-center gap-2 border-b border-slate-800 pb-2 no-print">
+      <button onclick="switchTab('proktor')" id="tab-proktor" class="px-4 py-2.5 rounded-xl font-bold text-xs flex items-center gap-2 transition-all cursor-pointer bg-emerald-600 text-white shadow-md shadow-emerald-950/40">
+        <i class="fa-solid fa-desktop"></i>
+        <span>Sesi 1: Proktor / Operator</span>
+        <span class="text-[10px] bg-emerald-950 px-1.5 py-0.5 rounded-full font-mono">15 Mnt</span>
+      </button>
+      <button onclick="switchTab('guru')" id="tab-guru" class="px-4 py-2.5 rounded-xl font-bold text-xs flex items-center gap-2 transition-all cursor-pointer bg-slate-900 text-slate-400 hover:text-white border border-slate-800">
+        <i class="fa-solid fa-chalkboard-user"></i>
+        <span>Sesi 2: Guru Mata Pelajaran</span>
+        <span class="text-[10px] bg-slate-800 px-1.5 py-0.5 rounded-full font-mono">20 Mnt</span>
+      </button>
+      <button onclick="switchTab('siswa')" id="tab-siswa" class="px-4 py-2.5 rounded-xl font-bold text-xs flex items-center gap-2 transition-all cursor-pointer bg-slate-900 text-slate-400 hover:text-white border border-slate-800">
+        <i class="fa-solid fa-user-graduate"></i>
+        <span>Sesi 3: Siswa Peserta Ujian</span>
+        <span class="text-[10px] bg-slate-800 px-1.5 py-0.5 rounded-full font-mono">25 Mnt</span>
+      </button>
+      <button onclick="switchTab('kepsek')" id="tab-kepsek" class="px-4 py-2.5 rounded-xl font-bold text-xs flex items-center gap-2 transition-all cursor-pointer bg-slate-900 text-slate-400 hover:text-white border border-slate-800">
+        <i class="fa-solid fa-file-invoice"></i>
+        <span>Sesi 4: Kepala Sekolah & Waka</span>
+        <span class="text-[10px] bg-slate-800 px-1.5 py-0.5 rounded-full font-mono">15 Mnt</span>
+      </button>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- TAB CONTENT: SESI 1 (PROKTOR / OPERATOR) -->
+    <!-- ========================================================================= -->
+    <div id="content-proktor" class="tab-content space-y-4">
+      <div class="p-4 rounded-xl bg-sky-950/20 border border-sky-500/30 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-sky-500/20 text-sky-400 flex items-center justify-center font-bold text-lg">
+            <i class="fa-solid fa-server"></i>
+          </div>
+          <div>
+            <h3 class="text-sm font-bold text-white">Sesi 1: Kesiapan Lab & Kendali Proktor</h3>
+            <p class="text-xs text-sky-300">Target: Memastikan proktor siap menjalankan ujian dalam 15 menit dan tangguh atasi kendala.</p>
+          </div>
+        </div>
+        <span class="text-xs font-mono font-bold text-sky-400 bg-sky-950 px-2.5 py-1 rounded-md border border-sky-800">5 Skenario</span>
+      </div>
+
+      <!-- Checklist Items -->
+      <div class="space-y-3">
+        <!-- Item 1.1 -->
+        <label class="glass-card p-4 rounded-xl border border-slate-800 flex items-start gap-3.5 cursor-pointer hover:border-slate-700 transition-colors">
+          <input type="checkbox" class="custom-checkbox mt-0.5" onchange="updateProgress()" data-step="p1">
+          <div class="space-y-1 text-xs">
+            <div class="flex items-center gap-2">
+              <span class="font-bold text-white text-sm">Skenario 1.1: Import Peserta Ujian dari Dapodik / Excel</span>
+              <span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 text-[10px] font-bold">Menu Peserta Ujian</span>
+            </div>
+            <p class="text-slate-300 leading-relaxed">
+              Buka menu Peserta Ujian &rarr; Data Siswa. Klik <strong>[+ Import Excel Siswa]</strong>, unggah data rombel/kelas (atau gunakan sampel bawaan). Pastikan Nomor Peserta, NISN, dan pembagian Sesi Meja tampil lengkap.
+            </p>
+          </div>
+        </label>
+
+        <!-- Item 1.2 -->
+        <label class="glass-card p-4 rounded-xl border border-slate-800 flex items-start gap-3.5 cursor-pointer hover:border-slate-700 transition-colors">
+          <input type="checkbox" class="custom-checkbox mt-0.5" onchange="updateProgress()" data-step="p2">
+          <div class="space-y-1 text-xs">
+            <div class="flex items-center gap-2">
+              <span class="font-bold text-white text-sm">Skenario 1.2: Rilis Token UBK Dinamis 15 Menit</span>
+              <span class="px-2 py-0.5 rounded bg-sky-500/20 text-sky-400 text-[10px] font-bold">Menu UBK &rarr; Rilis Token</span>
+            </div>
+            <p class="text-slate-300 leading-relaxed">
+              Pilih mata pelajaran, klik <strong>[⚡ Rilis Token Baru]</strong>. Catat 6 karakter token dan amati penghitung waktu mundur 15 menit. Token otomatis hangus untuk mencegah kebocoran soal ke luar ruangan.
+            </p>
+          </div>
+        </label>
+
+        <!-- Item 1.3 -->
+        <label class="glass-card p-4 rounded-xl border border-slate-800 flex items-start gap-3.5 cursor-pointer hover:border-slate-700 transition-colors">
+          <input type="checkbox" class="custom-checkbox mt-0.5" onchange="updateProgress()" data-step="p3">
+          <div class="space-y-1 text-xs">
+            <div class="flex items-center gap-2">
+              <span class="font-bold text-white text-sm">Skenario 1.3: Live Monitoring Meja Komputer Siswa</span>
+              <span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 text-[10px] font-bold">Menu Status Peserta</span>
+            </div>
+            <p class="text-slate-300 leading-relaxed">
+              Amati tabel meja lab: status pengerjaan siswa ter-update otomatis (durasi berjalan, IP address meja komputer, dan jumlah butir terjawab) tanpa perlu proktor refresh halaman manual.
+            </p>
+          </div>
+        </label>
+
+        <!-- Item 1.4 -->
+        <label class="glass-card p-4 rounded-xl border border-slate-800 flex items-start gap-3.5 cursor-pointer hover:border-slate-700 transition-colors bg-amber-950/10 border-amber-500/20">
+          <input type="checkbox" class="custom-checkbox mt-0.5" onchange="updateProgress()" data-step="p4">
+          <div class="space-y-1 text-xs">
+            <div class="flex items-center gap-2">
+              <span class="font-bold text-amber-300 text-sm">Skenario 1.4: SIMULASI DARURAT - Reset Login Meja Crash</span>
+              <span class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 text-[10px] font-bold">Uji Ketahanan Lab</span>
+            </div>
+            <p class="text-slate-300 leading-relaxed">
+              Pilih satu siswa yang sedang aktif mengerjakan. Klik tombol <strong>[Reset Login Siswa]</strong>. Minta siswa tersebut berpindah ke komputer lain, login kembali, dan buktikan jawaban nomor sebelumnya tidak terhapus.
+            </p>
+          </div>
+        </label>
+
+        <!-- Item 1.5 -->
+        <label class="glass-card p-4 rounded-xl border border-slate-800 flex items-start gap-3.5 cursor-pointer hover:border-slate-700 transition-colors">
+          <input type="checkbox" class="custom-checkbox mt-0.5" onchange="updateProgress()" data-step="p5">
+          <div class="space-y-1 text-xs">
+            <div class="flex items-center gap-2">
+              <span class="font-bold text-white text-sm">Skenario 1.5: Pindah Nilai & Cetak Berita Acara UBK</span>
+              <span class="px-2 py-0.5 rounded bg-purple-500/20 text-purple-400 text-[10px] font-bold">Menu Arsip Nilai</span>
+            </div>
+            <p class="text-slate-300 leading-relaxed">
+              Klik <strong>[Pindah Semua Nilai]</strong> untuk mengarsipkan skor ujian yang telah selesai. Buka menu Cetak &rarr; Cetak Berita Acara untuk memastikan dokumen fisik administrasi siap ditandatangani pengawas.
+            </p>
+          </div>
+        </label>
+      </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- TAB CONTENT: SESI 2 (DEWAN GURU MATA PELAJARAN) -->
+    <!-- ========================================================================= -->
+    <div id="content-guru" class="tab-content space-y-4 hidden">
+      <div class="p-4 rounded-xl bg-emerald-950/20 border border-emerald-500/30 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-lg">
+            <i class="fa-solid fa-wand-magic-sparkles"></i>
+          </div>
+          <div>
+            <h3 class="text-sm font-bold text-white">Sesi 2: Guru Mata Pelajaran (AI & Esai)</h3>
+            <p class="text-xs text-emerald-300">Target: Membuktikan pembuatan soal AKM selesai dalam 3 menit dan koreksi esai otomatis.</p>
+          </div>
+        </div>
+        <span class="text-xs font-mono font-bold text-emerald-400 bg-emerald-950 px-2.5 py-1 rounded-md border border-emerald-800">5 Skenario</span>
+      </div>
+
+      <div class="space-y-3">
+        <!-- Item 2.1 -->
+        <label class="glass-card p-4 rounded-xl border border-slate-800 flex items-start gap-3.5 cursor-pointer hover:border-slate-700 transition-colors">
+          <input type="checkbox" class="custom-checkbox mt-0.5" onchange="updateProgress()" data-step="g1">
+          <div class="space-y-1 text-xs">
+            <div class="flex items-center gap-2">
+              <span class="font-bold text-white text-sm">Skenario 2.1: Praktek AI Question Generator Terintegrasi</span>
+              <span class="px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-400 text-[10px] font-bold">Bank Soal &rarr; [⚡ Buat Soal AI]</span>
+            </div>
+            <p class="text-slate-300 leading-relaxed">
+              Klik tombol <strong>[⚡ Buat Soal AI]</strong> di atas tabel Bank Soal. Masukkan materi (misal: "Sistem Peredaran Darah Manusia"), pilih jumlah butir, lalu klik <strong>Generate</strong>. Amati paket soal AKM lengkap stimulus yang terbuat otomatis.
+            </p>
+          </div>
+        </label>
+
+        <!-- Item 2.2 -->
+        <label class="glass-card p-4 rounded-xl border border-slate-800 flex items-start gap-3.5 cursor-pointer hover:border-slate-700 transition-colors">
+          <input type="checkbox" class="custom-checkbox mt-0.5" onchange="updateProgress()" data-step="g2">
+          <div class="space-y-1 text-xs">
+            <div class="flex items-center gap-2">
+              <span class="font-bold text-white text-sm">Skenario 2.2: Uji Formula Eksak di Math Studio</span>
+              <span class="px-2 py-0.5 rounded bg-purple-500/20 text-purple-400 text-[10px] font-bold">Menu Math Studio</span>
+            </div>
+            <p class="text-slate-300 leading-relaxed">
+              Buka Math Studio, ketik formula matematika/fisika/kimia (misal: pecahan, akar kuadrat, integral). Buktikan simbol eksak tampil sempurna dan super tajam di layar ponsel/laptop siswa tanpa perlu screenshot buram.
+            </p>
+          </div>
+        </label>
+
+        <!-- Item 2.3 -->
+        <label class="glass-card p-4 rounded-xl border border-slate-800 flex items-start gap-3.5 cursor-pointer hover:border-slate-700 transition-colors">
+          <input type="checkbox" class="custom-checkbox mt-0.5" onchange="updateProgress()" data-step="g3">
+          <div class="space-y-1 text-xs">
+            <div class="flex items-center gap-2">
+              <span class="font-bold text-white text-sm">Skenario 2.3: Konfigurasi Rubrik Esai NLP Multi-Konsep</span>
+              <span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 text-[10px] font-bold">Rubrik Bobot Konsep</span>
+            </div>
+            <p class="text-slate-300 leading-relaxed">
+              Periksa butir soal esai: atur 3 konsep utama dengan persentase bobot (misal: Konsep A 40%, Konsep B 35%, Konsep C 25%) beserta daftar kata sinonimnya. Sistem akan menilai kelengkapan argumen siswa secara proporsional.
+            </p>
+          </div>
+        </label>
+
+        <!-- Item 2.4 -->
+        <label class="glass-card p-4 rounded-xl border border-slate-800 flex items-start gap-3.5 cursor-pointer hover:border-slate-700 transition-colors bg-emerald-950/10 border-emerald-500/20">
+          <input type="checkbox" class="custom-checkbox mt-0.5" onchange="updateProgress()" data-step="g4">
+          <div class="space-y-1 text-xs">
+            <div class="flex items-center gap-2">
+              <span class="font-bold text-emerald-300 text-sm">Skenario 2.4: Uji Hak Veto Guru (Teacher Override Score)</span>
+              <span class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 text-[10px] font-bold">Kendali Pedagogis Mutlak</span>
+            </div>
+            <p class="text-slate-300 leading-relaxed">
+              Buka hasil penilaian esai salah satu siswa. Ubah nilai hasil rekomendasi AI dengan klik kolom skor manual (misal dari 75 menjadi 90 bila siswa memiliki penalaran unik). Guru tetap memiliki otoritas nilai tertinggi.
+            </p>
+          </div>
+        </label>
+
+        <!-- Item 2.5 -->
+        <label class="glass-card p-4 rounded-xl border border-slate-800 flex items-start gap-3.5 cursor-pointer hover:border-slate-700 transition-colors">
+          <input type="checkbox" class="custom-checkbox mt-0.5" onchange="updateProgress()" data-step="g5">
+          <div class="space-y-1 text-xs">
+            <div class="flex items-center gap-2">
+              <span class="font-bold text-white text-sm">Skenario 2.5: Export Naskah Soal ke Word (.doc) Lengkap Kop Surat</span>
+              <span class="px-2 py-0.5 rounded bg-blue-500/20 text-blue-400 text-[10px] font-bold">Arsip Dinas & Pengawas</span>
+            </div>
+            <p class="text-slate-300 leading-relaxed">
+              Klik <strong>[Export Word (.doc)]</strong> pada bank soal. Buka file di Microsoft Word: naskah soal sudah tersusun rapi lengkap dengan Kop Surat Sekolah, petunjuk pengerjaan, dan lembar kunci jawaban terpisah.
+            </p>
+          </div>
+        </label>
+      </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- TAB CONTENT: SESI 3 (SISWA PESERTA UJIAN) -->
+    <!-- ========================================================================= -->
+    <div id="content-siswa" class="tab-content space-y-4 hidden">
+      <div class="p-4 rounded-xl bg-amber-950/20 border border-amber-500/30 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold text-lg">
+            <i class="fa-solid fa-laptop"></i>
+          </div>
+          <div>
+            <h3 class="text-sm font-bold text-white">Sesi 3: Siswa Peserta Ujian (Lab & HP)</h3>
+            <p class="text-xs text-amber-300">Target: Membuktikan kemudahan pengerjaan dan ketahanan offline saat kabel WiFi dicabut.</p>
+          </div>
+        </div>
+        <span class="text-xs font-mono font-bold text-amber-400 bg-amber-950 px-2.5 py-1 rounded-md border border-amber-800">5 Skenario</span>
+      </div>
+
+      <div class="space-y-3">
+        <!-- Item 3.1 -->
+        <label class="glass-card p-4 rounded-xl border border-slate-800 flex items-start gap-3.5 cursor-pointer hover:border-slate-700 transition-colors">
+          <input type="checkbox" class="custom-checkbox mt-0.5" onchange="updateProgress()" data-step="s1">
+          <div class="space-y-1 text-xs">
+            <div class="flex items-center gap-2">
+              <span class="font-bold text-white text-sm">Skenario 3.1: Login Siswa via Scan QR / Nomor Peserta</span>
+              <span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 text-[10px] font-bold">Login Bebas Hambatan</span>
+            </div>
+            <p class="text-slate-300 leading-relaxed">
+              Buka aplikasi dari sisi Siswa, masukkan nomor peserta dan kode token aktif. Buktikan siswa dapat masuk ke ruang ujian dalam waktu kurang dari 5 detik.
+            </p>
+          </div>
+        </label>
+
+        <!-- Item 3.2 -->
+        <label class="glass-card p-4 rounded-xl border border-slate-800 flex items-start gap-3.5 cursor-pointer hover:border-slate-700 transition-colors">
+          <input type="checkbox" class="custom-checkbox mt-0.5" onchange="updateProgress()" data-step="s2">
+          <div class="space-y-1 text-xs">
+            <div class="flex items-center gap-2">
+              <span class="font-bold text-white text-sm">Skenario 3.2: Pengerjaan 5 Ragam Butir Soal AKM</span>
+              <span class="px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-400 text-[10px] font-bold">5 Format Soal</span>
+            </div>
+            <p class="text-slate-300 leading-relaxed">
+              Jawab soal PG biasa, PG Kompleks (centang banyak), Menjodohkan garis, Benar/Salah, dan Esai Panjang. Buktikan tombol ragu-ragu dan navigasi nomor melompat responsif tanpa lag.
+            </p>
+          </div>
+        </label>
+
+        <!-- Item 3.3 -->
+        <label class="glass-card p-4 rounded-xl border border-slate-800 flex items-start gap-3.5 cursor-pointer hover:border-slate-700 transition-colors bg-rose-950/15 border-rose-500/30">
+          <input type="checkbox" class="custom-checkbox mt-0.5" onchange="updateProgress()" data-step="s3">
+          <div class="space-y-1 text-xs">
+            <div class="flex items-center gap-2">
+              <span class="font-bold text-rose-300 text-sm">Skenario 3.3: UJI KETAHANAN OFFLINE (Cabut Kabel LAN / Matikan WiFi 60 Detik)</span>
+              <span class="px-2 py-0.5 rounded bg-rose-500/20 text-rose-400 text-[10px] font-bold">Fitur Kunci PWA</span>
+            </div>
+            <p class="text-slate-300 leading-relaxed">
+              Saat siswa sedang mengetik esai, cabut kabel LAN atau matikan koneksi WiFi selama 60 detik. Buktikan sistem <strong>TIDAK LOGOUT</strong> dan siswa tetap bisa mengetik. Saat internet tersambung kembali, data langsung tersinkronisasi otomatis!
+            </p>
+          </div>
+        </label>
+
+        <!-- Item 3.4 -->
+        <label class="glass-card p-4 rounded-xl border border-slate-800 flex items-start gap-3.5 cursor-pointer hover:border-slate-700 transition-colors">
+          <input type="checkbox" class="custom-checkbox mt-0.5" onchange="updateProgress()" data-step="s4">
+          <div class="space-y-1 text-xs">
+            <div class="flex items-center gap-2">
+              <span class="font-bold text-white text-sm">Skenario 3.4: Uji Anti-Curang (Coba Buka Tab Baru di Browser)</span>
+              <span class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 text-[10px] font-bold">Integritas Ujian</span>
+            </div>
+            <p class="text-slate-300 leading-relaxed">
+              Siswa mencoba berpindah tab atau meminimize browser. Sistem langsung mengunci sementara dengan peringatan pelanggaran dan mencatat pelanggaran di log proktor.
+            </p>
+          </div>
+        </label>
+
+        <!-- Item 3.5 -->
+        <label class="glass-card p-4 rounded-xl border border-slate-800 flex items-start gap-3.5 cursor-pointer hover:border-slate-700 transition-colors">
+          <input type="checkbox" class="custom-checkbox mt-0.5" onchange="updateProgress()" data-step="s5">
+          <div class="space-y-1 text-xs">
+            <div class="flex items-center gap-2">
+              <span class="font-bold text-white text-sm">Skenario 3.5: Konfirmasi Selesai & Penguncian Jawaban</span>
+              <span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 text-[10px] font-bold">Submit Final</span>
+            </div>
+            <p class="text-slate-300 leading-relaxed">
+              Klik tombol Selesai Ujian, setujui konfirmasi pengumpulan. Sistem langsung mengunci lembar jawaban dan status di monitor meja proktor berubah menjadi Tes Selesai (Hijau).
+            </p>
+          </div>
+        </label>
+      </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- TAB CONTENT: SESI 4 (KEPALA SEKOLAH & WAKA KURIKULUM) -->
+    <!-- ========================================================================= -->
+    <div id="content-kepsek" class="tab-content space-y-4 hidden">
+      <div class="p-4 rounded-xl bg-purple-950/20 border border-purple-500/30 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-purple-500/20 text-purple-400 flex items-center justify-center font-bold text-lg">
+            <i class="fa-solid fa-chart-pie"></i>
+          </div>
+          <div>
+            <h3 class="text-sm font-bold text-white">Sesi 4: Kepala Sekolah & Waka Kurikulum</h3>
+            <p class="text-xs text-purple-300">Target: Memverifikasi penghematan kas BOS dan ekspor otomatis leger e-Rapor Kemdikbud.</p>
+          </div>
+        </div>
+        <span class="text-xs font-mono font-bold text-purple-400 bg-purple-950 px-2.5 py-1 rounded-md border border-purple-800">5 Skenario</span>
+      </div>
+
+      <div class="space-y-3">
+        <!-- Item 4.1 -->
+        <label class="glass-card p-4 rounded-xl border border-slate-800 flex items-start gap-3.5 cursor-pointer hover:border-slate-700 transition-colors">
+          <input type="checkbox" class="custom-checkbox mt-0.5" onchange="updateProgress()" data-step="k1">
+          <div class="space-y-1 text-xs">
+            <div class="flex items-center gap-2">
+              <span class="font-bold text-white text-sm">Skenario 4.1: Tinjauan Dashboard Eksekutif & Statistik Nilai</span>
+              <span class="px-2 py-0.5 rounded bg-purple-500/20 text-purple-400 text-[10px] font-bold">Executive Monitoring</span>
+            </div>
+            <p class="text-slate-300 leading-relaxed">
+              Kepala Sekolah meninjau ringkasan kelulusan, grafik perolehan skor rata-rata sekolah, nilai tertinggi-terendah, dan persentase ketuntasan KKM detik itu juga setelah ujian selesai.
+            </p>
+          </div>
+        </label>
+
+        <!-- Item 4.2 -->
+        <label class="glass-card p-4 rounded-xl border border-slate-800 flex items-start gap-3.5 cursor-pointer hover:border-slate-700 transition-colors">
+          <input type="checkbox" class="custom-checkbox mt-0.5" onchange="updateProgress()" data-step="k2">
+          <div class="space-y-1 text-xs">
+            <div class="flex items-center gap-2">
+              <span class="font-bold text-white text-sm">Skenario 4.2: Tinjauan Analisis Butir Soal Psikometri Ilmiah</span>
+              <span class="px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-400 text-[10px] font-bold">Evaluasi Mutu Soal</span>
+            </div>
+            <p class="text-slate-300 leading-relaxed">
+              Buka Analisis Butir Soal: lihat Tingkat Kesukaran (P-value), Daya Pembeda (D-index), dan efektivitas distraktor secara otomatis tanpa rumus statistik manual.
+            </p>
+          </div>
+        </label>
+
+        <!-- Item 4.3 -->
+        <label class="glass-card p-4 rounded-xl border border-slate-800 flex items-start gap-3.5 cursor-pointer hover:border-slate-700 transition-colors bg-emerald-950/15 border-emerald-500/30">
+          <input type="checkbox" class="custom-checkbox mt-0.5" onchange="updateProgress()" data-step="k3">
+          <div class="space-y-1 text-xs">
+            <div class="flex items-center gap-2">
+              <span class="font-bold text-emerald-300 text-sm">Skenario 4.3: Perhitungan Penghematan Anggaran BOS Riil</span>
+              <span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 text-[10px] font-bold">Efisiensi Finansial</span>
+            </div>
+            <p class="text-slate-300 leading-relaxed">
+              Bandingkan biaya kertas fotokopi sekolah tahun lalu vs SmartCBT Pro. Buktikan penghematan kas sekolah mencapai Rp 35.000.000 s/d Rp 50.000.000 per tahun untuk 500-800 siswa.
+            </p>
+          </div>
+        </label>
+
+        <!-- Item 4.4 -->
+        <label class="glass-card p-4 rounded-xl border border-slate-800 flex items-start gap-3.5 cursor-pointer hover:border-slate-700 transition-colors">
+          <input type="checkbox" class="custom-checkbox mt-0.5" onchange="updateProgress()" data-step="k4">
+          <div class="space-y-1 text-xs">
+            <div class="flex items-center gap-2">
+              <span class="font-bold text-white text-sm">Skenario 4.4: 1-Klik Ekspor Format Leger e-Rapor & RDM</span>
+              <span class="px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-400 text-[10px] font-bold">Birokrasi Otomatis</span>
+            </div>
+            <p class="text-slate-300 leading-relaxed">
+              Klik <strong>[Export Nilai e-Rapor]</strong>. Buka file hasil unduhan: susunan kolom NISN, Nama, Nilai Harian, Nilai PTS/PAS sudah 100% cocok dengan aplikasi e-Rapor resmi Kemdikbudristek.
+            </p>
+          </div>
+        </label>
+
+        <!-- Item 4.5 -->
+        <label class="glass-card p-4 rounded-xl border border-slate-800 flex items-start gap-3.5 cursor-pointer hover:border-slate-700 transition-colors">
+          <input type="checkbox" class="custom-checkbox mt-0.5" onchange="updateProgress()" data-step="k5">
+          <div class="space-y-1 text-xs">
+            <div class="flex items-center gap-2">
+              <span class="font-bold text-white text-sm">Skenario 4.5: Penandatanganan Berita Acara Kelayakan POC</span>
+              <span class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 text-[10px] font-bold">Final Approval</span>
+            </div>
+            <p class="text-slate-300 leading-relaxed">
+              Kepala Sekolah menandatangani lembar evaluasi piloting sebagai bukti sukses implementasi tanpa risiko sebelum peluncuran resmi ujian semester.
+            </p>
+          </div>
+        </label>
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      document.getElementById('content-' + tabId).classList.remove('hidden');
+
+      const tabs = ['proktor', 'guru', 'siswa', 'kepsek'];
+      tabs.forEach(t => {
+        const btn = document.getElementById('tab-' + t);
+        if (t === tabId) {
+          btn.className = "px-4 py-2.5 rounded-xl font-bold text-xs flex items-center gap-2 transition-all cursor-pointer bg-emerald-600 text-white shadow-md shadow-emerald-950/40";
+        } else {
+          btn.className = "px-4 py-2.5 rounded-xl font-bold text-xs flex items-center gap-2 transition-all cursor-pointer bg-slate-900 text-slate-400 hover:text-white border border-slate-800";
+        }
+      });
+    }
+
+    function updateProgress() {
+      const checkboxes = document.querySelectorAll('.custom-checkbox');
+      let checkedCount = 0;
+      const state = {};
+
+      checkboxes.forEach(cb => {
+        const stepId = cb.getAttribute('data-step');
+        if (cb.checked) {
+          checkedCount++;
+          state[stepId] = true;
+        } else {
+          state[stepId] = false;
+        }
+      });
+
+      const total = checkboxes.length;
+      const pct = Math.round((checkedCount / total) * 100);
+
+      document.getElementById('completedStepsCount').innerText = checkedCount;
+      document.getElementById('percentLabel').innerText = `${pct}%`;
+      document.getElementById('overallProgress').style.width = `${pct}%`;
+
+      // Save to localStorage
+      try {
+        localStorage.setItem('smartcbt_poc_checklist', JSON.stringify(state));
+      } catch (e) {}
+    }
+
+    // Load state from localStorage on startup
+    window.addEventListener('DOMContentLoaded', () => {
+      try {
+        const saved = JSON.parse(localStorage.getItem('smartcbt_poc_checklist') || '{}');
+        document.querySelectorAll('.custom-checkbox').forEach(cb => {
+          const stepId = cb.getAttribute('data-step');
+          if (saved[stepId]) {
+            cb.checked = true;
+          }
+        });
+        updateProgress();
+      } catch (e) {}
+    });
+  </script>
+</body>
+</html>

@@ -3,456 +3,406 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SmartCBT Pro - Pitch Deck & Presentasi Asesmen Sekolah Modern</title>
+  <title>SmartCBT Pro - Pitch Deck & Presentasi Asesmen Sekolah Modern Berbasis AI</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+    
+    * {
+      box-sizing: border-box;
+      -webkit-font-smoothing: antialiased;
+    }
+
     body {
       font-family: 'Plus Jakarta Sans', sans-serif;
-      background-color: #06121e;
+      background-color: #070b14;
       color: #f1f5f9;
       overflow: hidden;
+      margin: 0;
+      padding: 0;
     }
+
+    /* Radial ambient backgrounds */
+    .bg-mesh {
+      background: 
+        radial-gradient(circle at 15% 15%, rgba(16, 185, 129, 0.12) 0%, transparent 45%),
+        radial-gradient(circle at 85% 20%, rgba(99, 102, 241, 0.14) 0%, transparent 45%),
+        radial-gradient(circle at 50% 85%, rgba(14, 165, 233, 0.10) 0%, transparent 50%),
+        #070b14;
+    }
+
     .slide {
       display: none;
       opacity: 0;
-      transform: scale(0.98);
-      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      transform: translateY(12px) scale(0.985);
+      transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      height: calc(100vh - 64px);
+      width: 100%;
+      max-width: 1280px;
+      margin: 0 auto;
     }
+
     .slide.active {
       display: flex;
       opacity: 1;
-      transform: scale(1);
+      transform: translateY(0) scale(1);
     }
+
     .glass-card {
-      background: rgba(15, 23, 42, 0.75);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(15, 23, 42, 0.72);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5);
     }
-    .gradient-emerald {
-      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+
+    .glass-card-glow {
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      box-shadow: 0 0 35px -5px rgba(16, 185, 129, 0.25);
     }
-    .gradient-amber {
-      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+
+    .glass-card-indigo {
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      box-shadow: 0 0 35px -5px rgba(99, 102, 241, 0.25);
     }
-    .gradient-blue {
-      background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+
+    /* Custom range slider styling */
+    input[type=range] {
+      -webkit-appearance: none;
+      background: #1e293b;
+      border-radius: 9999px;
+      height: 8px;
     }
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      height: 22px;
+      width: 22px;
+      border-radius: 50%;
+      background: #10b981;
+      cursor: pointer;
+      box-shadow: 0 0 10px rgba(16, 185, 129, 0.8);
+      border: 2px solid #ffffff;
+    }
+
+    /* Mockup laptop styling */
+    .laptop-frame {
+      border: 10px solid #1e293b;
+      border-radius: 16px;
+      background: #0f172a;
+      box-shadow: 0 25px 60px -15px rgba(0,0,0,0.8), 0 0 30px rgba(16, 185, 129, 0.15);
+      position: relative;
+    }
+    .laptop-frame::after {
+      content: '';
+      position: absolute;
+      bottom: -16px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 140px;
+      height: 6px;
+      background: #334155;
+      border-radius: 0 0 8px 8px;
+    }
+
     @media print {
-      body { overflow: visible; background: white; color: black; }
-      .slide { display: flex !important; opacity: 1 !important; transform: none !important; page-break-after: always; height: 100vh; }
+      body { overflow: visible !important; background: white !important; color: black !important; }
+      .slide { display: flex !important; opacity: 1 !important; transform: none !important; page-break-after: always; height: 100vh; max-width: 100% !important; }
       .no-print { display: none !important; }
     }
   </style>
 </head>
-<body class="w-screen h-screen select-none">
+<body class="w-screen h-screen select-none bg-mesh">
 
-  <!-- TOP BAR & CONTROLS -->
-  <header class="fixed top-0 left-0 right-0 h-14 bg-slate-950/80 backdrop-blur-md border-b border-slate-800 z-50 flex items-center justify-between px-6 no-print">
+  <!-- TOP BAR & PRESENTER CONTROLS -->
+  <header class="fixed top-0 left-0 right-0 h-16 bg-slate-950/85 backdrop-blur-xl border-b border-slate-800/80 z-50 flex items-center justify-between px-4 md:px-8 no-print">
     <div class="flex items-center gap-3">
-      <div class="w-8 h-8 rounded-lg bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 font-black">
-        <i class="fa-solid fa-graduation-cap"></i>
+      <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-400 flex items-center justify-center text-slate-950 font-black shadow-lg shadow-emerald-500/20">
+        <i class="fa-solid fa-graduation-cap text-lg"></i>
       </div>
       <div>
-        <h1 class="text-sm font-black tracking-tight text-white flex items-center gap-2">
-          <span>SMART CBT PRO</span>
-          <span class="text-[10px] bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded-full font-bold border border-emerald-500/30">PITCH DECK</span>
-        </h1>
+        <div class="flex items-center gap-2">
+          <span class="text-sm font-black tracking-tight text-white">SMART CBT PRO</span>
+          <span class="text-[10px] bg-emerald-500/15 text-emerald-400 px-2 py-0.5 rounded-full font-bold border border-emerald-500/30">PITCH DECK 2026</span>
+          <span class="text-[10px] bg-indigo-500/15 text-indigo-300 px-2 py-0.5 rounded-full font-bold border border-indigo-500/30 hidden sm:inline">AI AKM INSIDE</span>
+        </div>
+        <p class="text-[11px] text-slate-400 font-medium hidden md:block">Presentasi Eksekutif Solusi Asesmen Sekolah Tanpa Kertas & Koreksi Esai Otomatis</p>
       </div>
     </div>
 
-    <!-- Progress Indicator -->
-    <div class="flex items-center gap-2 text-xs font-mono text-slate-400">
-      <span id="slideCounter" class="font-bold text-white">Slide 1 / 12</span>
-      <div class="w-32 h-1.5 bg-slate-800 rounded-full overflow-hidden">
-        <div id="progressBar" class="h-full bg-emerald-500 transition-all duration-300" style="width: 8.33%;"></div>
+    <!-- Slide Indicators & Progress -->
+    <div class="flex items-center gap-3">
+      <div class="hidden sm:flex items-center gap-2 text-xs font-mono text-slate-400 bg-slate-900/90 px-3 py-1.5 rounded-lg border border-slate-800">
+        <span id="slideCounter" class="font-bold text-emerald-400">01 / 11</span>
+        <div class="w-28 h-1.5 bg-slate-800 rounded-full overflow-hidden">
+          <div id="progressBar" class="h-full bg-gradient-to-r from-emerald-500 to-teal-400 transition-all duration-300" style="width: 9.09%;"></div>
+        </div>
       </div>
-    </div>
 
-    <!-- Action Buttons -->
-    <div class="flex items-center gap-2">
-      <button onclick="prevSlide()" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 transition-colors text-xs font-bold flex items-center gap-1.5 cursor-pointer" title="Slide Sebelumnya (Panah Kiri)">
-        <i class="fa-solid fa-chevron-left"></i>
-        <span class="hidden md:inline">Prev</span>
-      </button>
-      <button onclick="nextSlide()" class="p-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white transition-colors text-xs font-bold flex items-center gap-1.5 cursor-pointer shadow-lg shadow-emerald-950/50" title="Slide Berikutnya (Panah Kanan / Spasi)">
-        <span class="hidden md:inline">Next</span>
-        <i class="fa-solid fa-chevron-right"></i>
-      </button>
-      <button onclick="toggleFullScreen()" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors text-xs cursor-pointer" title="Layar Penuh (F)">
-        <i class="fa-solid fa-expand"></i>
-      </button>
-      <a href="https://smart-cbt-pro.vercel.app/" target="_blank" class="px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold flex items-center gap-1.5 transition-colors shadow-xs ml-2 cursor-pointer">
-        <i class="fa-solid fa-arrow-up-right-from-square"></i>
-        <span>Live Demo</span>
-      </a>
+      <!-- Quick Action Buttons -->
+      <div class="flex items-center gap-1.5">
+        <button onclick="prevSlide()" class="p-2 px-3 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 transition-all text-xs font-bold flex items-center gap-1.5 cursor-pointer border border-slate-700" title="Slide Sebelumnya [←]">
+          <i class="fa-solid fa-chevron-left"></i>
+          <span class="hidden lg:inline">Prev</span>
+        </button>
+        <button onclick="nextSlide()" class="p-2 px-3 rounded-lg bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white transition-all text-xs font-bold flex items-center gap-1.5 cursor-pointer shadow-lg shadow-emerald-950/60 ring-1 ring-emerald-400/40" title="Slide Berikutnya [→ / Spasi]">
+          <span class="hidden lg:inline">Next</span>
+          <i class="fa-solid fa-chevron-right"></i>
+        </button>
+        <button onclick="toggleFullScreen()" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors text-xs border border-slate-700 cursor-pointer" title="Layar Penuh [F]">
+          <i class="fa-solid fa-expand"></i>
+        </button>
+        <a href="/panduan-praktek.html" target="_blank" class="px-3 py-1.5 rounded-lg bg-indigo-600/80 hover:bg-indigo-500 text-white text-xs font-bold flex items-center gap-1.5 transition-all shadow-xs border border-indigo-400/30 cursor-pointer" title="Buka Panduan Praktek Per Sesi">
+          <i class="fa-solid fa-clipboard-check"></i>
+          <span class="hidden sm:inline">Panduan Uji Coba</span>
+        </a>
+        <a href="/" target="_blank" class="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold flex items-center gap-1.5 transition-all shadow-xs border border-emerald-400/30 cursor-pointer ml-1" title="Buka Aplikasi Smart CBT">
+          <i class="fa-solid fa-arrow-up-right-from-square"></i>
+          <span class="hidden sm:inline">Live App</span>
+        </a>
+      </div>
     </div>
   </header>
 
-  <!-- SLIDES CONTAINER -->
-  <main class="w-full h-full pt-14 flex items-center justify-center p-6 md:p-12 relative overflow-hidden">
+  <!-- SLIDES MAIN WRAPPER -->
+  <main class="w-full h-full pt-16 flex items-center justify-center p-4 md:p-8 relative overflow-y-auto">
 
-    <!-- SLIDE 1: COVER -->
-    <div class="slide active w-full max-w-6xl h-full flex-col justify-center items-center text-center space-y-6">
-      <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-xs font-bold mb-2">
-        <i class="fa-solid fa-sparkles animate-pulse"></i>
-        <span>Generasi Baru Asesmen Sekolah Digital Berbasis Kecerdasan Buatan</span>
-      </div>
-      <h1 class="text-4xl md:text-6xl font-black text-white tracking-tight leading-tight max-w-4xl">
-        SMART CBT <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-300">PRO</span>
-      </h1>
-      <p class="text-lg md:text-xl text-slate-300 font-medium max-w-3xl leading-relaxed">
-        Solusi Ujian Sekolah Cerdas: <strong class="text-white">Bebas Kertas (Paperless)</strong>, <strong class="text-white">Anti-Curang</strong>, dan <strong class="text-emerald-400">Koreksi Esai Otomatis Berbasis NLP</strong> Tanpa Beban Biaya Token API.
-      </p>
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 w-full max-w-3xl pt-4 text-left">
-        <div class="glass-card p-4 rounded-xl border border-slate-800">
-          <i class="fa-solid fa-robot text-emerald-400 text-xl mb-1"></i>
-          <p class="text-xs text-slate-400 font-semibold">Penilaian Esai</p>
-          <p class="text-sm font-black text-white">NLP Multi-Konsep</p>
+    <!-- ========================================================================= -->
+    <!-- SLIDE 1: HERO COVER (EXECUTIVE OVERVIEW WITH MOCKUP & KEY STATS) -->
+    <!-- ========================================================================= -->
+    <div class="slide active flex-col lg:flex-row items-center justify-between gap-8 py-4">
+      <!-- Left Column: High-Impact Pitch -->
+      <div class="w-full lg:w-1/2 space-y-5 text-left">
+        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/15 border border-emerald-400/30 text-emerald-300 text-xs font-bold">
+          <i class="fa-solid fa-sparkles text-emerald-400 animate-pulse"></i>
+          <span>Generasi Baru Ujian Sekolah Digital 2026 • Kurikulum Merdeka</span>
         </div>
-        <div class="glass-card p-4 rounded-xl border border-slate-800">
-          <i class="fa-solid fa-check-double text-blue-400 text-xl mb-1"></i>
-          <p class="text-xs text-slate-400 font-semibold">Standar Soal</p>
-          <p class="text-sm font-black text-white">5 Ragam AKM</p>
-        </div>
-        <div class="glass-card p-4 rounded-xl border border-slate-800">
-          <i class="fa-solid fa-wifi text-amber-400 text-xl mb-1"></i>
-          <p class="text-xs text-slate-400 font-semibold">Ketahanan Lab</p>
-          <p class="text-sm font-black text-white">Anti-Logout PWA</p>
-        </div>
-        <div class="glass-card p-4 rounded-xl border border-slate-800">
-          <i class="fa-solid fa-file-excel text-purple-400 text-xl mb-1"></i>
-          <p class="text-xs text-slate-400 font-semibold">Integrasi Nilai</p>
-          <p class="text-sm font-black text-white">1-Klik e-Rapor</p>
-        </div>
-      </div>
-      <p class="text-xs text-slate-500 font-mono pt-4">Gunakan tombol panah keyboard [&larr;] dan [&rarr;] untuk berpindah slide</p>
-    </div>
 
-    <!-- SLIDE 2: MASALAH RIIL SEKOLAH -->
-    <div class="slide w-full max-w-6xl h-full flex-col justify-center space-y-6">
-      <div class="space-y-2">
-        <span class="text-rose-400 font-bold text-xs uppercase tracking-wider">Fakta & Dilema Asesmen Sekolah</span>
-        <h2 class="text-3xl md:text-5xl font-black text-white tracking-tight">Mengapa Ujian Kertas & Pilihan Ganda Harus Ditinggalkan?</h2>
-      </div>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2">
-        <div class="glass-card p-6 rounded-2xl border-l-4 border-l-rose-500 space-y-3">
-          <div class="w-12 h-12 rounded-xl bg-rose-500/20 text-rose-400 flex items-center justify-center text-2xl font-bold">
-            <i class="fa-solid fa-money-bill-wave"></i>
-          </div>
-          <h3 class="text-lg font-black text-white">Pemborosan Anggaran Kertas</h3>
-          <p class="text-xs text-slate-300 leading-relaxed">
-            Sekolah menghabiskan <strong class="text-rose-400">Rp 40 – 70 Juta per tahun</strong> hanya untuk fotokopi lembar soal dan LJK yang seminggu setelah ujian hanya berakhir menjadi sampah di gudang.
-          </p>
-        </div>
-        <div class="glass-card p-6 rounded-2xl border-l-4 border-l-amber-500 space-y-3">
-          <div class="w-12 h-12 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center text-2xl font-bold">
-            <i class="fa-solid fa-user-clock"></i>
-          </div>
-          <h3 class="text-lg font-black text-white">Beban Lembur Koreksi Guru</h3>
-          <p class="text-xs text-slate-300 leading-relaxed">
-            Guru harus membaca <strong class="text-amber-400">1.500 – 4.000 jawaban esai manual</strong>. Akibat kelelahan fisik, penilaian menjadi subjektif dan pembagian e-Rapor kerap kali tertunda berminggu-minggu.
-          </p>
-        </div>
-        <div class="glass-card p-6 rounded-2xl border-l-4 border-l-sky-500 space-y-3">
-          <div class="w-12 h-12 rounded-xl bg-sky-500/20 text-sky-400 flex items-center justify-center text-2xl font-bold">
-            <i class="fa-solid fa-brain"></i>
-          </div>
-          <h3 class="text-lg font-black text-white">Nalar Kritis Siswa Terkikis</h3>
-          <p class="text-xs text-slate-300 leading-relaxed">
-            Karena takut beban koreksi esai, sekolah terpaksa memakai <strong class="text-sky-400">100% Pilihan Ganda</strong>. Siswa hanya terlatih menebak kancing, bukan melatih nalar HOTS Kurikulum Merdeka.
-          </p>
-        </div>
-      </div>
-    </div>
+        <h1 class="text-3xl md:text-5xl lg:text-6xl font-black text-white tracking-tight leading-[1.15]">
+          SMART CBT <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400">PRO</span>
+        </h1>
 
-    <!-- SLIDE 3: KELEMAHAN PLATFORM LAIN -->
-    <div class="slide w-full max-w-6xl h-full flex-col justify-center space-y-6">
-      <div class="space-y-2">
-        <span class="text-amber-400 font-bold text-xs uppercase tracking-wider">Analisis Komparasi Lapangan</span>
-        <h2 class="text-3xl md:text-5xl font-black text-white tracking-tight">Mengapa Google Forms & CBT Konvensional Gagal?</h2>
-      </div>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2">
-        <div class="glass-card p-6 rounded-2xl border border-slate-800 space-y-3">
-          <h3 class="text-base font-black text-rose-400 flex items-center gap-2">
-            <i class="fa-brands fa-google"></i>
-            <span>Google Forms</span>
-          </h3>
-          <ul class="text-xs text-slate-300 space-y-2 list-disc list-inside leading-relaxed">
-            <li>Sangat mudah dicurangi siswa (membuka tab baru, chat WA, ChatGPT).</li>
-            <li>Tidak ada pembatasan meja lab atau token berwaktu.</li>
-            <li>Tidak bisa memeriksa esai bertingkat secara otomatis.</li>
-          </ul>
-        </div>
-        <div class="glass-card p-6 rounded-2xl border border-slate-800 space-y-3">
-          <h3 class="text-base font-black text-amber-400 flex items-center gap-2">
-            <i class="fa-solid fa-code"></i>
-            <span>CBT Konvensional (PHP Lama)</span>
-          </h3>
-          <ul class="text-xs text-slate-300 space-y-2 list-disc list-inside leading-relaxed">
-            <li>Hanya bisa mencocokkan kata persis (exact match 1 kata).</li>
-            <li>Siswa jawab "zat hijau daun", kunci guru "klorofil", nilai langsung nol!</li>
-            <li>Antarmuka kaku era 2010 dan sering crash saat koneksi WiFi putus.</li>
-          </ul>
-        </div>
-        <div class="glass-card p-6 rounded-2xl border border-slate-800 space-y-3">
-          <h3 class="text-base font-black text-blue-400 flex items-center gap-2">
-            <i class="fa-solid fa-server"></i>
-            <span>Moodle / LMS Berat</span>
-          </h3>
-          <ul class="text-xs text-slate-300 space-y-2 list-disc list-inside leading-relaxed">
-            <li>Sangat berat untuk spesifikasi server lokal sekolah.</li>
-            <li>Antarmuka rumit dan membingungkan guru senior.</li>
-            <li>Membutuhkan teknisi IT khusus untuk pemeliharaan harian.</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-
-    <!-- SLIDE 4: SOLUSI SMART CBT PRO -->
-    <div class="slide w-full max-w-6xl h-full flex-col justify-center space-y-6">
-      <div class="space-y-2">
-        <span class="text-emerald-400 font-bold text-xs uppercase tracking-wider">Solusi Terpadu Sekolah</span>
-        <h2 class="text-3xl md:text-5xl font-black text-white tracking-tight">SmartCBT Pro: Inovasi Asesmen Generasi Terbaru</h2>
-      </div>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
-        <div class="glass-card p-6 rounded-2xl border border-emerald-500/30 space-y-3 bg-emerald-950/20">
-          <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-lg">
-              <i class="fa-solid fa-chalkboard-user"></i>
-            </div>
-            <div>
-              <h3 class="text-lg font-black text-white">Portal Khusus Guru (Pedagogis)</h3>
-              <p class="text-xs text-emerald-300">Fokus pada pembuatan soal dan evaluasi mutu</p>
-            </div>
-          </div>
-          <p class="text-xs text-slate-300 leading-relaxed">
-            Bebas dari kerumitan teknis UBK! Guru hanya fokus membuat 5 format soal AKM, mengedit formula eksak di Math Studio, menguji coba esai di AI Simulator, dan memantau ketuntasan nilai KKM siswa.
-          </p>
-        </div>
-        <div class="glass-card p-6 rounded-2xl border border-blue-500/30 space-y-3 bg-blue-950/20">
-          <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-xl bg-blue-500/20 text-blue-400 flex items-center justify-center font-bold text-lg">
-              <i class="fa-solid fa-desktop"></i>
-            </div>
-            <div>
-              <h3 class="text-lg font-black text-white">Portal Khusus Operator (Infrastruktur)</h3>
-              <p class="text-xs text-blue-300">Kendali 100% atas lab, token, dan sinkronisasi</p>
-            </div>
-          </div>
-          <p class="text-xs text-slate-300 leading-relaxed">
-            Panel kendali proktor modern: monitor real-time meja lab 1–40, reset login darurat saat PC siswa crash, generate token dinamis 15 menit, cetak kartu QR 8-in-1, dan ekspor e-Rapor otomatis.
-          </p>
-        </div>
-      </div>
-    </div>
-
-    <!-- SLIDE 5: INOVASI ESAI AI -->
-    <div class="slide w-full max-w-6xl h-full flex-col justify-center space-y-6">
-      <div class="space-y-2">
-        <span class="text-emerald-400 font-bold text-xs uppercase tracking-wider">Inovasi Terbesar Kami</span>
-        <h2 class="text-3xl md:text-5xl font-black text-white tracking-tight">Mesin Penilai Esai AI Otomatis (Zero-Cost NLP)</h2>
-      </div>
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-4 pt-2">
-        <div class="glass-card p-5 rounded-xl border border-slate-800 space-y-2">
-          <i class="fa-solid fa-layer-group text-emerald-400 text-2xl"></i>
-          <h4 class="text-sm font-black text-white">Multi-Concept Weights</h4>
-          <p class="text-xs text-slate-300 leading-relaxed">Guru menetapkan 3-5 konsep inti berbobot persentase. Siswa dinilai proporsional sesuai kelengkapan konsep.</p>
-        </div>
-        <div class="glass-card p-5 rounded-xl border border-slate-800 space-y-2">
-          <i class="fa-solid fa-book-bookmark text-blue-400 text-2xl"></i>
-          <h4 class="text-sm font-black text-white">Kamus Sinonim Bahasa</h4>
-          <p class="text-xs text-slate-300 leading-relaxed">Mengenali ragam sinonim resmi (misal: 'klorofil' = 'zat hijau daun', 'oksigen' = 'gas O2', 'meninggal' = 'wafat').</p>
-        </div>
-        <div class="glass-card p-5 rounded-xl border border-slate-800 space-y-2">
-          <i class="fa-solid fa-keyboard text-amber-400 text-2xl"></i>
-          <h4 class="text-sm font-black text-white">Toleransi Typo Keyboard</h4>
-          <p class="text-xs text-slate-300 leading-relaxed">Kesalahan ketik hingga 2 karakter pada keyboard HP/PC lab (misal: 'kloropil', 'fotosintesa') tetap dihitung benar.</p>
-        </div>
-        <div class="glass-card p-5 rounded-xl border border-slate-800 space-y-2">
-          <i class="fa-solid fa-shield-halved text-purple-400 text-2xl"></i>
-          <h4 class="text-sm font-black text-white">Anti-Negasi Guard</h4>
-          <p class="text-xs text-slate-300 leading-relaxed">Mendeteksi kata ingkar ('tidak', 'tanpa') agar siswa tidak bisa mengakali sistem dengan kalimat sanggahan.</p>
-        </div>
-      </div>
-      <div class="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center gap-3 text-xs text-amber-200">
-        <i class="fa-solid fa-bolt text-amber-400 text-xl shrink-0"></i>
-        <span><strong>100% Zero-Cost Local Engine</strong>: Berjalan langsung di server lokal/cloud mandiri tanpa menggunakan token berbayar per panggilan (Rp 0,- biaya API bulanan).</span>
-      </div>
-    </div>
-
-    <!-- SLIDE 6: SIMULASI LIVE ESAI -->
-    <div class="slide w-full max-w-6xl h-full flex-col justify-center space-y-6">
-      <div class="space-y-2">
-        <span class="text-cyan-400 font-bold text-xs uppercase tracking-wider">Bukti Nyata Di Lapangan</span>
-        <h2 class="text-3xl md:text-5xl font-black text-white tracking-tight">Bagaimana AI Menilai Jawaban Panjang Siswa?</h2>
-      </div>
-      <div class="glass-card p-6 rounded-2xl border border-slate-800 space-y-4">
-        <div class="bg-slate-900/80 p-3 rounded-lg border border-slate-800">
-          <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Soal Ujian Biologi (Maks: 20 Poin):</span>
-          <p class="text-sm font-bold text-white">"Jelaskan bagaimana proses fotosintesis pada tumbuhan hijau terjadi dan sebutkan zat yang dihasilkan!"</p>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-          <div class="bg-blue-950/20 border border-blue-500/20 p-4 rounded-xl space-y-2">
-            <span class="font-bold text-blue-300 block">Jawaban Asli Siswa:</span>
-            <p class="text-slate-200 italic font-mono">"Proses fotosintesis terjadi pada daun yang memiliki zat klorofil dengan bantuan sinar matahari menghasilkan energi glukosa dan melepaskan oksigen."</p>
-          </div>
-          <div class="bg-emerald-950/20 border border-emerald-500/30 p-4 rounded-xl space-y-2">
-            <div class="flex items-center justify-between">
-              <span class="font-bold text-emerald-300">Hasil Keputusan AI:</span>
-              <span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-black">Skor: 18 / 20 (90%)</span>
-            </div>
-            <p class="text-slate-300">✓ Klorofil (+6) &nbsp; ✓ Matahari (+6) &nbsp; ✓ Oksigen (+4)</p>
-            <p class="text-[11px] text-emerald-400/90 font-medium border-t border-emerald-500/20 pt-2">
-              Feedback Pedagogis: <em>"Bagus! Konsep inti sudah dijelaskan dengan tepat, lengkapi dengan rincian glukosa."</em>
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- SLIDE 7: HAK VETO GURU -->
-    <div class="slide w-full max-w-6xl h-full flex-col justify-center space-y-6">
-      <div class="space-y-2">
-        <span class="text-amber-400 font-bold text-xs uppercase tracking-wider">Kendali Pedagogis 100%</span>
-        <h2 class="text-3xl md:text-5xl font-black text-white tracking-tight">AI Membantu Guru, Guru Memegang Hak Veto</h2>
-      </div>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
-        <div class="glass-card p-6 rounded-2xl border border-slate-800 space-y-4">
-          <h3 class="text-lg font-black text-white flex items-center gap-2">
-            <i class="fa-solid fa-gavel text-amber-400"></i>
-            <span>Fitur Teacher Veto (Manual Override)</span>
-          </h3>
-          <p class="text-xs text-slate-300 leading-relaxed">
-            AI bertugas sebagai asisten yang mengoreksi ribuan jawaban dalam hitungan detik. Namun bila guru merasa siswa berhak mendapat nilai lebih tinggi karena argumentasinya kreatif, guru cukup klik 1 tombol koreksi untuk mengubah skor akhir.
-          </p>
-          <div class="p-3 bg-slate-900 rounded-xl border border-slate-800 text-xs font-mono text-emerald-400">
-            [✓] Skor AI: 14 &nbsp;&rarr;&nbsp; [Ubah Skor Guru]: <span class="text-white font-bold bg-blue-600 px-2 py-0.5 rounded">18</span>
-          </div>
-        </div>
-        <div class="glass-card p-6 rounded-2xl border border-slate-800 space-y-4">
-          <h3 class="text-lg font-black text-white flex items-center gap-2">
-            <i class="fa-solid fa-chart-line text-cyan-400"></i>
-            <span>Analisis Butir Soal Ilmiah</span>
-          </h3>
-          <p class="text-xs text-slate-300 leading-relaxed">
-            Secara otomatis menyajikan parameter psikometri evaluasi pembelajaran:
-          </p>
-          <ul class="text-xs text-slate-300 space-y-1 list-disc list-inside">
-            <li><strong>Tingkat Kesukaran ($P$-value)</strong>: Mudah, Sedang, Sukar.</li>
-            <li><strong>Daya Pembeda ($D$-index)</strong>: Membedakan siswa pintar & lambat.</li>
-            <li><strong>Daftar Remedial Otomatis</strong>: Siswa di bawah KKM langsung terdata.</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-
-    <!-- SLIDE 8: MATH STUDIO & AKM -->
-    <div class="slide w-full max-w-6xl h-full flex-col justify-center space-y-6">
-      <div class="space-y-2">
-        <span class="text-purple-400 font-bold text-xs uppercase tracking-wider">Eksak & Kurikulum Merdeka</span>
-        <h2 class="text-3xl md:text-5xl font-black text-white tracking-tight">Math Studio LaTeX & 5 Ragam Butir AKM</h2>
-      </div>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
-        <div class="glass-card p-6 rounded-2xl border border-purple-500/30 space-y-3">
-          <h3 class="text-base font-black text-white flex items-center gap-2">
-            <i class="fa-solid fa-square-root-variable text-purple-400"></i>
-            <span>Math Studio Interaktif</span>
-          </h3>
-          <p class="text-xs text-slate-300 leading-relaxed">
-            Tidak perlu lagi men-screenshot rumus dari Word! Guru Matematika, Fisika, dan Kimia dapat mengetik rumus eksak dengan preview LaTeX instan:
-          </p>
-          <div class="p-3 bg-slate-900 rounded-lg text-center font-mono text-sm text-cyan-300 border border-slate-800">
-            x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}
-          </div>
-          <p class="text-[11px] text-slate-400">Tampil super tajam dan responsif di layar ponsel maupun monitor lab.</p>
-        </div>
-        <div class="glass-card p-6 rounded-2xl border border-blue-500/30 space-y-3">
-          <h3 class="text-base font-black text-white flex items-center gap-2">
-            <i class="fa-solid fa-list-check text-blue-400"></i>
-            <span>5 Format Butir Soal AKM</span>
-          </h3>
-          <div class="grid grid-cols-2 gap-2 text-xs">
-            <div class="p-2 bg-slate-900 rounded border border-slate-800">1. Pilihan Ganda Biasa</div>
-            <div class="p-2 bg-slate-900 rounded border border-slate-800">2. PG Kompleks (Centang)</div>
-            <div class="p-2 bg-slate-900 rounded border border-slate-800">3. Menjodohkan Garis</div>
-            <div class="p-2 bg-slate-900 rounded border border-slate-800">4. Benar / Salah Matriks</div>
-            <div class="col-span-2 p-2 bg-emerald-950/30 rounded border border-emerald-500/30 text-emerald-300 font-bold">5. Uraian Esai AI NLP Otomatis</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- SLIDE 9: KETAHANAN LAB -->
-    <div class="slide w-full max-w-6xl h-full flex-col justify-center space-y-6">
-      <div class="space-y-2">
-        <span class="text-emerald-400 font-bold text-xs uppercase tracking-wider">Keandalan Infrastruktur UBK</span>
-        <h2 class="text-3xl md:text-5xl font-black text-white tracking-tight">Tangguh di Lab: Anti-Logout & Reset Login Darurat</h2>
-      </div>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2">
-        <div class="glass-card p-6 rounded-2xl border border-slate-800 space-y-3">
-          <i class="fa-solid fa-network-wired text-emerald-400 text-2xl"></i>
-          <h3 class="text-base font-black text-white">PWA Offline Resilience</h3>
-          <p class="text-xs text-slate-300 leading-relaxed">
-            Jika kabel router atau sinyal WiFi lab terputus selama 1-2 menit, siswa tetap bisa membaca soal dan memilih jawaban tanpa error. Jawaban otomatis tersinkronisasi saat sinyal pulih.
-          </p>
-        </div>
-        <div class="glass-card p-6 rounded-2xl border border-slate-800 space-y-3">
-          <i class="fa-solid fa-rotate-left text-amber-400 text-2xl"></i>
-          <h3 class="text-base font-black text-white">Emergency Desk Reset</h3>
-          <p class="text-xs text-slate-300 leading-relaxed">
-            Jika komputer meja 12 mati mendadak atau bluescreen, proktor cukup klik tombol "Reset Login". Siswa bisa pindah ke PC cadangan dan melanjutkan dari nomor soal terakhir.
-          </p>
-        </div>
-        <div class="glass-card p-6 rounded-2xl border border-slate-800 space-y-3">
-          <i class="fa-solid fa-key text-blue-400 text-2xl"></i>
-          <h3 class="text-base font-black text-white">Dynamic 15-Min Token</h3>
-          <p class="text-xs text-slate-300 leading-relaxed">
-            Token ujian berganti otomatis setiap 15 menit. Siswa yang terlambat atau ingin menyebarkan kode ujian ke luar ruangan lab otomatis terblokir.
-          </p>
-        </div>
-      </div>
-    </div>
-
-    <!-- SLIDE 10: 1-KLIK E-RAPOR -->
-    <div class="slide w-full max-w-6xl h-full flex-col justify-center space-y-6">
-      <div class="space-y-2">
-        <span class="text-emerald-400 font-bold text-xs uppercase tracking-wider">Efisiensi Administrasi Kurikulum</span>
-        <h2 class="text-3xl md:text-5xl font-black text-white tracking-tight">1-Klik Ekspor Format e-Rapor & RDM</h2>
-      </div>
-      <div class="glass-card p-6 rounded-2xl border border-slate-800 space-y-4">
-        <p class="text-xs md:text-sm text-slate-300 leading-relaxed">
-          Tidak perlu lagi meng-copy-paste nilai satu per satu dari kertas atau lembar Excel acak! SmartCBT Pro mengekspor leger nilai yang sudah 100% kompatibel dengan format import e-Rapor Kemdikbudristek dan RDM Kemenag:
+        <p class="text-sm md:text-base text-slate-300 font-normal leading-relaxed">
+          Revolusi Ujian Sekolah Cerdas: <strong class="text-white">Bebas Kertas (Paperless)</strong>, <strong class="text-white">Anti-Curang PWA</strong>, <strong class="text-emerald-300">Koreksi Esai Otomatis Multi-Konsep Tanpa Token API</strong>, serta <strong class="text-indigo-300">Generator Paket Soal AKM Berbasis AI</strong> dalam hitungan detik.
         </p>
-        <div class="overflow-x-auto rounded-lg border border-slate-800">
-          <table class="w-full text-left text-xs font-mono">
-            <thead class="bg-slate-900 text-slate-300 border-b border-slate-800">
+
+        <!-- 3 Highlight Metrics Badges -->
+        <div class="grid grid-cols-3 gap-3 pt-2">
+          <div class="p-3 rounded-xl bg-slate-900/90 border border-slate-800">
+            <div class="text-emerald-400 font-black text-lg md:text-2xl">Rp 0,-</div>
+            <div class="text-[11px] text-slate-400 font-semibold leading-tight">Biaya API Token (Zero Overhead)</div>
+          </div>
+          <div class="p-3 rounded-xl bg-slate-900/90 border border-slate-800">
+            <div class="text-cyan-400 font-black text-lg md:text-2xl">5 Ragam</div>
+            <div class="text-[11px] text-slate-400 font-semibold leading-tight">Standar Soal AKM Kemdikbud</div>
+          </div>
+          <div class="p-3 rounded-xl bg-slate-900/90 border border-slate-800">
+            <div class="text-amber-400 font-black text-lg md:text-2xl">> 75%</div>
+            <div class="text-[11px] text-slate-400 font-semibold leading-tight">Hemat Anggaran BOS Sekolah</div>
+          </div>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-3 pt-3">
+          <button onclick="nextSlide()" class="px-5 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs md:text-sm flex items-center gap-2 shadow-xl shadow-emerald-500/20 transition-all cursor-pointer">
+            <span>Pelajari Mengapa Sekolah Memilih Kami</span>
+            <i class="fa-solid fa-arrow-right"></i>
+          </button>
+          <button onclick="showSlide(3)" class="px-4 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 font-bold text-xs md:text-sm flex items-center gap-2 transition-all cursor-pointer">
+            <i class="fa-solid fa-bolt text-indigo-400"></i>
+            <span>Lihat Generator Soal AI</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Right Column: Interactive Laptop Mockup Frame -->
+      <div class="w-full lg:w-1/2 flex items-center justify-center">
+        <div class="w-full max-w-lg laptop-frame p-3">
+          <!-- Laptop Topbar / Window Header -->
+          <div class="flex items-center justify-between pb-2 mb-2 border-b border-slate-800 text-[10px] text-slate-400 font-mono">
+            <div class="flex items-center gap-1.5">
+              <span class="w-2.5 h-2.5 rounded-full bg-rose-500/80 inline-block"></span>
+              <span class="w-2.5 h-2.5 rounded-full bg-amber-500/80 inline-block"></span>
+              <span class="w-2.5 h-2.5 rounded-full bg-emerald-500/80 inline-block"></span>
+              <span class="ml-2 font-bold text-slate-300">smart-cbt-pro.vercel.app</span>
+            </div>
+            <span class="text-emerald-400 flex items-center gap-1 font-bold">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping inline-block"></span>
+              SERVER PUSAT ONLINE
+            </span>
+          </div>
+
+          <!-- Inside Screen: Simulated Live Exam UI -->
+          <div class="bg-[#0b0f19] rounded-lg p-4 space-y-3 border border-slate-800/80">
+            <div class="flex items-center justify-between pb-2 border-b border-slate-800">
+              <div class="flex items-center gap-2">
+                <span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 text-[10px] font-bold">SOAL NO 12 / 40</span>
+                <span class="text-[10px] text-slate-400">TIPE: ESSAY ANALITIK</span>
+              </div>
+              <div class="text-[11px] font-mono font-bold text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">
+                <i class="fa-regular fa-clock mr-1"></i> 01:24:18
+              </div>
+            </div>
+
+            <p class="text-xs text-slate-200 font-medium leading-relaxed">
+              "Jelaskan bagaimana proses fotosintesis pada tumbuhan hijau menghasilkan glukosa dan oksigen, serta mengapa sinar matahari sangat krusial?"
+            </p>
+
+            <div class="bg-slate-900/90 rounded-md p-2.5 border border-slate-800 text-[11px] text-slate-300 font-mono">
+              <span class="text-[9px] uppercase tracking-wider text-slate-500 block mb-1">Jawaban Siswa (Real-time Typing):</span>
+              Fotosintesis terjadi di kloroplas daun dengan bantuan pigmen klorofil yang menyerap sinar matahari. Air (H2O) dan karbon dioksida diubah menjadi glukosa serta melepaskan oksigen...
+            </div>
+
+            <!-- Floating AI Instant Evaluation Pill -->
+            <div class="p-2.5 rounded-lg bg-gradient-to-r from-emerald-950/80 to-teal-950/80 border border-emerald-500/40 flex items-center justify-between text-[11px]">
+              <div class="flex items-center gap-2">
+                <i class="fa-solid fa-robot text-emerald-400 text-sm"></i>
+                <span class="font-bold text-emerald-200">Koreksi AI Otomatis:</span>
+                <span class="text-slate-400">3/3 Konsep Terdeteksi</span>
+              </div>
+              <span class="px-2 py-0.5 rounded bg-emerald-500 text-slate-950 font-black text-xs">
+                Skor 100/100
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- SLIDE 2: MASALAH RIIL SEKOLAH & BIAYA ANGGARAN KERTAS -->
+    <!-- ========================================================================= -->
+    <div class="slide flex-col justify-center space-y-6 py-4">
+      <div class="space-y-2">
+        <span class="text-rose-400 font-bold text-xs uppercase tracking-wider flex items-center gap-1.5">
+          <i class="fa-solid fa-triangle-exclamation"></i>
+          Fakta Lapangan & Beban Operasional Sekolah
+        </span>
+        <h2 class="text-2xl md:text-4xl font-black text-white tracking-tight">3 Masalah Kronis Asesmen yang Selalu Membebani Sekolah</h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-5 pt-2">
+        <!-- Problem 1 -->
+        <div class="glass-card p-6 rounded-2xl border-l-4 border-l-rose-500 space-y-3 relative overflow-hidden">
+          <div class="w-12 h-12 rounded-xl bg-rose-500/15 text-rose-400 flex items-center justify-center text-xl font-bold">
+            <i class="fa-solid fa-money-bill-transfer"></i>
+          </div>
+          <h3 class="text-lg font-bold text-white">Pemborosan Dana BOS Kertas</h3>
+          <p class="text-xs text-slate-300 leading-relaxed">
+            Sekolah menghabiskan <strong class="text-rose-400 font-bold">Rp 35 – 65 Juta per tahun</strong> hanya untuk fotokopi naskah soal, LJK, dan toner printer yang setelah seminggu ujian hanya berakhir jadi tumpukan sampah di gudang.
+          </p>
+          <div class="pt-2 text-[11px] font-mono text-rose-300 bg-rose-950/40 p-2 rounded-lg border border-rose-900/50">
+            • 500 Siswa x 14 Mapel x 4 Ujian/Thn<br>
+            • Rata-rata 80.000+ lembar kertas habis
+          </div>
+        </div>
+
+        <!-- Problem 2 -->
+        <div class="glass-card p-6 rounded-2xl border-l-4 border-l-amber-500 space-y-3 relative overflow-hidden">
+          <div class="w-12 h-12 rounded-xl bg-amber-500/15 text-amber-400 flex items-center justify-center text-xl font-bold">
+            <i class="fa-solid fa-clock-rotate-left"></i>
+          </div>
+          <h3 class="text-lg font-bold text-white">Guru Begadang Memeriksa Esai</h3>
+          <p class="text-xs text-slate-300 leading-relaxed">
+            Guru harus membaca <strong class="text-amber-400 font-bold">1.500 s/d 3.000 lembar jawaban esai</strong> tulisan tangan. Beban ini memicu kelelahan fisik, penilaian menjadi subjektif, dan pembagian rapor kerap tertunda.
+          </p>
+          <div class="pt-2 text-[11px] font-mono text-amber-300 bg-amber-950/40 p-2 rounded-lg border border-amber-900/50">
+            • Dampak: Sekolah terpaksa hanya buat PG<br>
+            • Nalar kritis dan HOTS siswa tidak teruji
+          </div>
+        </div>
+
+        <!-- Problem 3 -->
+        <div class="glass-card p-6 rounded-2xl border-l-4 border-l-cyan-500 space-y-3 relative overflow-hidden">
+          <div class="w-12 h-12 rounded-xl bg-cyan-500/15 text-cyan-400 flex items-center justify-center text-xl font-bold">
+            <i class="fa-solid fa-server"></i>
+          </div>
+          <h3 class="text-lg font-bold text-white">CBT Lama Hosting Sering Crash</h3>
+          <p class="text-xs text-slate-300 leading-relaxed">
+            Rata-rata CBT sekolah memakai PHP lama di shared hosting cPanel murah. Saat <strong class="text-cyan-400 font-bold">100+ siswa klik submit serentak</strong>, server langsung tumbang (Error 508 Resource Limit) dan jawaban hilang!
+          </p>
+          <div class="pt-2 text-[11px] font-mono text-cyan-300 bg-cyan-950/40 p-2 rounded-lg border border-cyan-900/50">
+            • Server overload & database lock<br>
+            • Proktor panik, siswa harus ujian ulang
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- SLIDE 3: PERBANDINGAN HEAD-TO-HEAD DENGAN PLATFORM LAIN -->
+    <!-- ========================================================================= -->
+    <div class="slide flex-col justify-center space-y-5 py-4">
+      <div class="space-y-1">
+        <span class="text-indigo-400 font-bold text-xs uppercase tracking-wider">Komparasi Solusi Pasar</span>
+        <h2 class="text-2xl md:text-4xl font-black text-white tracking-tight">Mengapa Sekolah Lain Beralih ke SmartCBT Pro?</h2>
+      </div>
+
+      <!-- Feature Comparison Table -->
+      <div class="glass-card rounded-2xl border border-slate-800 overflow-hidden shadow-2xl">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs md:text-sm">
+            <thead class="bg-slate-900/90 text-slate-300 border-b border-slate-800 font-bold">
               <tr>
-                <th class="p-2.5">NISN / NO PESERTA</th>
-                <th class="p-2.5">NAMA LENGKAP</th>
-                <th class="p-2.5 text-center">SKOR PG</th>
-                <th class="p-2.5 text-center">SKOR ESAI AI</th>
-                <th class="p-2.5 text-center text-emerald-400 font-bold">NILAI AKHIR</th>
-                <th class="p-2.5 text-center">STATUS KKM</th>
+                <th class="p-3.5 pl-5">Fitur & Kemampuan Kunci</th>
+                <th class="p-3.5 text-center bg-emerald-950/40 text-emerald-400 border-x border-emerald-500/30">
+                  <span class="flex items-center justify-center gap-1.5 font-black">
+                    <i class="fa-solid fa-crown text-amber-400"></i> SmartCBT Pro
+                  </span>
+                </th>
+                <th class="p-3.5 text-center text-slate-400">CBT PHP Lama (Candy/Beesmart)</th>
+                <th class="p-3.5 text-center text-slate-400">Google Forms</th>
+                <th class="p-3.5 text-center text-slate-400">Moodle LMS</th>
               </tr>
             </thead>
-            <tbody class="divide-y divide-slate-800 text-slate-300">
+            <tbody class="divide-y divide-slate-800/80 text-slate-300">
               <tr>
-                <td class="p-2.5">26-27-01-1-0508-0001</td>
-                <td class="p-2.5 font-sans font-bold text-white">ARJUN</td>
-                <td class="p-2.5 text-center">60 / 60</td>
-                <td class="p-2.5 text-center">34 / 40</td>
-                <td class="p-2.5 text-center font-bold text-emerald-400">94.00</td>
-                <td class="p-2.5 text-center"><span class="bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded text-[10px]">TUNTAS</span></td>
+                <td class="p-3 pl-5 font-semibold text-white">Koreksi Esai Otomatis (Multi-Konsep)</td>
+                <td class="p-3 text-center bg-emerald-950/20 font-bold text-emerald-400 border-x border-emerald-500/20">
+                  <i class="fa-solid fa-circle-check text-base"></i> Ya (Zero Cost NLP)
+                </td>
+                <td class="p-3 text-center text-rose-400"><i class="fa-solid fa-circle-xmark"></i> Hanya 1 Kata Persis</td>
+                <td class="p-3 text-center text-rose-400"><i class="fa-solid fa-circle-xmark"></i> Manual Total</td>
+                <td class="p-3 text-center text-amber-400"><i class="fa-solid fa-triangle-exclamation"></i> Rumit / Regex Kaku</td>
               </tr>
               <tr>
-                <td class="p-2.5">26-27-01-1-0508-0002</td>
-                <td class="p-2.5 font-sans font-bold text-white">MUHAMMAD RIDHO A. GANI</td>
-                <td class="p-2.5 text-center">50 / 60</td>
-                <td class="p-2.5 text-center">28 / 40</td>
-                <td class="p-2.5 text-center font-bold text-emerald-400">78.00</td>
-                <td class="p-2.5 text-center"><span class="bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded text-[10px]">TUNTAS</span></td>
+                <td class="p-3 pl-5 font-semibold text-white">AI Question Generator (AKM 3 Menit)</td>
+                <td class="p-3 text-center bg-emerald-950/20 font-bold text-emerald-400 border-x border-emerald-500/20">
+                  <i class="fa-solid fa-circle-check text-base"></i> Ya (5 Ragam AKM)
+                </td>
+                <td class="p-3 text-center text-rose-400"><i class="fa-solid fa-circle-xmark"></i> Tidak Ada</td>
+                <td class="p-3 text-center text-rose-400"><i class="fa-solid fa-circle-xmark"></i> Tidak Ada</td>
+                <td class="p-3 text-center text-rose-400"><i class="fa-solid fa-circle-xmark"></i> Tidak Ada</td>
+              </tr>
+              <tr>
+                <td class="p-3 pl-5 font-semibold text-white">Ketahanan Lab Offline (PWA Anti-Crash)</td>
+                <td class="p-3 text-center bg-emerald-950/20 font-bold text-emerald-400 border-x border-emerald-500/20">
+                  <i class="fa-solid fa-circle-check text-base"></i> Jawaban Aman di Local DB
+                </td>
+                <td class="p-3 text-center text-rose-400"><i class="fa-solid fa-circle-xmark"></i> Error 500 / Data Hilang</td>
+                <td class="p-3 text-center text-amber-400"><i class="fa-solid fa-triangle-exclamation"></i> Form Reload / Hilang</td>
+                <td class="p-3 text-center text-amber-400"><i class="fa-solid fa-triangle-exclamation"></i> Butuh Server Raksasa</td>
+              </tr>
+              <tr>
+                <td class="p-3 pl-5 font-semibold text-white">Anti-Curang (Tab Lock & Deteksi Pelanggaran)</td>
+                <td class="p-3 text-center bg-emerald-950/20 font-bold text-emerald-400 border-x border-emerald-500/20">
+                  <i class="fa-solid fa-circle-check text-base"></i> Lengkap + Log Proktor
+                </td>
+                <td class="p-3 text-center text-amber-400"><i class="fa-solid fa-triangle-exclamation"></i> Terbatas</td>
+                <td class="p-3 text-center text-rose-400"><i class="fa-solid fa-circle-xmark"></i> Bebas Buka Tab Apapun</td>
+                <td class="p-3 text-center text-amber-400"><i class="fa-solid fa-triangle-exclamation"></i> Butuh Safe Exam Browser</td>
+              </tr>
+              <tr>
+                <td class="p-3 pl-5 font-semibold text-white">Biaya Operasional Token AI Bulanan</td>
+                <td class="p-3 text-center bg-emerald-950/20 font-bold text-emerald-400 border-x border-emerald-500/20">
+                  <i class="fa-solid fa-circle-check text-base"></i> Rp 0,- (Gratis Selamanya)
+                </td>
+                <td class="p-3 text-center text-slate-400">Tidak Relevan</td>
+                <td class="p-3 text-center text-slate-400">Tidak Relevan</td>
+                <td class="p-3 text-center text-slate-400">Tidak Relevan</td>
               </tr>
             </tbody>
           </table>
@@ -460,83 +410,556 @@
       </div>
     </div>
 
-    <!-- SLIDE 11: ROI & PENGHEMATAN -->
-    <div class="slide w-full max-w-6xl h-full flex-col justify-center space-y-6">
-      <div class="space-y-2">
-        <span class="text-amber-400 font-bold text-xs uppercase tracking-wider">Kalkulasi Finansial Sekolah</span>
-        <h2 class="text-3xl md:text-5xl font-black text-white tracking-tight">Hemat Anggaran Puluhan Juta Tiap Tahun</h2>
-      </div>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
-        <div class="glass-card p-6 rounded-2xl border border-rose-500/30 space-y-3 bg-rose-950/10">
-          <span class="text-xs font-bold text-rose-400 uppercase tracking-wider block">Biaya Ujian Kertas Konvensional (500 Siswa / Tahun)</span>
-          <div class="space-y-1 text-xs text-slate-300">
-            <div class="flex justify-between py-1 border-b border-slate-800">
-              <span>Fotokopi Naskah Soal & LJK</span>
-              <span class="font-mono font-bold text-white">Rp 43.200.000,-</span>
-            </div>
-            <div class="flex justify-between py-1 border-b border-slate-800">
-              <span>Alat Tulis & LJK Khusus</span>
-              <span class="font-mono font-bold text-white">Rp 7.500.000,-</span>
-            </div>
-            <div class="flex justify-between py-1 border-b border-slate-800">
-              <span>Honor Lembur Koreksi & Panitia</span>
-              <span class="font-mono font-bold text-white">Rp 12.000.000,-</span>
-            </div>
-            <div class="flex justify-between py-1.5 font-bold text-rose-400 text-sm">
-              <span>TOTAL PENGELUARAN TAHUNAN</span>
-              <span>Rp 68.700.000,-</span>
-            </div>
-          </div>
+    <!-- ========================================================================= -->
+    <!-- SLIDE 4: FITUR UNGGULAN - AI QUESTION GENERATOR (INTERACTIVE SIMULATOR) -->
+    <!-- ========================================================================= -->
+    <div class="slide flex-col justify-center space-y-4 py-3">
+      <div class="flex items-center justify-between">
+        <div class="space-y-1">
+          <span class="text-indigo-400 font-bold text-xs uppercase tracking-wider flex items-center gap-1.5">
+            <i class="fa-solid fa-wand-magic-sparkles"></i>
+            Inovasi Beban Kerja Guru
+          </span>
+          <h2 class="text-2xl md:text-4xl font-black text-white tracking-tight">AI Question Generator: Buat 40 Soal AKM Dalam 3 Menit</h2>
         </div>
-        <div class="glass-card p-6 rounded-2xl border border-emerald-500/30 space-y-3 bg-emerald-950/10 flex flex-col justify-between">
-          <div>
-            <span class="text-xs font-bold text-emerald-400 uppercase tracking-wider block">Menggunakan SmartCBT Pro</span>
-            <div class="text-3xl md:text-4xl font-black text-white mt-2">HEMAT > 70%</div>
-            <p class="text-xs text-slate-300 mt-2 leading-relaxed">
-              Anggaran puluhan juta dapat dialokasikan untuk pemeliharaan lab komputer, internet sekolah, atau kesejahteraan dewan guru.
-            </p>
+        <span class="hidden md:inline text-[11px] bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 px-3 py-1 rounded-full font-bold">
+          ⚡ Simulasi Langsung di Slide Ini!
+        </span>
+      </div>
+
+      <div class="glass-card-indigo p-5 rounded-2xl border space-y-4">
+        <!-- Preset Selector Toolbar -->
+        <div class="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-slate-800">
+          <div class="flex items-center gap-2 text-xs">
+            <span class="text-slate-400 font-semibold">Pilih Contoh Materi Cepat:</span>
+            <button onclick="setGeneratorPreset('bio')" class="px-2.5 py-1 rounded-lg bg-emerald-600/30 hover:bg-emerald-600/50 text-emerald-300 font-bold border border-emerald-500/30 cursor-pointer text-xs">
+              🌿 Biologi (Fotosintesis)
+            </button>
+            <button onclick="setGeneratorPreset('fis')" class="px-2.5 py-1 rounded-lg bg-sky-600/30 hover:bg-sky-600/50 text-sky-300 font-bold border border-sky-500/30 cursor-pointer text-xs">
+              ⚡ Fisika (Hukum Newton)
+            </button>
+            <button onclick="setGeneratorPreset('bind')" class="px-2.5 py-1 rounded-lg bg-purple-600/30 hover:bg-purple-600/50 text-purple-300 font-bold border border-purple-500/30 cursor-pointer text-xs">
+              📖 B. Indonesia (Teks Negosiasi)
+            </button>
           </div>
-          <div class="p-3 bg-emerald-500/20 rounded-xl border border-emerald-500/30 text-emerald-300 text-xs font-bold flex items-center gap-2">
-            <i class="fa-solid fa-seedling text-lg"></i>
-            <span>Sekolah Hijau Ramah Lingkungan (Zero Paper Waste)</span>
+          <button id="btnRunGenerator" onclick="simulateAiGenerate()" class="px-4 py-2 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-bold text-xs flex items-center gap-2 shadow-lg shadow-indigo-600/30 cursor-pointer">
+            <i class="fa-solid fa-sparkles text-amber-300 animate-spin"></i>
+            <span>Generate Soal Otomatis Sekarang</span>
+          </button>
+        </div>
+
+        <!-- Live Output Preview Container -->
+        <div id="generatorOutput" class="space-y-3 max-h-[38vh] overflow-y-auto pr-2">
+          <!-- Default Question 1 Preview -->
+          <div class="p-3.5 rounded-xl bg-slate-900/90 border border-slate-800 text-xs space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold text-[10px]">SOAL #1 • PILIHAN GANDA KOMPLEKS (AKM)</span>
+              <span class="text-slate-400 text-[11px]">Level Kognitif: C4 (Analisis)</span>
+            </div>
+            <p class="text-white font-medium">Berdasarkan stimulus percobaan Ingenhousz, faktor manakah yang secara langsung meningkatkan laju fotosintesis? (Pilih semua yang benar)</p>
+            <div class="grid grid-cols-2 gap-2 text-[11px] text-slate-300 pt-1">
+              <div class="p-2 rounded bg-slate-950 border border-emerald-500/40 text-emerald-300 font-medium">✓ [Centang] Intensitas cahaya matahari langsung</div>
+              <div class="p-2 rounded bg-slate-950 border border-emerald-500/40 text-emerald-300 font-medium">✓ [Centang] Konsentrasi gas CO2 di dalam air</div>
+              <div class="p-2 rounded bg-slate-950 border border-slate-800 text-slate-400">✗ [Salah] Penambahan es batu bersuhu nol derajat</div>
+              <div class="p-2 rounded bg-slate-950 border border-slate-800 text-slate-400">✗ [Salah] Pengurangan volume air wadah</div>
+            </div>
+          </div>
+
+          <!-- Question 2 Preview (Essay with Multi-concept Rubric) -->
+          <div class="p-3.5 rounded-xl bg-slate-900/90 border border-indigo-500/30 text-xs space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300 font-bold text-[10px]">SOAL #2 • ESSAY DENGAN RUBRIK BOBOT AI OTOMATIS</span>
+              <span class="text-amber-400 text-[11px] font-bold">Bobot: 20 Poin</span>
+            </div>
+            <p class="text-white font-medium">"Jelaskan mengapa daun yang kekurangan klorofil akan mengalami penurunan pembentukan glukosa!"</p>
+            <div class="p-2.5 rounded bg-indigo-950/40 border border-indigo-900/60 text-[11px] text-indigo-200">
+              <strong class="text-white block mb-1">Rubrik Konsep Kunci yang Dibuatkan AI:</strong>
+              • [Bobot 40%] Konsep penyerapan foton sinar matahari oleh pigmen klorofil.<br>
+              • [Bobot 35%] Konsep fotolisis air dan reaksi terang penyedia ATP/NADPH.<br>
+              • [Bobot 25%] Konsep fiksasi karbon siklus Calvin penghasil molekul C6H12O6 (glukosa).
+            </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- SLIDE 12: CALL TO ACTION -->
-    <div class="slide w-full max-w-6xl h-full flex-col justify-center items-center text-center space-y-6">
-      <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-xs font-bold">
-        <i class="fa-solid fa-gift"></i>
-        <span>PENAWARAN KHUSUS TANPA RISIKO</span>
+    <!-- ========================================================================= -->
+    <!-- SLIDE 5: INOVASI KOREKSI ESAI NLP MULTI-KONSEP (LIVE INTERACTIVE TESTER) -->
+    <!-- ========================================================================= -->
+    <div class="slide flex-col justify-center space-y-4 py-3">
+      <div class="space-y-1">
+        <span class="text-emerald-400 font-bold text-xs uppercase tracking-wider flex items-center gap-1.5">
+          <i class="fa-solid fa-microchip"></i>
+          Mesin Koreksi Esai Cerdas (Zero-Cost NLP)
+        </span>
+        <h2 class="text-2xl md:text-4xl font-black text-white tracking-tight">Koreksi Jawaban Panjang Siswa Secara Adil, Cepat & Otomatis</h2>
       </div>
-      <h2 class="text-3xl md:text-5xl font-black text-white tracking-tight max-w-3xl">
-        Coba Gratis Program Piloting 1 Mapel di Sekolah Bapak/Ibu!
-      </h2>
-      <p class="text-base text-slate-300 max-w-2xl leading-relaxed">
-        Buktikan sendiri keajaiban koreksi esai AI dan keandalan lab SmartCBT Pro. <strong>100% Bebas Biaya</strong>, tanpa komitmen kontrak apa pun.
-      </p>
-      <div class="flex flex-wrap items-center justify-center gap-4 pt-2">
-        <a href="https://smart-cbt-pro.vercel.app/" target="_blank" class="px-6 py-3.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-sm flex items-center gap-2 shadow-xl shadow-emerald-950/50 transition-all cursor-pointer">
-          <i class="fa-solid fa-laptop-code"></i>
-          <span>Buka Demo Interaktif Live</span>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 pt-1">
+        <!-- Left: Live Interactive Tester Box (7 cols) -->
+        <div class="lg:col-span-7 glass-card-glow p-5 rounded-2xl border space-y-3">
+          <div class="flex items-center justify-between pb-2 border-b border-slate-800">
+            <span class="text-xs font-bold text-white flex items-center gap-2">
+              <i class="fa-solid fa-flask text-emerald-400"></i>
+              Uji Coba Jawaban Siswa Sekarang:
+            </span>
+            <span class="text-[10px] text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded font-mono font-bold">
+              AI NLP ENGINE v3.4 READY
+            </span>
+          </div>
+
+          <div class="space-y-1">
+            <span class="text-[11px] text-slate-400 font-semibold">Pilih Jawaban Siswa untuk Diuji:</span>
+            <div class="flex flex-wrap gap-1.5">
+              <button onclick="setSampleAnswer('perfect')" class="px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-emerald-300 text-xs font-bold border border-slate-700 cursor-pointer">
+                Siswa A (Lengkap & Tepat)
+              </button>
+              <button onclick="setSampleAnswer('synonym')" class="px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-blue-300 text-xs font-bold border border-slate-700 cursor-pointer">
+                Siswa B (Pakai Istilah Sinonim)
+              </button>
+              <button onclick="setSampleAnswer('partial')" class="px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-amber-300 text-xs font-bold border border-slate-700 cursor-pointer">
+                Siswa C (Hanya Setengah Benar)
+              </button>
+            </div>
+          </div>
+
+          <textarea id="essayInput" rows="3" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-emerald-500 font-sans leading-relaxed resize-none">Proses fotosintesis terjadi di daun tumbuhan yang memiliki zat klorofil dengan bantuan sinar matahari, mengubah air dan CO2 menjadi glukosa dan mengeluarkan gas oksigen.</textarea>
+
+          <div class="flex items-center justify-between pt-1">
+            <button onclick="evaluateInteractiveEssay()" class="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs flex items-center gap-2 shadow-lg shadow-emerald-500/20 cursor-pointer">
+              <i class="fa-solid fa-bolt"></i>
+              <span>Nilai Jawaban dengan AI Sekarang</span>
+            </button>
+            <span class="text-[11px] text-slate-400 italic">Waktu proses: ~0.02 detik (Instan)</span>
+          </div>
+
+          <!-- Dynamic Result Banner -->
+          <div id="essayResultBox" class="p-3 rounded-xl bg-emerald-950/60 border border-emerald-500/40 text-xs space-y-1.5 transition-all">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-emerald-300 text-sm">Hasil Keputusan AI:</span>
+              <span id="essayScoreBadge" class="px-2.5 py-0.5 rounded-full bg-emerald-500 text-slate-950 font-black text-xs">
+                SKOR: 95 / 100 (SANGAT BAIK)
+              </span>
+            </div>
+            <p id="essayBreakdown" class="text-slate-300 text-[11px]">
+              ✓ Konsep Klorofil (100%) &bull; ✓ Konsep Sinar Matahari (100%) &bull; ✓ Konsep Produk Oksigen & Glukosa (90%)
+            </p>
+            <p id="essayFeedback" class="text-[11px] text-emerald-200 border-t border-emerald-500/20 pt-1">
+              Catatan AI: <em>"Penjelasan komprehensif, mencakup seluruh konsep fotosintesis dengan hubungan sebab-akibat yang jelas."</em>
+            </p>
+          </div>
+        </div>
+
+        <!-- Right: 4 Keunggulan Teknis (5 cols) -->
+        <div class="lg:col-span-5 space-y-3">
+          <div class="glass-card p-4 rounded-xl border border-slate-800 space-y-1">
+            <div class="flex items-center gap-2 text-emerald-400 font-bold text-xs">
+              <i class="fa-solid fa-layer-group text-sm"></i>
+              <span>Multi-Concept Weighted Grading</span>
+            </div>
+            <p class="text-[11px] text-slate-300 leading-relaxed">
+              Jawaban dinilai proporsional berdasarkan pemenuhan 3–5 pilar konsep, bukan sekadar jumlah kata atau kalimat panjang yang berbelit-belit.
+            </p>
+          </div>
+
+          <div class="glass-card p-4 rounded-xl border border-slate-800 space-y-1">
+            <div class="flex items-center gap-2 text-cyan-400 font-bold text-xs">
+              <i class="fa-solid fa-book-bookmark text-sm"></i>
+              <span>Kamus Sinonim & Variasi Istilah</span>
+            </div>
+            <p class="text-[11px] text-slate-300 leading-relaxed">
+              Mengenali sinonim ilmiah & umum: "zat hijau daun" = "klorofil", "O2" = "oksigen", "wafat" = "meninggal dunia". Siswa tidak dirugikan beda kata.
+            </p>
+          </div>
+
+          <div class="glass-card p-4 rounded-xl border border-slate-800 space-y-1">
+            <div class="flex items-center gap-2 text-amber-400 font-bold text-xs">
+              <i class="fa-solid fa-keyboard text-sm"></i>
+              <span>Toleransi Typo Keyboard HP/Lab</span>
+            </div>
+            <p class="text-[11px] text-slate-300 leading-relaxed">
+              Kesalahan ketik wajar (misal: "kloropil", "fotosintesa") tetap diproses benar melalui algoritma Levenshtein distance 2-karakter.
+            </p>
+          </div>
+
+          <div class="glass-card p-4 rounded-xl border border-slate-800 space-y-1">
+            <div class="flex items-center gap-2 text-purple-400 font-bold text-xs">
+              <i class="fa-solid fa-gavel text-sm"></i>
+              <span>Hak Veto Penuh di Tangan Guru</span>
+            </div>
+            <p class="text-[11px] text-slate-300 leading-relaxed">
+              AI hanya sebagai asisten pemeriksa awal. Guru tetap memegang hak veto 100% untuk mengubah atau menganulir nilai siswa kapan saja dengan 1 klik.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- SLIDE 6: KETAHANAN LAB & ANTI-CRASH INFRASTRUCTURE (PWA OFFLINE SAFE) -->
+    <!-- ========================================================================= -->
+    <div class="slide flex-col justify-center space-y-5 py-4">
+      <div class="space-y-1">
+        <span class="text-cyan-400 font-bold text-xs uppercase tracking-wider flex items-center gap-1.5">
+          <i class="fa-solid fa-shield-halved"></i>
+          Keandalan Teknis Meja Lab Komputer
+        </span>
+        <h2 class="text-2xl md:text-4xl font-black text-white tracking-tight">Zero-Panic Lab: Ujian Tetap Berjalan Meski WiFi Putus</h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-5 pt-2">
+        <div class="glass-card p-6 rounded-2xl border border-slate-800 space-y-3">
+          <div class="w-12 h-12 rounded-xl bg-emerald-500/15 text-emerald-400 flex items-center justify-center text-xl font-bold">
+            <i class="fa-solid fa-wifi"></i>
+          </div>
+          <h3 class="text-lg font-bold text-white">PWA Offline Resilience</h3>
+          <p class="text-xs text-slate-300 leading-relaxed">
+            Jika kabel LAN tersenggol atau sinyal WiFi lab mendadak mati selama 1–5 menit, <strong class="text-emerald-400 font-semibold">siswa tetap bisa membaca soal dan mengetik jawaban tanpa ter-logout</strong>. Jawaban tersimpan di memori browser dan tersinkronisasi otomatis begitu sinyal kembali.
+          </p>
+        </div>
+
+        <div class="glass-card p-6 rounded-2xl border border-slate-800 space-y-3">
+          <div class="w-12 h-12 rounded-xl bg-amber-500/15 text-amber-400 flex items-center justify-center text-xl font-bold">
+            <i class="fa-solid fa-rotate-left"></i>
+          </div>
+          <h3 class="text-lg font-bold text-white">Emergency Desk Reset</h3>
+          <p class="text-xs text-slate-300 leading-relaxed">
+            Jika komputer meja 08 mati mendadak atau bluescreen, proktor cukup klik tombol <strong class="text-amber-400 font-semibold">"Reset Login"</strong> di laptop proktor. Siswa bisa langsung pindah ke komputer cadangan dan melanjutkan dari nomor soal terakhir tanpa kehilangan poin.
+          </p>
+        </div>
+
+        <div class="glass-card p-6 rounded-2xl border border-slate-800 space-y-3">
+          <div class="w-12 h-12 rounded-xl bg-indigo-500/15 text-indigo-400 flex items-center justify-center text-xl font-bold">
+            <i class="fa-solid fa-user-lock"></i>
+          </div>
+          <h3 class="text-lg font-bold text-white">Sistem Anti-Curang Terpadu</h3>
+          <p class="text-xs text-slate-300 leading-relaxed">
+            Fitur deteksi perpindahan tab browser, blokir inspect element/copy-paste, acak urutan butir soal & opsi jawaban, serta token dinamis yang berganti tiap 15 menit agar siswa terlambat tidak dapat membocorkan ujian.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- SLIDE 7: KALKULATOR PENGHEMATAN ANGGARAN BOS (INTERACTIVE SLIDER) -->
+    <!-- ========================================================================= -->
+    <div class="slide flex-col justify-center space-y-4 py-3">
+      <div class="space-y-1">
+        <span class="text-amber-400 font-bold text-xs uppercase tracking-wider flex items-center gap-1.5">
+          <i class="fa-solid fa-calculator"></i>
+          Kalkulasi Finansial Kepala Sekolah & Bendahara BOS
+        </span>
+        <h2 class="text-2xl md:text-4xl font-black text-white tracking-tight">Kalkulator Penghematan: Berapa Juta Sekolah Anda Menghemat?</h2>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 pt-1">
+        <!-- Slider Control Card (5 cols) -->
+        <div class="lg:col-span-5 glass-card p-5 rounded-2xl border border-slate-800 space-y-4">
+          <div>
+            <div class="flex items-center justify-between text-xs font-bold text-white mb-2">
+              <span>Jumlah Total Siswa:</span>
+              <span id="studentCountLabel" class="text-emerald-400 text-base font-mono">600 Siswa</span>
+            </div>
+            <input id="sliderStudents" type="range" min="100" max="1500" step="50" value="600" oninput="calculateSavings()" class="w-full">
+            <div class="flex justify-between text-[10px] text-slate-500 font-mono mt-1">
+              <span>100</span>
+              <span>500</span>
+              <span>1000</span>
+              <span>1500</span>
+            </div>
+          </div>
+
+          <div>
+            <span class="text-xs font-bold text-white block mb-2">Frekuensi Ujian per Tahun:</span>
+            <div class="grid grid-cols-2 gap-2 text-xs">
+              <button id="btnFreq2" onclick="setFreq(2)" class="p-2.5 rounded-xl bg-emerald-600 text-white font-bold border border-emerald-400/40 text-center cursor-pointer">
+                2x (PTS & PAS)
+              </button>
+              <button id="btnFreq4" onclick="setFreq(4)" class="p-2.5 rounded-xl bg-slate-900 text-slate-300 font-bold border border-slate-700 hover:border-slate-600 text-center cursor-pointer">
+                4x (+ Ujian Sekolah & TO)
+              </button>
+            </div>
+          </div>
+
+          <div class="p-3 rounded-xl bg-slate-900 border border-slate-800 text-[11px] text-slate-400 space-y-1">
+            <div class="flex justify-between">
+              <span>Estimasi Kertas Habis:</span>
+              <strong id="paperSheets" class="text-white font-mono">100.800 Lembar</strong>
+            </div>
+            <div class="flex justify-between">
+              <span>Mapel Diujikan:</span>
+              <strong class="text-white font-mono">14 Mata Pelajaran</strong>
+            </div>
+          </div>
+        </div>
+
+        <!-- Result Display Card (7 cols) -->
+        <div class="lg:col-span-7 glass-card-glow p-6 rounded-2xl border flex flex-col justify-between">
+          <div class="space-y-4">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+              <span class="text-xs font-bold text-rose-400 uppercase tracking-wider">Biaya Ujian Kertas Konvensional:</span>
+              <span id="costPaper" class="text-xl md:text-2xl font-black text-rose-400 font-mono">Rp 50.400.000,-</span>
+            </div>
+
+            <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+              <span class="text-xs font-bold text-slate-300 uppercase tracking-wider">Biaya Kertas dengan SmartCBT Pro:</span>
+              <span class="text-xl md:text-2xl font-black text-emerald-400 font-mono">Rp 0,- (Zero Paper)</span>
+            </div>
+
+            <div class="p-4 rounded-xl bg-emerald-500/20 border border-emerald-500/40">
+              <div class="text-xs font-bold text-emerald-300 uppercase tracking-wider mb-1">
+                Estimasi Penghematan Bersih Kas Sekolah:
+              </div>
+              <div id="savingsAmount" class="text-3xl md:text-5xl font-black text-white font-mono tracking-tight">
+                Rp 42.000.000,-
+              </div>
+              <p class="text-[11px] text-emerald-200/90 mt-2">
+                *Dana puluhan juta ini langsung dapat dialihkan untuk pemeliharaan lab komputer, WiFi sekolah, atau kesejahteraan dewan guru.
+              </p>
+            </div>
+          </div>
+
+          <div class="pt-3 text-[11px] text-slate-400 flex items-center gap-2">
+            <i class="fa-solid fa-leaf text-emerald-400"></i>
+            <span>Sekolah Hijau Ramah Lingkungan (Mencegah penebangan puluhan pohon per tahun).</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- SLIDE 8: PEMBAGIAN TUGAS 4 PERAN SISTEM (ARSITEKTUR ROLE LENGKAP) -->
+    <!-- ========================================================================= -->
+    <div class="slide flex-col justify-center space-y-4 py-3">
+      <div class="space-y-1">
+        <span class="text-indigo-400 font-bold text-xs uppercase tracking-wider flex items-center gap-1.5">
+          <i class="fa-solid fa-users-gear"></i>
+          Pemisahan Wewenang Sempurna
+        </span>
+        <h2 class="text-2xl md:text-4xl font-black text-white tracking-tight">Setiap Pihak Memiliki Portal Khusus Sesuai Tugasnya</h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 pt-2">
+        <!-- Role 1: Proktor -->
+        <div class="glass-card p-4 rounded-xl border border-sky-500/30 space-y-2 bg-sky-950/15">
+          <div class="w-10 h-10 rounded-lg bg-sky-500/20 text-sky-400 flex items-center justify-center font-bold text-lg">
+            <i class="fa-solid fa-desktop"></i>
+          </div>
+          <h4 class="text-sm font-bold text-white">1. Proktor / Operator</h4>
+          <p class="text-[11px] text-slate-300 leading-relaxed">
+            Mengendalikan lab secara real-time: rilis token 15 menit, reset login meja crash, cetak kartu QR, dan monitoring meja peserta 1–40.
+          </p>
+        </div>
+
+        <!-- Role 2: Guru -->
+        <div class="glass-card p-4 rounded-xl border border-emerald-500/30 space-y-2 bg-emerald-950/15">
+          <div class="w-10 h-10 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-lg">
+            <i class="fa-solid fa-chalkboard-user"></i>
+          </div>
+          <h4 class="text-sm font-bold text-white">2. Guru Mata Pelajaran</h4>
+          <p class="text-[11px] text-slate-300 leading-relaxed">
+            Bebas kerumitan teknis UBK! Fokus membuat soal via AI Generator, Math Studio, rubrik esai NLP, serta memegang hak veto koreksi manual.
+          </p>
+        </div>
+
+        <!-- Role 3: Siswa -->
+        <div class="glass-card p-4 rounded-xl border border-amber-500/30 space-y-2 bg-amber-950/15">
+          <div class="w-10 h-10 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold text-lg">
+            <i class="fa-solid fa-user-graduate"></i>
+          </div>
+          <h4 class="text-sm font-bold text-white">3. Siswa Peserta</h4>
+          <p class="text-[11px] text-slate-300 leading-relaxed">
+            Antarmuka ujian yang bersih, responsif di HP/Laptop, dark mode nyaman mata, navigasi butir instan, dan bebas takut jawaban hilang saat internet putus.
+          </p>
+        </div>
+
+        <!-- Role 4: Kepala Sekolah & Kurikulum -->
+        <div class="glass-card p-4 rounded-xl border border-purple-500/30 space-y-2 bg-purple-950/15">
+          <div class="w-10 h-10 rounded-lg bg-purple-500/20 text-purple-400 flex items-center justify-center font-bold text-lg">
+            <i class="fa-solid fa-file-invoice"></i>
+          </div>
+          <h4 class="text-sm font-bold text-white">4. Kepala Sekolah & Waka</h4>
+          <p class="text-[11px] text-slate-300 leading-relaxed">
+            Dashboard statistik kelulusan real-time, analisis butir soal (daya pembeda & kesukaran), serta ekspor 1-klik format e-Rapor & RDM Kemenag.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- SLIDE 9: ALUR UJI COBA TERARAH (POC PILOTING DI SEKOLAH) -->
+    <!-- ========================================================================= -->
+    <div class="slide flex-col justify-center space-y-4 py-3">
+      <div class="space-y-1">
+        <span class="text-emerald-400 font-bold text-xs uppercase tracking-wider flex items-center gap-1.5">
+          <i class="fa-solid fa-list-check"></i>
+          Metodologi Pengujian Terukur
+        </span>
+        <h2 class="text-2xl md:text-4xl font-black text-white tracking-tight">Panduan Uji Coba Praktek Terarah di Setiap Sesi</h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4 pt-2">
+        <div class="glass-card p-4 rounded-xl border border-slate-800 space-y-2 relative">
+          <span class="w-6 h-6 rounded-full bg-emerald-500 text-slate-950 text-xs font-black flex items-center justify-center">1</span>
+          <h4 class="text-xs font-bold text-white uppercase tracking-wider">Sesi Proktor (15 Menit)</h4>
+          <ul class="text-[11px] text-slate-300 space-y-1.5 list-disc list-inside">
+            <li>Import data siswa dari Excel/Dapodik</li>
+            <li>Rilis token 15 menit & acak soal</li>
+            <li>Simulasi reset login saat PC crash</li>
+            <li>Cetak kartu peserta & berita acara</li>
+          </ul>
+        </div>
+
+        <div class="glass-card p-4 rounded-xl border border-slate-800 space-y-2 relative">
+          <span class="w-6 h-6 rounded-full bg-indigo-500 text-white text-xs font-black flex items-center justify-center">2</span>
+          <h4 class="text-xs font-bold text-white uppercase tracking-wider">Sesi Guru (20 Menit)</h4>
+          <ul class="text-[11px] text-slate-300 space-y-1.5 list-disc list-inside">
+            <li>Generate 40 soal AKM via AI dalam 3 menit</li>
+            <li>Input rumus matematika di Math Studio</li>
+            <li>Atur rubrik esai NLP multi-konsep</li>
+            <li>Uji hak veto ubah skor esai</li>
+          </ul>
+        </div>
+
+        <div class="glass-card p-4 rounded-xl border border-slate-800 space-y-2 relative">
+          <span class="w-6 h-6 rounded-full bg-amber-500 text-slate-950 text-xs font-black flex items-center justify-center">3</span>
+          <h4 class="text-xs font-bold text-white uppercase tracking-wider">Sesi Siswa (25 Menit)</h4>
+          <ul class="text-[11px] text-slate-300 space-y-1.5 list-disc list-inside">
+            <li>Login via scan QR kartu ujian</li>
+            <li>Kerjakan 5 tipe AKM & esai panjang</li>
+            <li>Simulasi cabut WiFi selama 60 detik</li>
+            <li>Coba curang buka tab &rarr; kena tegur</li>
+          </ul>
+        </div>
+
+        <div class="glass-card p-4 rounded-xl border border-slate-800 space-y-2 relative">
+          <span class="w-6 h-6 rounded-full bg-purple-500 text-white text-xs font-black flex items-center justify-center">4</span>
+          <h4 class="text-xs font-bold text-white uppercase tracking-wider">Sesi Kepsek (15 Menit)</h4>
+          <ul class="text-[11px] text-slate-300 space-y-1.5 list-disc list-inside">
+            <li>Pantau rekap skor ujian real-time</li>
+            <li>Review analisis butir soal psikometri</li>
+            <li>Kalkulasi penghematan anggaran BOS</li>
+            <li>1-Klik ekspor leger nilai e-Rapor</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="pt-2 text-center">
+        <a href="/panduan-praktek.html" target="_blank" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold border border-slate-700 transition-colors">
+          <i class="fa-solid fa-file-lines text-indigo-400"></i>
+          <span>Buka Dokumen SOP Uji Coba Praktek Lengkap (/panduan-praktek.html)</span>
         </a>
       </div>
-      <div class="pt-6 text-xs text-slate-400 border-t border-slate-800 w-full max-w-xl">
-        <p class="font-bold text-white mb-1">Hubungi Tim Teknis SmartCBT Pro Hari Ini</p>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- SLIDE 10: OPSI PENERAPAN & DUKUNGAN INFRASTRUKTUR SEKOLAH -->
+    <!-- ========================================================================= -->
+    <div class="slide flex-col justify-center space-y-4 py-3">
+      <div class="space-y-1">
+        <span class="text-cyan-400 font-bold text-xs uppercase tracking-wider flex items-center gap-1.5">
+          <i class="fa-solid fa-server"></i>
+          Fleksibilitas Penuh Sesuai Kondisi Sekolah
+        </span>
+        <h2 class="text-2xl md:text-4xl font-black text-white tracking-tight">2 Opsi Instalasi: Lab Komputer Lokal atau Cloud Online</h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+        <!-- Opsi A: Lab Mandiri -->
+        <div class="glass-card p-6 rounded-2xl border border-slate-800 space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-400 text-xs font-bold">OPSI 1: OFFLINE / LAB MANDIRI</span>
+            <i class="fa-solid fa-ethernet text-emerald-400 text-xl"></i>
+          </div>
+          <h3 class="text-lg font-bold text-white">Server Lab Lokal (Semi-Online)</h3>
+          <p class="text-xs text-slate-300 leading-relaxed">
+            Cocok untuk sekolah dengan jaringan internet terbatas. Sistem diinstal di PC Server Lab komputer sekolah menggunakan jaringan LAN kabel atau router lokal tanpa kuota internet siswa.
+          </p>
+          <ul class="text-xs text-slate-400 space-y-1 list-disc list-inside">
+            <li>100% Bebas kuota internet internet luar</li>
+            <li>Kecepatan transfer lokal 1 Gbps (Super kilat)</li>
+            <li>Data ujian tersimpan aman di server internal sekolah</li>
+          </ul>
+        </div>
+
+        <!-- Opsi B: Cloud -->
+        <div class="glass-card p-6 rounded-2xl border border-slate-800 space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="px-3 py-1 rounded-full bg-indigo-500/20 text-indigo-400 text-xs font-bold">OPSI 2: CLOUD MANAGED</span>
+            <i class="fa-solid fa-cloud text-indigo-400 text-xl"></i>
+          </div>
+          <h3 class="text-lg font-bold text-white">Full Cloud Serverless (Online)</h3>
+          <p class="text-xs text-slate-300 leading-relaxed">
+            Siswa dapat ujian serentak menggunakan HP / laptop dari ruang kelas mana pun atau dari rumah. Tim kami menangani server, backup data, dan keamanan secara otomatis.
+          </p>
+          <ul class="text-xs text-slate-400 space-y-1 list-disc list-inside">
+            <li>Tidak butuh PC Server khusus di sekolah</li>
+            <li>Auto-scale hingga 2.000 siswa tanpa hambatan</li>
+            <li>Bisa diakses dari browser mana saja dengan 1 link web</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- SLIDE 11: CALL TO ACTION & JADWAL DEMO TATAP MUKA -->
+    <!-- ========================================================================= -->
+    <div class="slide flex-col justify-center items-center text-center space-y-5 py-4">
+      <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-xs font-bold">
+        <i class="fa-solid fa-handshake"></i>
+        <span>PENAWARAN PILOTING GRATIS 100% TANPA RISIKO</span>
+      </div>
+
+      <h2 class="text-3xl md:text-5xl font-black text-white tracking-tight max-w-3xl leading-tight">
+        Buktikan Sendiri di Sekolah Bapak/Ibu: Uji Coba Gratis 14 Hari!
+      </h2>
+
+      <p class="text-xs md:text-sm text-slate-300 max-w-2xl leading-relaxed">
+        Kami siap mendampingi uji coba (POC) 1 mata pelajaran secara langsung di lab sekolah Bapak/Ibu. Rasakan kemudahan membuat soal dengan AI dan keajaiban koreksi esai otomatis.
+      </p>
+
+      <div class="flex flex-wrap items-center justify-center gap-4 pt-2">
+        <a href="https://smart-cbt-pro.vercel.app/" target="_blank" class="px-6 py-3.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-400 hover:to-teal-300 text-slate-950 font-black text-xs md:text-sm flex items-center gap-2 shadow-xl shadow-emerald-500/30 transition-all cursor-pointer">
+          <i class="fa-solid fa-laptop-code"></i>
+          <span>Buka Demo Interaktif Live Aplikasi</span>
+        </a>
+        <a href="/panduan-praktek.html" target="_blank" class="px-5 py-3.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs md:text-sm flex items-center gap-2 border border-slate-700 transition-all cursor-pointer">
+          <i class="fa-solid fa-book-open text-indigo-400"></i>
+          <span>Lihat Panduan Praktek Per Sesi</span>
+        </a>
+      </div>
+
+      <div class="pt-6 text-xs text-slate-400 border-t border-slate-800/80 w-full max-w-lg space-y-1">
+        <p class="font-bold text-white">SmartCBT Pro Engineering Team</p>
         <p>Email: official.smartcbt@gmail.com &bull; GitHub: owensavala/smart-cbt-pro</p>
       </div>
     </div>
 
   </main>
 
-  <!-- KEYBOARD & SCRIPT LOGIC -->
+  <!-- BOTTOM FLOATING SLIDE NAVIGATOR BAR -->
+  <footer class="fixed bottom-3 left-1/2 transform -translate-x-1/2 z-40 bg-slate-950/85 backdrop-blur-md px-4 py-2 rounded-full border border-slate-800 flex items-center gap-1.5 shadow-2xl no-print">
+    <button onclick="showSlide(0)" class="w-7 h-7 rounded-full text-xs font-bold text-slate-400 hover:text-white transition-colors" title="Cover Slide">1</button>
+    <button onclick="showSlide(1)" class="w-7 h-7 rounded-full text-xs font-bold text-slate-400 hover:text-white transition-colors" title="Krisis Asesmen">2</button>
+    <button onclick="showSlide(2)" class="w-7 h-7 rounded-full text-xs font-bold text-slate-400 hover:text-white transition-colors" title="Komparasi Pasar">3</button>
+    <button onclick="showSlide(3)" class="w-7 h-7 rounded-full text-xs font-bold text-slate-400 hover:text-white transition-colors" title="AI Soal Generator">4</button>
+    <button onclick="showSlide(4)" class="w-7 h-7 rounded-full text-xs font-bold text-slate-400 hover:text-white transition-colors" title="Esai AI NLP">5</button>
+    <button onclick="showSlide(5)" class="w-7 h-7 rounded-full text-xs font-bold text-slate-400 hover:text-white transition-colors" title="Ketahanan Lab PWA">6</button>
+    <button onclick="showSlide(6)" class="w-7 h-7 rounded-full text-xs font-bold text-slate-400 hover:text-white transition-colors" title="Kalkulator BOS">7</button>
+    <button onclick="showSlide(7)" class="w-7 h-7 rounded-full text-xs font-bold text-slate-400 hover:text-white transition-colors" title="4 Peran Sistem">8</button>
+    <button onclick="showSlide(8)" class="w-7 h-7 rounded-full text-xs font-bold text-slate-400 hover:text-white transition-colors" title="Alur Uji Coba">9</button>
+    <button onclick="showSlide(9)" class="w-7 h-7 rounded-full text-xs font-bold text-slate-400 hover:text-white transition-colors" title="Opsi Instalasi">10</button>
+    <button onclick="showSlide(10)" class="w-7 h-7 rounded-full text-xs font-bold text-slate-400 hover:text-white transition-colors" title="Penawaran Piloting">11</button>
+  </footer>
+
+  <!-- SCRIPT LOGIC FOR SLIDES & INTERACTIVE WIDGETS -->
   <script>
     let currentSlide = 0;
     const slides = document.querySelectorAll('.slide');
     const totalSlides = slides.length;
     const counter = document.getElementById('slideCounter');
     const progressBar = document.getElementById('progressBar');
+    const navButtons = document.querySelectorAll('footer button');
 
     function showSlide(index) {
       if (index < 0) index = 0;
@@ -546,8 +969,20 @@
         s.classList.toggle('active', idx === index);
       });
       currentSlide = index;
-      counter.innerText = `Slide ${currentSlide + 1} / ${totalSlides}`;
+      
+      const numStr = (currentSlide + 1).toString().padStart(2, '0');
+      const totalStr = totalSlides.toString().padStart(2, '0');
+      counter.innerText = `${numStr} / ${totalStr}`;
       progressBar.style.width = `${((currentSlide + 1) / totalSlides) * 100}%`;
+
+      // Update footer pills
+      navButtons.forEach((btn, idx) => {
+        if (idx === currentSlide) {
+          btn.className = "w-7 h-7 rounded-full text-xs font-black bg-emerald-500 text-slate-950 shadow-md shadow-emerald-500/30";
+        } else {
+          btn.className = "w-7 h-7 rounded-full text-xs font-bold text-slate-400 hover:text-white transition-colors";
+        }
+      });
     }
 
     function nextSlide() {
@@ -573,6 +1008,7 @@
     }
 
     window.addEventListener('keydown', (e) => {
+      if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT') return;
       if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
         nextSlide();
       } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
@@ -585,6 +1021,177 @@
         showSlide(totalSlides - 1);
       }
     });
+
+    // ==========================================
+    // INTERACTIVE WIDGET 1: AI GENERATOR SIMULATOR
+    // ==========================================
+    const generatorPresets = {
+      bio: {
+        title: "🌿 Biologi: Fotosintesis & Reaksi Terang",
+        items: [
+          { type: "PILIHAN GANDA KOMPLEKS (AKM)", q: "Manakah pernyataan yang BENAR mengenai perbedaan reaksi terang dan reaksi gelap pada fotosintesis?", options: ["✓ Reaksi terang menghasilkan ATP & NADPH", "✓ Reaksi gelap berlangsung di stroma", "✗ Reaksi gelap membutuhkan sinar matahari langsung", "✗ Reaksi terang melepaskan gas CO2"] },
+          { type: "MENJODOHKAN GARIS (MATCHING)", q: "Jodohkan istilah fotosintesis dengan fungsi biologisnya yang tepat!", options: ["Klorofil → Pigmen penyerap foton cahaya", "Stomata → Gerbang difusi gas CO2 dan O2", "Rubisco → Enzim fiksasi karbon siklus Calvin"] },
+          { type: "URAIAN ESAI + RUBRIK BOBOT AI", q: "Jelaskan mengapa daun yang ditutup aluminium foil pada percobaan Sach tidak menghasilkan amilum!", options: ["Rubrik Bobot AI: Konsep tidak adanya foton cahaya (40%), fotolisis terhenti (30%), ketiadaan amilum saat uji iodin (30%)."] }
+        ]
+      },
+      fis: {
+        title: "⚡ Fisika: Hukum Gerak Newton",
+        items: [
+          { type: "PILIHAN GANDA KOMPLEKS (AKM)", q: "Berdasarkan Hukum III Newton (Aksi-Reaksi), manakah pasangan gaya yang bekerja pada roket yang meluncur ke atas?", options: ["✓ Gaya dorong gas panas ke bawah vs dorongan ke roket", "✓ Besar gaya kedua benda selalu sama besar", "✗ Bekerja pada satu benda yang sama", "✗ Menghasilkan resultan gaya nol pada roket"] },
+          { type: "URAIAN ESAI + RUBRIK BOBOT AI", q: "Jelaskan mengapa penumpang bus terdorong ke depan saat bus direm mendadak berdasarkan konsep inersia!", options: ["Rubrik Bobot AI: Hukum I Newton/Kelembaman (40%), kecenderungan benda mempertahankan gerak (35%), gaya gesek rem pada roda bus (25%)."] }
+        ]
+      },
+      bind: {
+        title: "📖 Bahasa Indonesia: Struktur Teks Negosiasi",
+        items: [
+          { type: "BENAR / SALAH MATRIKS (AKM)", q: "Tentukan kebenaran kaidah kebahasaan dalam teks negosiasi bisnis jual beli tanah!", options: ["✓ Bahasa persuasif santun digunakan untuk mencapai kesepakatan (BENAR)", "✗ Pihak penjual boleh mengintimidasi pembeli (SALAH)", "✓ Keputusan akhir harus menguntungkan kedua belah pihak (BENAR)"] },
+          { type: "URAIAN ESAI + RUBRIK BOBOT AI", q: "Analisislah taktik negosiasi 'Win-Win Solution' dalam mengatasi sengketa upah kerja!", options: ["Rubrik Bobot AI: Definisi win-win (30%), kompromi kepentingan dua pihak (40%), kesepakatan tertulis yang mengikat (30%)."] }
+        ]
+      }
+    };
+
+    function setGeneratorPreset(key) {
+      const data = generatorPresets[key];
+      if (!data) return;
+      const box = document.getElementById('generatorOutput');
+      let html = '';
+      data.items.forEach((item, idx) => {
+        html += `
+          <div class="p-3.5 rounded-xl bg-slate-900/90 border border-slate-800 text-xs space-y-2 animate-fadeIn">
+            <div class="flex items-center justify-between">
+              <span class="px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300 font-bold text-[10px]">SOAL #${idx+1} • ${item.type}</span>
+              <span class="text-emerald-400 font-mono text-[10px]">AI VERIFIED</span>
+            </div>
+            <p class="text-white font-medium">${item.q}</p>
+            <div class="p-2 rounded bg-slate-950/70 border border-slate-800 text-[11px] text-slate-300 space-y-1">
+              ${item.options.map(o => `<div>${o}</div>`).join('')}
+            </div>
+          </div>
+        `;
+      });
+      box.innerHTML = html;
+    }
+
+    function simulateAiGenerate() {
+      const btn = document.getElementById('btnRunGenerator');
+      btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-amber-300"></i><span>Menganalisis Silabus & Menghasilkan Soal...</span>`;
+      btn.disabled = true;
+      setTimeout(() => {
+        setGeneratorPreset('bio');
+        btn.innerHTML = `<i class="fa-solid fa-check text-emerald-300"></i><span>Selesai! 3 Butir Soal Terbentuk</span>`;
+        btn.disabled = false;
+        setTimeout(() => {
+          btn.innerHTML = `<i class="fa-solid fa-sparkles text-amber-300"></i><span>Generate Soal Otomatis Sekarang</span>`;
+        }, 2000);
+      }, 700);
+    }
+
+    // ==========================================
+    // INTERACTIVE WIDGET 2: ESSAY GRADER
+    // ==========================================
+    const essaySamples = {
+      perfect: "Fotosintesis terjadi di daun tumbuhan hijau yang memiliki klorofil. Klorofil menyerap sinar matahari untuk mengubah air dan karbon dioksida menjadi glukosa sebagai sumber energi dan melepaskan oksigen ke udara.",
+      synonym: "Proses pembuatan makanan pada tumbuhan memanfaatkan zat hijau daun dengan bantuan radiasi surya. Tumbuhan menyerap uap H2O serta CO2 lalu menghasilkan sari gula dan membuang zat O2.",
+      partial: "Fotosintesis itu proses pada tumbuhan untuk menghasilkan oksigen saat siang hari."
+    };
+
+    function setSampleAnswer(key) {
+      document.getElementById('essayInput').value = essaySamples[key] || '';
+      evaluateInteractiveEssay();
+    }
+
+    function evaluateInteractiveEssay() {
+      const text = document.getElementById('essayInput').value.toLowerCase();
+      const badge = document.getElementById('essayScoreBadge');
+      const breakdown = document.getElementById('essayBreakdown');
+      const feedback = document.getElementById('essayFeedback');
+
+      let score = 0;
+      let matched = [];
+
+      // Concept 1: Klorofil / zat hijau daun
+      if (text.includes('klorofil') || text.includes('zat hijau daun') || text.includes('kloroplas')) {
+        score += 35;
+        matched.push('✓ Klorofil / Zat Hijau Daun (+35%)');
+      } else {
+        matched.push('✗ Klorofil Tidak Disebutkan (0%)');
+      }
+
+      // Concept 2: Sinar matahari / radiasi surya / cahaya
+      if (text.includes('matahari') || text.includes('surya') || text.includes('cahaya')) {
+        score += 35;
+        matched.push('✓ Sinar Matahari (+35%)');
+      } else {
+        matched.push('✗ Cahaya Matahari Tidak Disebutkan (0%)');
+      }
+
+      // Concept 3: Glukosa / Oksigen / gula / makanan
+      if (text.includes('glukosa') || text.includes('gula') || text.includes('energi') || text.includes('makanan')) {
+        score += 15;
+      }
+      if (text.includes('oksigen') || text.includes('o2')) {
+        score += 15;
+        matched.push('✓ Produk Oksigen & Glukosa (+30%)');
+      } else {
+        matched.push('~ Produk Kurang Lengkap (+15%)');
+      }
+
+      if (score > 100) score = 100;
+
+      badge.innerText = `SKOR: ${score} / 100`;
+      if (score >= 80) {
+        badge.className = "px-2.5 py-0.5 rounded-full bg-emerald-500 text-slate-950 font-black text-xs";
+        feedback.innerHTML = `Catatan AI: <em>"Luar biasa! Konsep sains sangat komprehensif dan tersusun runtut."</em>`;
+      } else if (score >= 50) {
+        badge.className = "px-2.5 py-0.5 rounded-full bg-amber-500 text-slate-950 font-black text-xs";
+        feedback.innerHTML = `Catatan AI: <em>"Cukup baik, namun belum menguraikan peran pigmen klorofil dan produk glukosa secara lengkap."</em>`;
+      } else {
+        badge.className = "px-2.5 py-0.5 rounded-full bg-rose-500 text-white font-black text-xs";
+        feedback.innerHTML = `Catatan AI: <em>"Jawaban terlalu singkat, belum menjelaskan proses fotosintesis secara ilmiah."</em>`;
+      }
+
+      breakdown.innerText = matched.join(' • ');
+    }
+
+    // ==========================================
+    // INTERACTIVE WIDGET 3: SAVINGS CALCULATOR
+    // ==========================================
+    let currentFreq = 2;
+
+    function setFreq(f) {
+      currentFreq = f;
+      const b2 = document.getElementById('btnFreq2');
+      const b4 = document.getElementById('btnFreq4');
+      if (f === 2) {
+        b2.className = "p-2.5 rounded-xl bg-emerald-600 text-white font-bold border border-emerald-400/40 text-center cursor-pointer";
+        b4.className = "p-2.5 rounded-xl bg-slate-900 text-slate-300 font-bold border border-slate-700 hover:border-slate-600 text-center cursor-pointer";
+      } else {
+        b4.className = "p-2.5 rounded-xl bg-emerald-600 text-white font-bold border border-emerald-400/40 text-center cursor-pointer";
+        b2.className = "p-2.5 rounded-xl bg-slate-900 text-slate-300 font-bold border border-slate-700 hover:border-slate-600 text-center cursor-pointer";
+      }
+      calculateSavings();
+    }
+
+    function calculateSavings() {
+      const students = parseInt(document.getElementById('sliderStudents').value);
+      document.getElementById('studentCountLabel').innerText = `${students} Siswa`;
+
+      // 1 siswa x 14 mapel x 6 lembar (naskah + ljk) x currentFreq
+      const sheets = students * 14 * 6 * currentFreq;
+      document.getElementById('paperSheets').innerText = `${sheets.toLocaleString('id-ID')} Lembar`;
+
+      // Estimasi biaya fotokopi & kertas Rp 500 per lembar
+      const cost = sheets * 500;
+      document.getElementById('costPaper').innerText = `Rp ${cost.toLocaleString('id-ID')},-`;
+
+      // Penghematan bersih (diasumsikan 85% penghematan setelah biaya listrik lab minimal)
+      const savings = Math.round(cost * 0.85);
+      document.getElementById('savingsAmount').innerText = `Rp ${savings.toLocaleString('id-ID')},-`;
+    }
+
+    // Initial setup
+    showSlide(0);
+    calculateSavings();
   </script>
 </body>
 </html>
