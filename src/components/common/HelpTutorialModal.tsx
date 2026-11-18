@@ -584,14 +584,19 @@ export default function HelpTutorialModal({
       return [];
     }
 
-    const q = searchQuery.toLowerCase();
-    return allStepsCombined.filter(
-      (s) =>
-        s.title.toLowerCase().includes(q) ||
-        s.summary.toLowerCase().includes(q) ||
-        s.badge.toLowerCase().includes(q) ||
-        s.details.some((d) => d.toLowerCase().includes(q))
-    );
+    const q = searchQuery.toLowerCase().trim();
+    const words = q.split(/\s+/).filter(Boolean);
+    return allStepsCombined.filter((s) => {
+      const fullText = [
+        s.title,
+        s.summary,
+        s.badge,
+        s.roleName,
+        s.actionLabel || '',
+        ...s.details,
+      ].join(' ').toLowerCase();
+      return fullText.includes(q) || words.every((w) => fullText.includes(w));
+    });
   }, [searchQuery, activeTab, allStepsCombined]);
 
   const filteredFaqs = useMemo(() => {
@@ -599,12 +604,14 @@ export default function HelpTutorialModal({
       const matchCat = selectedFaqCategory === 'ALL' || f.category === selectedFaqCategory;
       if (!matchCat) return false;
       if (!searchQuery.trim()) return true;
-      const q = searchQuery.toLowerCase();
-      return (
-        f.q.toLowerCase().includes(q) ||
-        f.a.toLowerCase().includes(q) ||
-        (f.solutionSteps && f.solutionSteps.some((st) => st.toLowerCase().includes(q)))
-      );
+      const q = searchQuery.toLowerCase().trim();
+      const words = q.split(/\s+/).filter(Boolean);
+      const fullText = [
+        f.q,
+        f.a,
+        ...(f.solutionSteps || []),
+      ].join(' ').toLowerCase();
+      return fullText.includes(q) || words.every((w) => fullText.includes(w));
     });
   }, [searchQuery, selectedFaqCategory]);
 

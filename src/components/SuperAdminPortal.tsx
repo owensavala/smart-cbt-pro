@@ -2283,6 +2283,9 @@ export default function SuperAdminPortal({
         isOpen={isHelpOpen}
         onClose={() => setIsHelpOpen(false)}
         defaultRole="SUPER_ADMIN"
+        onNavigateTab={(tab) => {
+          if (tab === 'superadmin_branding') setActiveTab('KUSTOMISASI');
+        }}
       />
     </div>
   );

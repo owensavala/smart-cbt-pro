@@ -4414,7 +4414,7 @@ export default function OperatorDashboard({
           else if (tab === 'operator_jadwal' || tab === 'guru_jadwal') navigateToMenu('jadwalUjian');
           else if (tab === 'operator_monitor') navigateToMenu('ubkStatus');
           else if (tab === 'operator_nilai' || tab === 'guru_nilai') navigateToMenu('nilaiHasil');
-          else if (tab === 'guru_banksoal' || tab === 'operator_banksoal') navigateToMenu('bankSoal');
+          else if (tab === 'guru_banksoal' || tab === 'operator_banksoal' || tab === 'guru_simulator') navigateToMenu('bankSoal');
           else if (tab === 'guru_mathstudio' || tab === 'operator_mathstudio') navigateToMenu('mathStudio');
           else if (tab === 'guru_analisis') navigateToMenu('analisaPerSoal');
         }}
