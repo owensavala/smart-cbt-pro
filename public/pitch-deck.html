@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SmartCBT Pro - Pitch Deck & Presentasi Asesmen Sekolah Modern</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap');
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: #06121e;
+      color: #f1f5f9;
+      overflow: hidden;
+    }
+    .slide {
+      display: none;
+      opacity: 0;
+      transform: scale(0.98);
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .slide.active {
+      display: flex;
+      opacity: 1;
+      transform: scale(1);
+    }
+    .glass-card {
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .gradient-emerald {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    }
+    .gradient-amber {
+      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    }
+    .gradient-blue {
+      background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    }
+    @media print {
+      body { overflow: visible; background: white; color: black; }
+      .slide { display: flex !important; opacity: 1 !important; transform: none !important; page-break-after: always; height: 100vh; }
+      .no-print { display: none !important; }
+    }
+  </style>
+</head>
+<body class="w-screen h-screen select-none">
+
+  <!-- TOP BAR & CONTROLS -->
+  <header class="fixed top-0 left-0 right-0 h-14 bg-slate-950/80 backdrop-blur-md border-b border-slate-800 z-50 flex items-center justify-between px-6 no-print">
+    <div class="flex items-center gap-3">
+      <div class="w-8 h-8 rounded-lg bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 font-black">
+        <i class="fa-solid fa-graduation-cap"></i>
+      </div>
+      <div>
+        <h1 class="text-sm font-black tracking-tight text-white flex items-center gap-2">
+          <span>SMART CBT PRO</span>
+          <span class="text-[10px] bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded-full font-bold border border-emerald-500/30">PITCH DECK</span>
+        </h1>
+      </div>
+    </div>
+
+    <!-- Progress Indicator -->
+    <div class="flex items-center gap-2 text-xs font-mono text-slate-400">
+      <span id="slideCounter" class="font-bold text-white">Slide 1 / 12</span>
+      <div class="w-32 h-1.5 bg-slate-800 rounded-full overflow-hidden">
+        <div id="progressBar" class="h-full bg-emerald-500 transition-all duration-300" style="width: 8.33%;"></div>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="flex items-center gap-2">
+      <button onclick="prevSlide()" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 transition-colors text-xs font-bold flex items-center gap-1.5 cursor-pointer" title="Slide Sebelumnya (Panah Kiri)">
+        <i class="fa-solid fa-chevron-left"></i>
+        <span class="hidden md:inline">Prev</span>
+      </button>
+      <button onclick="nextSlide()" class="p-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white transition-colors text-xs font-bold flex items-center gap-1.5 cursor-pointer shadow-lg shadow-emerald-950/50" title="Slide Berikutnya (Panah Kanan / Spasi)">
+        <span class="hidden md:inline">Next</span>
+        <i class="fa-solid fa-chevron-right"></i>
+      </button>
+      <button onclick="toggleFullScreen()" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors text-xs cursor-pointer" title="Layar Penuh (F)">
+        <i class="fa-solid fa-expand"></i>
+      </button>
+      <a href="https://smart-cbt-pro.vercel.app/" target="_blank" class="px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold flex items-center gap-1.5 transition-colors shadow-xs ml-2 cursor-pointer">
+        <i class="fa-solid fa-arrow-up-right-from-square"></i>
+        <span>Live Demo</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- SLIDES CONTAINER -->
+  <main class="w-full h-full pt-14 flex items-center justify-center p-6 md:p-12 relative overflow-hidden">
+
+    <!-- SLIDE 1: COVER -->
+    <div class="slide active w-full max-w-6xl h-full flex-col justify-center items-center text-center space-y-6">
+      <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-xs font-bold mb-2">
+        <i class="fa-solid fa-sparkles animate-pulse"></i>
+        <span>Generasi Baru Asesmen Sekolah Digital Berbasis Kecerdasan Buatan</span>
+      </div>
+      <h1 class="text-4xl md:text-6xl font-black text-white tracking-tight leading-tight max-w-4xl">
+        SMART CBT <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-300">PRO</span>
+      </h1>
+      <p class="text-lg md:text-xl text-slate-300 font-medium max-w-3xl leading-relaxed">
+        Solusi Ujian Sekolah Cerdas: <strong class="text-white">Bebas Kertas (Paperless)</strong>, <strong class="text-white">Anti-Curang</strong>, dan <strong class="text-emerald-400">Koreksi Esai Otomatis Berbasis NLP</strong> Tanpa Beban Biaya Token API.
+      </p>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 w-full max-w-3xl pt-4 text-left">
+        <div class="glass-card p-4 rounded-xl border border-slate-800">
+          <i class="fa-solid fa-robot text-emerald-400 text-xl mb-1"></i>
+          <p class="text-xs text-slate-400 font-semibold">Penilaian Esai</p>
+          <p class="text-sm font-black text-white">NLP Multi-Konsep</p>
+        </div>
+        <div class="glass-card p-4 rounded-xl border border-slate-800">
+          <i class="fa-solid fa-check-double text-blue-400 text-xl mb-1"></i>
+          <p class="text-xs text-slate-400 font-semibold">Standar Soal</p>
+          <p class="text-sm font-black text-white">5 Ragam AKM</p>
+        </div>
+        <div class="glass-card p-4 rounded-xl border border-slate-800">
+          <i class="fa-solid fa-wifi text-amber-400 text-xl mb-1"></i>
+          <p class="text-xs text-slate-400 font-semibold">Ketahanan Lab</p>
+          <p class="text-sm font-black text-white">Anti-Logout PWA</p>
+        </div>
+        <div class="glass-card p-4 rounded-xl border border-slate-800">
+          <i class="fa-solid fa-file-excel text-purple-400 text-xl mb-1"></i>
+          <p class="text-xs text-slate-400 font-semibold">Integrasi Nilai</p>
+          <p class="text-sm font-black text-white">1-Klik e-Rapor</p>
+        </div>
+      </div>
+      <p class="text-xs text-slate-500 font-mono pt-4">Gunakan tombol panah keyboard [&larr;] dan [&rarr;] untuk berpindah slide</p>
+    </div>
+
+    <!-- SLIDE 2: MASALAH RIIL SEKOLAH -->
+    <div class="slide w-full max-w-6xl h-full flex-col justify-center space-y-6">
+      <div class="space-y-2">
+        <span class="text-rose-400 font-bold text-xs uppercase tracking-wider">Fakta & Dilema Asesmen Sekolah</span>
+        <h2 class="text-3xl md:text-5xl font-black text-white tracking-tight">Mengapa Ujian Kertas & Pilihan Ganda Harus Ditinggalkan?</h2>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2">
+        <div class="glass-card p-6 rounded-2xl border-l-4 border-l-rose-500 space-y-3">
+          <div class="w-12 h-12 rounded-xl bg-rose-500/20 text-rose-400 flex items-center justify-center text-2xl font-bold">
+            <i class="fa-solid fa-money-bill-wave"></i>
+          </div>
+          <h3 class="text-lg font-black text-white">Pemborosan Anggaran Kertas</h3>
+          <p class="text-xs text-slate-300 leading-relaxed">
+            Sekolah menghabiskan <strong class="text-rose-400">Rp 40 – 70 Juta per tahun</strong> hanya untuk fotokopi lembar soal dan LJK yang seminggu setelah ujian hanya berakhir menjadi sampah di gudang.
+          </p>
+        </div>
+        <div class="glass-card p-6 rounded-2xl border-l-4 border-l-amber-500 space-y-3">
+          <div class="w-12 h-12 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center text-2xl font-bold">
+            <i class="fa-solid fa-user-clock"></i>
+          </div>
+          <h3 class="text-lg font-black text-white">Beban Lembur Koreksi Guru</h3>
+          <p class="text-xs text-slate-300 leading-relaxed">
+            Guru harus membaca <strong class="text-amber-400">1.500 – 4.000 jawaban esai manual</strong>. Akibat kelelahan fisik, penilaian menjadi subjektif dan pembagian e-Rapor kerap kali tertunda berminggu-minggu.
+          </p>
+        </div>
+        <div class="glass-card p-6 rounded-2xl border-l-4 border-l-sky-500 space-y-3">
+          <div class="w-12 h-12 rounded-xl bg-sky-500/20 text-sky-400 flex items-center justify-center text-2xl font-bold">
+            <i class="fa-solid fa-brain"></i>
+          </div>
+          <h3 class="text-lg font-black text-white">Nalar Kritis Siswa Terkikis</h3>
+          <p class="text-xs text-slate-300 leading-relaxed">
+            Karena takut beban koreksi esai, sekolah terpaksa memakai <strong class="text-sky-400">100% Pilihan Ganda</strong>. Siswa hanya terlatih menebak kancing, bukan melatih nalar HOTS Kurikulum Merdeka.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 3: KELEMAHAN PLATFORM LAIN -->
+    <div class="slide w-full max-w-6xl h-full flex-col justify-center space-y-6">
+      <div class="space-y-2">
+        <span class="text-amber-400 font-bold text-xs uppercase tracking-wider">Analisis Komparasi Lapangan</span>
+        <h2 class="text-3xl md:text-5xl font-black text-white tracking-tight">Mengapa Google Forms & CBT Konvensional Gagal?</h2>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2">
+        <div class="glass-card p-6 rounded-2xl border border-slate-800 space-y-3">
+          <h3 class="text-base font-black text-rose-400 flex items-center gap-2">
+            <i class="fa-brands fa-google"></i>
+            <span>Google Forms</span>
+          </h3>
+          <ul class="text-xs text-slate-300 space-y-2 list-disc list-inside leading-relaxed">
+            <li>Sangat mudah dicurangi siswa (membuka tab baru, chat WA, ChatGPT).</li>
+            <li>Tidak ada pembatasan meja lab atau token berwaktu.</li>
+            <li>Tidak bisa memeriksa esai bertingkat secara otomatis.</li>
+          </ul>
+        </div>
+        <div class="glass-card p-6 rounded-2xl border border-slate-800 space-y-3">
+          <h3 class="text-base font-black text-amber-400 flex items-center gap-2">
+            <i class="fa-solid fa-code"></i>
+            <span>CBT Konvensional (PHP Lama)</span>
+          </h3>
+          <ul class="text-xs text-slate-300 space-y-2 list-disc list-inside leading-relaxed">
+            <li>Hanya bisa mencocokkan kata persis (exact match 1 kata).</li>
+            <li>Siswa jawab "zat hijau daun", kunci guru "klorofil", nilai langsung nol!</li>
+            <li>Antarmuka kaku era 2010 dan sering crash saat koneksi WiFi putus.</li>
+          </ul>
+        </div>
+        <div class="glass-card p-6 rounded-2xl border border-slate-800 space-y-3">
+          <h3 class="text-base font-black text-blue-400 flex items-center gap-2">
+            <i class="fa-solid fa-server"></i>
+            <span>Moodle / LMS Berat</span>
+          </h3>
+          <ul class="text-xs text-slate-300 space-y-2 list-disc list-inside leading-relaxed">
+            <li>Sangat berat untuk spesifikasi server lokal sekolah.</li>
+            <li>Antarmuka rumit dan membingungkan guru senior.</li>
+            <li>Membutuhkan teknisi IT khusus untuk pemeliharaan harian.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 4: SOLUSI SMART CBT PRO -->
+    <div class="slide w-full max-w-6xl h-full flex-col justify-center space-y-6">
+      <div class="space-y-2">
+        <span class="text-emerald-400 font-bold text-xs uppercase tracking-wider">Solusi Terpadu Sekolah</span>
+        <h2 class="text-3xl md:text-5xl font-black text-white tracking-tight">SmartCBT Pro: Inovasi Asesmen Generasi Terbaru</h2>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+        <div class="glass-card p-6 rounded-2xl border border-emerald-500/30 space-y-3 bg-emerald-950/20">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-lg">
+              <i class="fa-solid fa-chalkboard-user"></i>
+            </div>
+            <div>
+              <h3 class="text-lg font-black text-white">Portal Khusus Guru (Pedagogis)</h3>
+              <p class="text-xs text-emerald-300">Fokus pada pembuatan soal dan evaluasi mutu</p>
+            </div>
+          </div>
+          <p class="text-xs text-slate-300 leading-relaxed">
+            Bebas dari kerumitan teknis UBK! Guru hanya fokus membuat 5 format soal AKM, mengedit formula eksak di Math Studio, menguji coba esai di AI Simulator, dan memantau ketuntasan nilai KKM siswa.
+          </p>
+        </div>
+        <div class="glass-card p-6 rounded-2xl border border-blue-500/30 space-y-3 bg-blue-950/20">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-blue-500/20 text-blue-400 flex items-center justify-center font-bold text-lg">
+              <i class="fa-solid fa-desktop"></i>
+            </div>
+            <div>
+              <h3 class="text-lg font-black text-white">Portal Khusus Operator (Infrastruktur)</h3>
+              <p class="text-xs text-blue-300">Kendali 100% atas lab, token, dan sinkronisasi</p>
+            </div>
+          </div>
+          <p class="text-xs text-slate-300 leading-relaxed">
+            Panel kendali proktor modern: monitor real-time meja lab 1–40, reset login darurat saat PC siswa crash, generate token dinamis 15 menit, cetak kartu QR 8-in-1, dan ekspor e-Rapor otomatis.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 5: INOVASI ESAI AI -->
+    <div class="slide w-full max-w-6xl h-full flex-col justify-center space-y-6">
+      <div class="space-y-2">
+        <span class="text-emerald-400 font-bold text-xs uppercase tracking-wider">Inovasi Terbesar Kami</span>
+        <h2 class="text-3xl md:text-5xl font-black text-white tracking-tight">Mesin Penilai Esai AI Otomatis (Zero-Cost NLP)</h2>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4 pt-2">
+        <div class="glass-card p-5 rounded-xl border border-slate-800 space-y-2">
+          <i class="fa-solid fa-layer-group text-emerald-400 text-2xl"></i>
+          <h4 class="text-sm font-black text-white">Multi-Concept Weights</h4>
+          <p class="text-xs text-slate-300 leading-relaxed">Guru menetapkan 3-5 konsep inti berbobot persentase. Siswa dinilai proporsional sesuai kelengkapan konsep.</p>
+        </div>
+        <div class="glass-card p-5 rounded-xl border border-slate-800 space-y-2">
+          <i class="fa-solid fa-book-bookmark text-blue-400 text-2xl"></i>
+          <h4 class="text-sm font-black text-white">Kamus Sinonim Bahasa</h4>
+          <p class="text-xs text-slate-300 leading-relaxed">Mengenali ragam sinonim resmi (misal: 'klorofil' = 'zat hijau daun', 'oksigen' = 'gas O2', 'meninggal' = 'wafat').</p>
+        </div>
+        <div class="glass-card p-5 rounded-xl border border-slate-800 space-y-2">
+          <i class="fa-solid fa-keyboard text-amber-400 text-2xl"></i>
+          <h4 class="text-sm font-black text-white">Toleransi Typo Keyboard</h4>
+          <p class="text-xs text-slate-300 leading-relaxed">Kesalahan ketik hingga 2 karakter pada keyboard HP/PC lab (misal: 'kloropil', 'fotosintesa') tetap dihitung benar.</p>
+        </div>
+        <div class="glass-card p-5 rounded-xl border border-slate-800 space-y-2">
+          <i class="fa-solid fa-shield-halved text-purple-400 text-2xl"></i>
+          <h4 class="text-sm font-black text-white">Anti-Negasi Guard</h4>
+          <p class="text-xs text-slate-300 leading-relaxed">Mendeteksi kata ingkar ('tidak', 'tanpa') agar siswa tidak bisa mengakali sistem dengan kalimat sanggahan.</p>
+        </div>
+      </div>
+      <div class="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center gap-3 text-xs text-amber-200">
+        <i class="fa-solid fa-bolt text-amber-400 text-xl shrink-0"></i>
+        <span><strong>100% Zero-Cost Local Engine</strong>: Berjalan langsung di server lokal/cloud mandiri tanpa menggunakan token berbayar per panggilan (Rp 0,- biaya API bulanan).</span>
+      </div>
+    </div>
+
+    <!-- SLIDE 6: SIMULASI LIVE ESAI -->
+    <div class="slide w-full max-w-6xl h-full flex-col justify-center space-y-6">
+      <div class="space-y-2">
+        <span class="text-cyan-400 font-bold text-xs uppercase tracking-wider">Bukti Nyata Di Lapangan</span>
+        <h2 class="text-3xl md:text-5xl font-black text-white tracking-tight">Bagaimana AI Menilai Jawaban Panjang Siswa?</h2>
+      </div>
+      <div class="glass-card p-6 rounded-2xl border border-slate-800 space-y-4">
+        <div class="bg-slate-900/80 p-3 rounded-lg border border-slate-800">
+          <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Soal Ujian Biologi (Maks: 20 Poin):</span>
+          <p class="text-sm font-bold text-white">"Jelaskan bagaimana proses fotosintesis pada tumbuhan hijau terjadi dan sebutkan zat yang dihasilkan!"</p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+          <div class="bg-blue-950/20 border border-blue-500/20 p-4 rounded-xl space-y-2">
+            <span class="font-bold text-blue-300 block">Jawaban Asli Siswa:</span>
+            <p class="text-slate-200 italic font-mono">"Proses fotosintesis terjadi pada daun yang memiliki zat klorofil dengan bantuan sinar matahari menghasilkan energi glukosa dan melepaskan oksigen."</p>
+          </div>
+          <div class="bg-emerald-950/20 border border-emerald-500/30 p-4 rounded-xl space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-emerald-300">Hasil Keputusan AI:</span>
+              <span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-black">Skor: 18 / 20 (90%)</span>
+            </div>
+            <p class="text-slate-300">✓ Klorofil (+6) &nbsp; ✓ Matahari (+6) &nbsp; ✓ Oksigen (+4)</p>
+            <p class="text-[11px] text-emerald-400/90 font-medium border-t border-emerald-500/20 pt-2">
+              Feedback Pedagogis: <em>"Bagus! Konsep inti sudah dijelaskan dengan tepat, lengkapi dengan rincian glukosa."</em>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 7: HAK VETO GURU -->
+    <div class="slide w-full max-w-6xl h-full flex-col justify-center space-y-6">
+      <div class="space-y-2">
+        <span class="text-amber-400 font-bold text-xs uppercase tracking-wider">Kendali Pedagogis 100%</span>
+        <h2 class="text-3xl md:text-5xl font-black text-white tracking-tight">AI Membantu Guru, Guru Memegang Hak Veto</h2>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+        <div class="glass-card p-6 rounded-2xl border border-slate-800 space-y-4">
+          <h3 class="text-lg font-black text-white flex items-center gap-2">
+            <i class="fa-solid fa-gavel text-amber-400"></i>
+            <span>Fitur Teacher Veto (Manual Override)</span>
+          </h3>
+          <p class="text-xs text-slate-300 leading-relaxed">
+            AI bertugas sebagai asisten yang mengoreksi ribuan jawaban dalam hitungan detik. Namun bila guru merasa siswa berhak mendapat nilai lebih tinggi karena argumentasinya kreatif, guru cukup klik 1 tombol koreksi untuk mengubah skor akhir.
+          </p>
+          <div class="p-3 bg-slate-900 rounded-xl border border-slate-800 text-xs font-mono text-emerald-400">
+            [✓] Skor AI: 14 &nbsp;&rarr;&nbsp; [Ubah Skor Guru]: <span class="text-white font-bold bg-blue-600 px-2 py-0.5 rounded">18</span>
+          </div>
+        </div>
+        <div class="glass-card p-6 rounded-2xl border border-slate-800 space-y-4">
+          <h3 class="text-lg font-black text-white flex items-center gap-2">
+            <i class="fa-solid fa-chart-line text-cyan-400"></i>
+            <span>Analisis Butir Soal Ilmiah</span>
+          </h3>
+          <p class="text-xs text-slate-300 leading-relaxed">
+            Secara otomatis menyajikan parameter psikometri evaluasi pembelajaran:
+          </p>
+          <ul class="text-xs text-slate-300 space-y-1 list-disc list-inside">
+            <li><strong>Tingkat Kesukaran ($P$-value)</strong>: Mudah, Sedang, Sukar.</li>
+            <li><strong>Daya Pembeda ($D$-index)</strong>: Membedakan siswa pintar & lambat.</li>
+            <li><strong>Daftar Remedial Otomatis</strong>: Siswa di bawah KKM langsung terdata.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 8: MATH STUDIO & AKM -->
+    <div class="slide w-full max-w-6xl h-full flex-col justify-center space-y-6">
+      <div class="space-y-2">
+        <span class="text-purple-400 font-bold text-xs uppercase tracking-wider">Eksak & Kurikulum Merdeka</span>
+        <h2 class="text-3xl md:text-5xl font-black text-white tracking-tight">Math Studio LaTeX & 5 Ragam Butir AKM</h2>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+        <div class="glass-card p-6 rounded-2xl border border-purple-500/30 space-y-3">
+          <h3 class="text-base font-black text-white flex items-center gap-2">
+            <i class="fa-solid fa-square-root-variable text-purple-400"></i>
+            <span>Math Studio Interaktif</span>
+          </h3>
+          <p class="text-xs text-slate-300 leading-relaxed">
+            Tidak perlu lagi men-screenshot rumus dari Word! Guru Matematika, Fisika, dan Kimia dapat mengetik rumus eksak dengan preview LaTeX instan:
+          </p>
+          <div class="p-3 bg-slate-900 rounded-lg text-center font-mono text-sm text-cyan-300 border border-slate-800">
+            x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}
+          </div>
+          <p class="text-[11px] text-slate-400">Tampil super tajam dan responsif di layar ponsel maupun monitor lab.</p>
+        </div>
+        <div class="glass-card p-6 rounded-2xl border border-blue-500/30 space-y-3">
+          <h3 class="text-base font-black text-white flex items-center gap-2">
+            <i class="fa-solid fa-list-check text-blue-400"></i>
+            <span>5 Format Butir Soal AKM</span>
+          </h3>
+          <div class="grid grid-cols-2 gap-2 text-xs">
+            <div class="p-2 bg-slate-900 rounded border border-slate-800">1. Pilihan Ganda Biasa</div>
+            <div class="p-2 bg-slate-900 rounded border border-slate-800">2. PG Kompleks (Centang)</div>
+            <div class="p-2 bg-slate-900 rounded border border-slate-800">3. Menjodohkan Garis</div>
+            <div class="p-2 bg-slate-900 rounded border border-slate-800">4. Benar / Salah Matriks</div>
+            <div class="col-span-2 p-2 bg-emerald-950/30 rounded border border-emerald-500/30 text-emerald-300 font-bold">5. Uraian Esai AI NLP Otomatis</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 9: KETAHANAN LAB -->
+    <div class="slide w-full max-w-6xl h-full flex-col justify-center space-y-6">
+      <div class="space-y-2">
+        <span class="text-emerald-400 font-bold text-xs uppercase tracking-wider">Keandalan Infrastruktur UBK</span>
+        <h2 class="text-3xl md:text-5xl font-black text-white tracking-tight">Tangguh di Lab: Anti-Logout & Reset Login Darurat</h2>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2">
+        <div class="glass-card p-6 rounded-2xl border border-slate-800 space-y-3">
+          <i class="fa-solid fa-network-wired text-emerald-400 text-2xl"></i>
+          <h3 class="text-base font-black text-white">PWA Offline Resilience</h3>
+          <p class="text-xs text-slate-300 leading-relaxed">
+            Jika kabel router atau sinyal WiFi lab terputus selama 1-2 menit, siswa tetap bisa membaca soal dan memilih jawaban tanpa error. Jawaban otomatis tersinkronisasi saat sinyal pulih.
+          </p>
+        </div>
+        <div class="glass-card p-6 rounded-2xl border border-slate-800 space-y-3">
+          <i class="fa-solid fa-rotate-left text-amber-400 text-2xl"></i>
+          <h3 class="text-base font-black text-white">Emergency Desk Reset</h3>
+          <p class="text-xs text-slate-300 leading-relaxed">
+            Jika komputer meja 12 mati mendadak atau bluescreen, proktor cukup klik tombol "Reset Login". Siswa bisa pindah ke PC cadangan dan melanjutkan dari nomor soal terakhir.
+          </p>
+        </div>
+        <div class="glass-card p-6 rounded-2xl border border-slate-800 space-y-3">
+          <i class="fa-solid fa-key text-blue-400 text-2xl"></i>
+          <h3 class="text-base font-black text-white">Dynamic 15-Min Token</h3>
+          <p class="text-xs text-slate-300 leading-relaxed">
+            Token ujian berganti otomatis setiap 15 menit. Siswa yang terlambat atau ingin menyebarkan kode ujian ke luar ruangan lab otomatis terblokir.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 10: 1-KLIK E-RAPOR -->
+    <div class="slide w-full max-w-6xl h-full flex-col justify-center space-y-6">
+      <div class="space-y-2">
+        <span class="text-emerald-400 font-bold text-xs uppercase tracking-wider">Efisiensi Administrasi Kurikulum</span>
+        <h2 class="text-3xl md:text-5xl font-black text-white tracking-tight">1-Klik Ekspor Format e-Rapor & RDM</h2>
+      </div>
+      <div class="glass-card p-6 rounded-2xl border border-slate-800 space-y-4">
+        <p class="text-xs md:text-sm text-slate-300 leading-relaxed">
+          Tidak perlu lagi meng-copy-paste nilai satu per satu dari kertas atau lembar Excel acak! SmartCBT Pro mengekspor leger nilai yang sudah 100% kompatibel dengan format import e-Rapor Kemdikbudristek dan RDM Kemenag:
+        </p>
+        <div class="overflow-x-auto rounded-lg border border-slate-800">
+          <table class="w-full text-left text-xs font-mono">
+            <thead class="bg-slate-900 text-slate-300 border-b border-slate-800">
+              <tr>
+                <th class="p-2.5">NISN / NO PESERTA</th>
+                <th class="p-2.5">NAMA LENGKAP</th>
+                <th class="p-2.5 text-center">SKOR PG</th>
+                <th class="p-2.5 text-center">SKOR ESAI AI</th>
+                <th class="p-2.5 text-center text-emerald-400 font-bold">NILAI AKHIR</th>
+                <th class="p-2.5 text-center">STATUS KKM</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-800 text-slate-300">
+              <tr>
+                <td class="p-2.5">26-27-01-1-0508-0001</td>
+                <td class="p-2.5 font-sans font-bold text-white">ARJUN</td>
+                <td class="p-2.5 text-center">60 / 60</td>
+                <td class="p-2.5 text-center">34 / 40</td>
+                <td class="p-2.5 text-center font-bold text-emerald-400">94.00</td>
+                <td class="p-2.5 text-center"><span class="bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded text-[10px]">TUNTAS</span></td>
+              </tr>
+              <tr>
+                <td class="p-2.5">26-27-01-1-0508-0002</td>
+                <td class="p-2.5 font-sans font-bold text-white">MUHAMMAD RIDHO A. GANI</td>
+                <td class="p-2.5 text-center">50 / 60</td>
+                <td class="p-2.5 text-center">28 / 40</td>
+                <td class="p-2.5 text-center font-bold text-emerald-400">78.00</td>
+                <td class="p-2.5 text-center"><span class="bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded text-[10px]">TUNTAS</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 11: ROI & PENGHEMATAN -->
+    <div class="slide w-full max-w-6xl h-full flex-col justify-center space-y-6">
+      <div class="space-y-2">
+        <span class="text-amber-400 font-bold text-xs uppercase tracking-wider">Kalkulasi Finansial Sekolah</span>
+        <h2 class="text-3xl md:text-5xl font-black text-white tracking-tight">Hemat Anggaran Puluhan Juta Tiap Tahun</h2>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+        <div class="glass-card p-6 rounded-2xl border border-rose-500/30 space-y-3 bg-rose-950/10">
+          <span class="text-xs font-bold text-rose-400 uppercase tracking-wider block">Biaya Ujian Kertas Konvensional (500 Siswa / Tahun)</span>
+          <div class="space-y-1 text-xs text-slate-300">
+            <div class="flex justify-between py-1 border-b border-slate-800">
+              <span>Fotokopi Naskah Soal & LJK</span>
+              <span class="font-mono font-bold text-white">Rp 43.200.000,-</span>
+            </div>
+            <div class="flex justify-between py-1 border-b border-slate-800">
+              <span>Alat Tulis & LJK Khusus</span>
+              <span class="font-mono font-bold text-white">Rp 7.500.000,-</span>
+            </div>
+            <div class="flex justify-between py-1 border-b border-slate-800">
+              <span>Honor Lembur Koreksi & Panitia</span>
+              <span class="font-mono font-bold text-white">Rp 12.000.000,-</span>
+            </div>
+            <div class="flex justify-between py-1.5 font-bold text-rose-400 text-sm">
+              <span>TOTAL PENGELUARAN TAHUNAN</span>
+              <span>Rp 68.700.000,-</span>
+            </div>
+          </div>
+        </div>
+        <div class="glass-card p-6 rounded-2xl border border-emerald-500/30 space-y-3 bg-emerald-950/10 flex flex-col justify-between">
+          <div>
+            <span class="text-xs font-bold text-emerald-400 uppercase tracking-wider block">Menggunakan SmartCBT Pro</span>
+            <div class="text-3xl md:text-4xl font-black text-white mt-2">HEMAT > 70%</div>
+            <p class="text-xs text-slate-300 mt-2 leading-relaxed">
+              Anggaran puluhan juta dapat dialokasikan untuk pemeliharaan lab komputer, internet sekolah, atau kesejahteraan dewan guru.
+            </p>
+          </div>
+          <div class="p-3 bg-emerald-500/20 rounded-xl border border-emerald-500/30 text-emerald-300 text-xs font-bold flex items-center gap-2">
+            <i class="fa-solid fa-seedling text-lg"></i>
+            <span>Sekolah Hijau Ramah Lingkungan (Zero Paper Waste)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 12: CALL TO ACTION -->
+    <div class="slide w-full max-w-6xl h-full flex-col justify-center items-center text-center space-y-6">
+      <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-xs font-bold">
+        <i class="fa-solid fa-gift"></i>
+        <span>PENAWARAN KHUSUS TANPA RISIKO</span>
+      </div>
+      <h2 class="text-3xl md:text-5xl font-black text-white tracking-tight max-w-3xl">
+        Coba Gratis Program Piloting 1 Mapel di Sekolah Bapak/Ibu!
+      </h2>
+      <p class="text-base text-slate-300 max-w-2xl leading-relaxed">
+        Buktikan sendiri keajaiban koreksi esai AI dan keandalan lab SmartCBT Pro. <strong>100% Bebas Biaya</strong>, tanpa komitmen kontrak apa pun.
+      </p>
+      <div class="flex flex-wrap items-center justify-center gap-4 pt-2">
+        <a href="https://smart-cbt-pro.vercel.app/" target="_blank" class="px-6 py-3.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-sm flex items-center gap-2 shadow-xl shadow-emerald-950/50 transition-all cursor-pointer">
+          <i class="fa-solid fa-laptop-code"></i>
+          <span>Buka Demo Interaktif Live</span>
+        </a>
+      </div>
+      <div class="pt-6 text-xs text-slate-400 border-t border-slate-800 w-full max-w-xl">
+        <p class="font-bold text-white mb-1">Hubungi Tim Teknis SmartCBT Pro Hari Ini</p>
+        <p>Email: official.smartcbt@gmail.com &bull; GitHub: owensavala/smart-cbt-pro</p>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- KEYBOARD & SCRIPT LOGIC -->
+  <script>
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.slide');
+    const totalSlides = slides.length;
+    const counter = document.getElementById('slideCounter');
+    const progressBar = document.getElementById('progressBar');
+
+    function showSlide(index) {
+      if (index < 0) index = 0;
+      if (index >= totalSlides) index = totalSlides - 1;
+      
+      slides.forEach((s, idx) => {
+        s.classList.toggle('active', idx === index);
+      });
+      currentSlide = index;
+      counter.innerText = `Slide ${currentSlide + 1} / ${totalSlides}`;
+      progressBar.style.width = `${((currentSlide + 1) / totalSlides) * 100}%`;
+    }
+
+    function nextSlide() {
+      if (currentSlide < totalSlides - 1) {
+        showSlide(currentSlide + 1);
+      }
+    }
+
+    function prevSlide() {
+      if (currentSlide > 0) {
+        showSlide(currentSlide - 1);
+      }
+    }
+
+    function toggleFullScreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        }
+      }
+    }
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+        nextSlide();
+      } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+        prevSlide();
+      } else if (e.key === 'f' || e.key === 'F') {
+        toggleFullScreen();
+      } else if (e.key === 'Home') {
+        showSlide(0);
+      } else if (e.key === 'End') {
+        showSlide(totalSlides - 1);
+      }
+    });
+  </script>
+</body>
+</html>
