@@ -131,6 +131,7 @@ interface TeacherPortalProps {
   onResetStudent?: (studentId: string) => void;
   onLogout?: () => void;
   onSwitchView?: (view: 'LOGIN' | 'OPERATOR' | 'GURU' | 'SISWA' | 'SUPERADMIN') => void;
+  currentUser?: any;
 }
 
 export default function TeacherPortal({
@@ -155,6 +156,7 @@ export default function TeacherPortal({
   onResetStudent,
   onLogout,
   onSwitchView,
+  currentUser,
 }: TeacherPortalProps) {
   // Resolved 4-Color Theme
   const theme = getResolvedThemeColors(branding);
@@ -855,13 +857,13 @@ export default function TeacherPortal({
       {/* 2. KONTEN UTAMA SESI GURU (KANAN)                              */}
       {/* ============================================================== */}
       <div
-        className="flex-1 flex flex-col min-h-screen overflow-y-auto transition-colors duration-300"
+        className="flex-1 min-w-0 flex flex-col min-h-screen overflow-y-auto overflow-x-hidden [scrollbar-gutter:stable] transition-colors duration-300"
         style={{
           backgroundColor: theme.bgColor,
           color: theme.textColor,
         }}
       >
-        {/* TOPBAR GURU (Dinamis Mengikuti Warna Utama / Primary) */}
+        {/* TOPBAR GURU (Tinggi Statis Anti-Layout Shift: 64px / h-16) */}
         <header
           className="h-16 border-b px-6 flex items-center justify-between flex-shrink-0 select-none sticky top-0 z-30 shadow-md text-white transition-colors"
           style={{
@@ -869,9 +871,9 @@ export default function TeacherPortal({
             borderColor: theme.borderColor,
           }}
         >
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 min-w-0">
             <button
-              className="p-2 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 transition-colors"
+              className="p-2 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 transition-colors shrink-0"
               title="Toggle Menu"
             >
               <div className="space-y-1">
@@ -880,13 +882,16 @@ export default function TeacherPortal({
                 <span className="block w-4 h-0.5 bg-slate-300" />
               </div>
             </button>
+            <span className="font-extrabold text-sm md:text-base tracking-tight text-white truncate whitespace-nowrap">
+              {branding?.schoolName || 'SMA INTEGRAL HIDAYATULLAH'}
+            </span>
           </div>
 
-          <div className="flex items-center gap-3 text-xs">
+          <div className="flex items-center gap-3 text-xs shrink-0 whitespace-nowrap">
             {/* Tombol AI Essay Simulator */}
             <button
               onClick={() => setIsAiEssaySimulatorOpen(true)}
-              className="hidden md:flex items-center gap-1.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold px-3 py-1.5 rounded-full text-xs transition-all cursor-pointer shadow-md transform hover:scale-105"
+              className="hidden md:flex items-center gap-1.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold px-3 py-1.5 rounded-full text-xs transition-all cursor-pointer shadow-md transform hover:scale-105 shrink-0 whitespace-nowrap"
               title="Simulator Penilaian Esai Otomatis AI / NLP Python Gratis"
             >
               <Cpu className="w-3.5 h-3.5 text-emerald-200" />
@@ -896,18 +901,18 @@ export default function TeacherPortal({
             {/* Tombol Panduan & Tutorial Guru */}
             <button
               onClick={() => setIsHelpTutorialOpen(true)}
-              className="flex items-center gap-1.5 bg-white/10 hover:bg-white/20 text-white font-bold px-3 py-1.5 rounded-full text-xs transition-all cursor-pointer border border-white/20"
+              className="flex items-center gap-1.5 bg-white/10 hover:bg-white/20 text-white font-bold px-3 py-1.5 rounded-full text-xs transition-all cursor-pointer border border-white/20 shrink-0 whitespace-nowrap"
               title="Pusat Panduan & Tutorial Guru"
             >
               <BookOpen className="w-3.5 h-3.5 text-blue-300" />
-              <span>Panduan & Tutorial</span>
+              <span>Panduan</span>
             </button>
 
-            {/* Tombol Cepat Sesi Super Admin */}
-            {onSwitchView && (
+            {/* Tombol Cepat Sesi Super Admin (HANYA MUNCUL JIKA USER LOGIN SEBAGAI SUPER ADMIN) */}
+            {currentUser?.role === 'SUPER_ADMIN' && onSwitchView && (
               <button
                 onClick={() => onSwitchView('SUPERADMIN')}
-                className="hidden sm:flex items-center gap-1.5 bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700 text-slate-950 font-black px-3 py-1.5 rounded-full text-xs transition-all cursor-pointer shadow-md transform hover:scale-105"
+                className="hidden sm:flex items-center gap-1.5 bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700 text-slate-950 font-black px-3 py-1.5 rounded-full text-xs transition-all cursor-pointer shadow-md transform hover:scale-105 shrink-0 whitespace-nowrap"
                 title="Buka Sesi Super Admin (Ubah Warna, Nama & Logo)"
               >
                 <Crown className="w-3.5 h-3.5 text-slate-950" />
@@ -918,26 +923,26 @@ export default function TeacherPortal({
             {/* Settings Gear */}
             <button
               onClick={() => navigateToMenu('profilSaya')}
-              className="p-2 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 transition-colors"
+              className="p-2 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 transition-colors shrink-0"
               title="Pengaturan Profil"
             >
               <Settings className="w-4 h-4 text-slate-300" />
             </button>
 
             {/* User Profile Badge (Image 1: DS Dermawan Surya Kencana, S. Sos) */}
-            <div className="relative">
+            <div className="relative shrink-0">
               <button
                 onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
-                className="flex items-center gap-2 hover:bg-slate-800/60 p-1.5 pr-2.5 rounded-full transition-colors cursor-pointer"
+                className="flex items-center gap-2 hover:bg-slate-800/60 p-1.5 pr-2.5 rounded-full transition-colors cursor-pointer shrink-0"
               >
-                <div className="w-8 h-8 rounded-full bg-[#0284c7] text-white font-extrabold flex items-center justify-center text-xs shadow-xs">
+                <div className="w-8 h-8 rounded-full bg-[#0284c7] text-white font-extrabold flex items-center justify-center text-xs shadow-xs shrink-0">
                   {teacherInitials}
                 </div>
-                <div className="flex items-center gap-1.5 text-left">
-                  <span className="font-bold text-slate-200 text-xs">
+                <div className="flex items-center gap-1.5 text-left truncate">
+                  <span className="font-bold text-slate-200 text-xs truncate max-w-[140px] md:max-w-[180px]">
                     {currentTeacher?.name || 'Dermawan Surya Kencana, S. Sos'}
                   </span>
-                  <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
+                  <ChevronDown className="w-3.5 h-3.5 text-slate-400 shrink-0" />
                 </div>
               </button>
 
@@ -961,16 +966,18 @@ export default function TeacherPortal({
 
                   {onSwitchView && (
                     <>
-                      <button
-                        onClick={() => {
-                          setIsProfileMenuOpen(false);
-                          onSwitchView('SUPERADMIN');
-                        }}
-                        className="w-full text-left px-4 py-2 hover:bg-amber-500/20 text-amber-300 flex items-center gap-2 cursor-pointer font-bold border-t border-slate-700/60"
-                      >
-                        <Crown className="w-3.5 h-3.5 text-amber-400" />
-                        <span>Sesi Super Admin</span>
-                      </button>
+                      {currentUser?.role === 'SUPER_ADMIN' && (
+                        <button
+                          onClick={() => {
+                            setIsProfileMenuOpen(false);
+                            onSwitchView('SUPERADMIN');
+                          }}
+                          className="w-full text-left px-4 py-2 hover:bg-amber-500/20 text-amber-300 flex items-center gap-2 cursor-pointer font-bold border-t border-slate-700/60"
+                        >
+                          <Crown className="w-3.5 h-3.5 text-amber-400" />
+                          <span>Sesi Super Admin</span>
+                        </button>
+                      )}
                       <button
                         onClick={() => {
                           setIsProfileMenuOpen(false);

@@ -244,6 +244,32 @@ export default function OperatorDashboard({
   const [isAnnouncementModalOpen, setIsAnnouncementModalOpen] = useState(false);
   const [isHelpTutorialOpen, setIsHelpTutorialOpen] = useState(false);
 
+  // Proteksi Otorisasi Super Admin (Mencegah Operator Mengubah Branding/Nama/Logo/Tema)
+  const [isMasterAuthOpen, setIsMasterAuthOpen] = useState(false);
+  const [masterAuthTarget, setMasterAuthTarget] = useState<'BRANDING' | 'SUPERADMIN' | null>(null);
+  const [masterPasswordInput, setMasterPasswordInput] = useState('');
+  const [masterAuthError, setMasterAuthError] = useState('');
+
+  const handleVerifyMasterPassword = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (
+      masterPasswordInput === 'superadmin123' ||
+      masterPasswordInput === 'admin123' ||
+      masterPasswordInput === 'superadmin'
+    ) {
+      setIsMasterAuthOpen(false);
+      setMasterPasswordInput('');
+      setMasterAuthError('');
+      if (masterAuthTarget === 'BRANDING') {
+        setIsBrandingModalOpen(true);
+      } else if (masterAuthTarget === 'SUPERADMIN' && onSwitchView) {
+        onSwitchView('SUPERADMIN');
+      }
+    } else {
+      setMasterAuthError('Password Master salah! Hanya Super Admin pemilik lisensi yang berhak mengubah identitas sistem.');
+    }
+  };
+
   // 1. STATE CRUD GURU
   const [isTeacherModalOpen, setIsTeacherModalOpen] = useState(false);
   const [editingTeacherId, setEditingTeacherId] = useState<string | null>(null);
@@ -1071,7 +1097,7 @@ export default function OperatorDashboard({
 
   return (
     <div
-      className="flex w-full min-h-screen font-sans transition-colors duration-300"
+      className="flex w-full min-h-screen font-sans overflow-x-hidden transition-colors duration-300"
       style={{
         backgroundColor: theme.bgColor,
         color: theme.textColor,
@@ -1913,17 +1939,28 @@ export default function OperatorDashboard({
               <span>Update System</span>
             </button>
 
-            {/* 14. Branding Sekolah & White-Label */}
+            {/* 14. Branding Sekolah & White-Label (Dilindungi Password Master Super Admin) */}
             <div className="pt-2">
               <button
-                onClick={() => setIsBrandingModalOpen(true)}
+                onClick={() => {
+                  if (currentUser?.role === 'SUPER_ADMIN') {
+                    setIsBrandingModalOpen(true);
+                  } else {
+                    setMasterAuthTarget('BRANDING');
+                    setIsMasterAuthOpen(true);
+                  }
+                }}
                 className="w-full flex items-center justify-between px-3 py-2 rounded-xl font-bold bg-gradient-to-r from-amber-500/20 via-blue-500/20 to-purple-500/20 hover:from-amber-500/30 hover:to-blue-500/30 text-amber-300 border border-amber-500/40 transition-all cursor-pointer shadow-sm text-xs"
+                title="Atur Logo & Tema Sekolah (Khusus Super Admin)"
               >
                 <div className="flex items-center gap-2">
                   <Palette className="w-4 h-4 text-amber-400" />
                   <span>Branding Sekolah</span>
                 </div>
-                <Sparkles className="w-3.5 h-3.5 text-amber-400 animate-pulse" />
+                <div className="flex items-center gap-1 text-[10px] text-amber-300 bg-amber-500/20 px-1.5 py-0.5 rounded border border-amber-500/30 font-mono">
+                  <Lock className="w-3 h-3 text-amber-400" />
+                  <span>Super Admin</span>
+                </div>
               </button>
             </div>
           </nav>
@@ -1952,43 +1989,45 @@ export default function OperatorDashboard({
       {/* 2. KONTEN UTAMA OPERATOR (KANAN)                              */}
       {/* ============================================================== */}
       <div
-        className="flex-1 flex flex-col min-h-screen overflow-y-auto transition-colors duration-300"
+        className="flex-1 min-w-0 flex flex-col min-h-screen overflow-y-auto overflow-x-hidden [scrollbar-gutter:stable] transition-colors duration-300"
         style={{
           backgroundColor: theme.bgColor,
           color: theme.textColor,
         }}
       >
-        {/* TOPBAR OPERATOR (Dinamis Mengikuti Warna Utama / Primary) */}
+        {/* TOPBAR OPERATOR (Tinggi Statis Anti-Layout Shift: 56px / h-14) */}
         <header
-          className="h-14 border-b px-4 md:px-6 flex items-center justify-between flex-shrink-0 select-none sticky top-0 z-30 shadow-md text-white transition-colors"
+          className="h-14 min-h-[56px] max-h-[56px] border-b px-4 md:px-6 flex items-center justify-between flex-shrink-0 select-none sticky top-0 z-30 shadow-md text-white transition-colors"
           style={{
             backgroundColor: theme.primaryColor,
             borderColor: theme.borderColor,
           }}
         >
-          <div className="flex items-center gap-3">
-            <button className="p-1.5 rounded hover:bg-white/10 text-white/90 hover:text-white transition-colors cursor-pointer" title="Toggle Sidebar">
+          {/* Sisi Kiri: Menu Toggle & Identitas Sekolah (Truncated, No Multi-line Wrap) */}
+          <div className="flex items-center gap-3 min-w-0">
+            <button
+              className="p-1.5 rounded hover:bg-white/10 text-white/90 hover:text-white transition-colors cursor-pointer shrink-0"
+              title="Toggle Sidebar"
+            >
               <Menu className="w-5 h-5" />
             </button>
-            <span className="font-extrabold text-sm md:text-base tracking-tight text-white flex items-center gap-2">
-              {branding?.schoolName || 'SMA INTEGRAL HIDAYATULLAH'}
-            </span>
+            <div className="flex items-center gap-2 truncate">
+              <span className="font-extrabold text-sm md:text-base tracking-tight text-white truncate whitespace-nowrap">
+                {branding?.schoolName || 'SMA INTEGRAL HIDAYATULLAH'}
+              </span>
+              <span className="hidden xl:inline-flex items-center gap-1 text-[11px] font-medium text-emerald-200/80 bg-black/20 px-2 py-0.5 rounded-full border border-white/10 shrink-0">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                Operator UBK
+              </span>
+            </div>
           </div>
 
-          <div className="flex items-center gap-2 text-xs">
-            {/* Quick Settings Icon */}
-            <button
-              onClick={() => setIsBrandingModalOpen(true)}
-              className="p-1.5 rounded-full hover:bg-white/15 text-white/90 hover:text-white transition-colors cursor-pointer"
-              title="Pengaturan Tampilan & White-Label"
-            >
-              <Settings className="w-4 h-4" />
-            </button>
-
+          {/* Sisi Kanan: Action Buttons (Fixed Height h-8, whitespace-nowrap, No Text Wrap) */}
+          <div className="flex items-center gap-2 text-xs shrink-0 whitespace-nowrap">
             {/* PUSAT Server Status Pill */}
             <button
               onClick={() => setIsPusatStatusModalOpen(true)}
-              className="flex items-center gap-1.5 bg-blue-700 hover:bg-blue-600 px-3 py-1.5 rounded text-xs font-bold text-white transition-colors cursor-pointer shadow-xs border border-blue-500/40"
+              className="flex items-center gap-1.5 bg-blue-700 hover:bg-blue-600 px-3 py-1.5 rounded-lg text-xs font-bold text-white transition-colors cursor-pointer shadow-xs border border-blue-500/40 shrink-0 whitespace-nowrap h-8"
               title="Status Server PUSAT"
             >
               <Server className="w-3.5 h-3.5 text-sky-200" />
@@ -1996,59 +2035,51 @@ export default function OperatorDashboard({
               <ChevronDown className="w-3 h-3 text-white/80" />
             </button>
 
-            {/* Pengaturan Button with Wrench */}
-            <button
-              onClick={() => setIsBrandingModalOpen(true)}
-              className="hidden sm:flex items-center gap-1.5 text-amber-300 hover:text-amber-200 px-2.5 py-1.5 rounded hover:bg-white/10 font-bold transition-colors cursor-pointer"
-            >
-              <Wrench className="w-3.5 h-3.5 text-amber-300" />
-              <span>Pengaturan</span>
-            </button>
-
             {/* Tombol Panduan & Tutorial Operator */}
             <button
               onClick={() => setIsHelpTutorialOpen(true)}
-              className="hidden sm:flex items-center gap-1.5 bg-blue-600/30 hover:bg-blue-600/50 border border-blue-400/50 text-blue-200 px-3 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer shadow-xs"
+              className="hidden sm:flex items-center gap-1.5 bg-blue-600/30 hover:bg-blue-600/50 border border-blue-400/50 text-blue-200 px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer shadow-xs shrink-0 whitespace-nowrap h-8"
               title="Pusat Panduan & Tutorial Interaktif Operator"
             >
               <HelpCircle className="w-3.5 h-3.5 text-blue-300" />
-              <span>Panduan & Tutorial</span>
+              <span>Panduan</span>
             </button>
 
-            {/* Tombol Akses Cepat Sesi Super Admin */}
-            {onSwitchView && (
+            {/* Pengumuman Button with Megaphone */}
+            <button
+              onClick={() => setIsAnnouncementModalOpen(true)}
+              className="hidden md:flex items-center gap-1.5 text-rose-200 hover:text-white px-2.5 py-1.5 rounded-lg hover:bg-white/10 font-bold transition-colors cursor-pointer shrink-0 whitespace-nowrap h-8"
+              title="Pengumuman Pelaksanaan Ujian"
+            >
+              <Megaphone className="w-3.5 h-3.5 text-rose-300" />
+              <span className="hidden lg:inline">Pengumuman</span>
+            </button>
+
+            {/* HANYA MUNCUL JIKA USER LOGIN SEBAGAI SUPER ADMIN: Tombol Kembali ke Portal Super Admin */}
+            {currentUser?.role === 'SUPER_ADMIN' && onSwitchView && (
               <button
                 onClick={() => onSwitchView('SUPERADMIN')}
-                className="hidden md:flex items-center gap-1.5 bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700 text-slate-950 font-black px-3 py-1.5 rounded-full text-xs transition-all cursor-pointer shadow-md transform hover:scale-105"
-                title="Buka Sesi Super Admin (Ubah Warna, Nama & Logo)"
+                className="flex items-center gap-1.5 bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700 text-slate-950 font-black px-3 py-1.5 rounded-lg text-xs transition-all cursor-pointer shadow-md shrink-0 whitespace-nowrap h-8"
+                title="Kembali ke Sesi Super Admin"
               >
                 <Crown className="w-3.5 h-3.5 text-slate-950" />
                 <span>Super Admin</span>
               </button>
             )}
 
-            {/* Pengumuman Button with Megaphone */}
-            <button
-              onClick={() => setIsAnnouncementModalOpen(true)}
-              className="hidden sm:flex items-center gap-1.5 text-rose-300 hover:text-rose-200 px-2.5 py-1.5 rounded hover:bg-white/10 font-bold transition-colors cursor-pointer"
-            >
-              <Megaphone className="w-3.5 h-3.5 text-rose-300" />
-              <span>Pengumuman</span>
-            </button>
-
             {/* Profile Avatar Pill with Dropdown */}
-            <div className="relative">
+            <div className="relative shrink-0">
               <button
                 onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
-                className="flex items-center gap-2 bg-black/20 hover:bg-black/30 px-3 py-1.5 rounded-full text-xs font-bold text-white transition-colors cursor-pointer border border-white/10"
+                className="flex items-center gap-2 bg-black/25 hover:bg-black/35 px-2.5 py-1.5 rounded-lg text-xs font-bold text-white transition-colors cursor-pointer border border-white/15 h-8 shrink-0"
               >
-                <div className="w-6 h-6 rounded-full bg-amber-400 text-slate-900 font-black flex items-center justify-center text-[10px] shadow-xs">
-                  {branding?.schoolName ? branding.schoolName.slice(0, 2).toUpperCase() : 'MH'}
+                <div className="w-5 h-5 rounded-md bg-amber-400 text-slate-900 font-black flex items-center justify-center text-[10px] shadow-xs shrink-0">
+                  {currentUser?.name ? currentUser.name.slice(0, 2).toUpperCase() : 'OP'}
                 </div>
-                <span className="hidden md:inline font-bold">
-                  {branding?.schoolName || 'SMA INTEGRAL HIDAYATULLAH'}
+                <span className="hidden md:inline font-bold max-w-[120px] lg:max-w-[150px] truncate">
+                  {currentUser?.name || 'Operator'}
                 </span>
-                <ChevronDown className="w-3 h-3 text-white/80" />
+                <ChevronDown className="w-3 h-3 text-white/80 shrink-0" />
               </button>
 
               {isProfileDropdownOpen && (
@@ -2063,22 +2094,46 @@ export default function OperatorDashboard({
                   </div>
 
                   <div className="py-1">
+                    {/* JIKA SUPER ADMIN: Tampilkan tombol kembali ke Super Admin */}
+                    {currentUser?.role === 'SUPER_ADMIN' && onSwitchView && (
+                      <button
+                        onClick={() => {
+                          setIsProfileDropdownOpen(false);
+                          onSwitchView('SUPERADMIN');
+                        }}
+                        className="w-full px-4 py-2 text-left hover:bg-slate-700/50 flex items-center gap-2.5 text-amber-300 hover:text-amber-200 transition-colors cursor-pointer border-b border-slate-700/50"
+                      >
+                        <Crown className="w-4 h-4 text-amber-400" />
+                        <div>
+                          <p className="font-bold">Kembali ke Portal Super Admin</p>
+                          <p className="text-[10px] text-slate-400">Atur Warna, Logo &amp; Lisensi</p>
+                        </div>
+                      </button>
+                    )}
+
+                    {/* JIKA BUKAN SUPER ADMIN: Tombol terproteksi PIN / Password */}
+                    {currentUser?.role !== 'SUPER_ADMIN' && onSwitchView && (
+                      <button
+                        onClick={() => {
+                          setIsProfileDropdownOpen(false);
+                          setMasterAuthTarget('SUPERADMIN');
+                          setIsMasterAuthOpen(true);
+                        }}
+                        className="w-full px-4 py-2 text-left hover:bg-slate-700/50 flex items-center justify-between text-slate-400 hover:text-slate-200 transition-colors cursor-pointer border-b border-slate-700/50"
+                      >
+                        <div className="flex items-center gap-2.5">
+                          <Crown className="w-4 h-4 text-amber-400/60" />
+                          <div>
+                            <p className="font-bold text-slate-300">Akses Super Admin</p>
+                            <p className="text-[10px] text-slate-500">Terkunci Password Master</p>
+                          </div>
+                        </div>
+                        <Lock className="w-3.5 h-3.5 text-slate-500" />
+                      </button>
+                    )}
+
                     {onSwitchView && (
                       <>
-                        <button
-                          onClick={() => {
-                            setIsProfileDropdownOpen(false);
-                            onSwitchView('SUPERADMIN');
-                          }}
-                          className="w-full px-4 py-2 text-left hover:bg-slate-700/50 flex items-center gap-2.5 text-amber-300 hover:text-amber-200 transition-colors cursor-pointer border-b border-slate-700/50"
-                        >
-                          <Crown className="w-4 h-4 text-amber-400" />
-                          <div>
-                            <p className="font-bold">Masuk Sesi Super Admin</p>
-                            <p className="text-[10px] text-slate-400">Ubah Warna, Nama &amp; Logo</p>
-                          </div>
-                        </button>
-
                         <button
                           onClick={() => {
                             setIsProfileDropdownOpen(false);
@@ -2089,7 +2144,7 @@ export default function OperatorDashboard({
                           <GraduationCap className="w-4 h-4 text-purple-400" />
                           <div>
                             <p className="font-bold">Beralih ke Sesi Guru</p>
-                            <p className="text-[10px] text-slate-400">Dermawan Surya Kencana, S. Sos</p>
+                            <p className="text-[10px] text-slate-400">Portal Pengampu Ujian</p>
                           </div>
                         </button>
 
@@ -2112,12 +2167,22 @@ export default function OperatorDashboard({
                     <button
                       onClick={() => {
                         setIsProfileDropdownOpen(false);
-                        setIsBrandingModalOpen(true);
+                        if (currentUser?.role === 'SUPER_ADMIN') {
+                          setIsBrandingModalOpen(true);
+                        } else {
+                          setMasterAuthTarget('BRANDING');
+                          setIsMasterAuthOpen(true);
+                        }
                       }}
-                      className="w-full px-4 py-2 text-left hover:bg-slate-700/50 flex items-center gap-2.5 text-slate-300 hover:text-white transition-colors cursor-pointer"
+                      className="w-full px-4 py-2 text-left hover:bg-slate-700/50 flex items-center justify-between text-slate-300 hover:text-white transition-colors cursor-pointer"
                     >
-                      <Palette className="w-4 h-4 text-amber-400" />
-                      <span>Branding & Logo Sekolah</span>
+                      <div className="flex items-center gap-2.5">
+                        <Palette className="w-4 h-4 text-amber-400" />
+                        <span>Branding &amp; Logo Sekolah</span>
+                      </div>
+                      {currentUser?.role !== 'SUPER_ADMIN' && (
+                        <Lock className="w-3 h-3 text-slate-500" />
+                      )}
                     </button>
                   </div>
 
@@ -2141,8 +2206,8 @@ export default function OperatorDashboard({
           </div>
         </header>
 
-        {/* AREA KERJA (SESUAI MENU AKTIF) */}
-        <div className="p-6 md:p-8 space-y-6 flex-1 w-full max-w-[1920px]">
+        {/* AREA KERJA (SESUAI MENU AKTIF - Anti Overflow Mengubah Lebar Header) */}
+        <div className="p-6 md:p-8 space-y-6 flex-1 w-full max-w-[1920px] min-w-0">
           {/* ========================================================== */}
           {/* A. VIEW BERANDA DASHBOARD (10 WIDGET WARNA-WARNI)          */}
           {/* ========================================================== */}
@@ -4407,7 +4472,14 @@ export default function OperatorDashboard({
         onClose={() => setIsHelpTutorialOpen(false)}
         defaultRole="OPERATOR"
         onNavigateTab={(tab) => {
-          if (tab === 'superadmin_branding') setIsBrandingModalOpen(true);
+          if (tab === 'superadmin_branding') {
+            if (currentUser?.role === 'SUPER_ADMIN') {
+              setIsBrandingModalOpen(true);
+            } else {
+              setMasterAuthTarget('BRANDING');
+              setIsMasterAuthOpen(true);
+            }
+          }
           else if (tab === 'operator_master') navigateToMenu('importMaster');
           else if (tab === 'operator_students') navigateToMenu('pesertaUjian');
           else if (tab === 'operator_cetak') navigateToMenu('cetakKartu');
@@ -4419,6 +4491,75 @@ export default function OperatorDashboard({
           else if (tab === 'guru_analisis') navigateToMenu('analisaPerSoal');
         }}
       />
+
+      {/* MODAL OTORISASI MASTER SUPER ADMIN (PROTEKSI BRANDING & LISENSI) */}
+      {isMasterAuthOpen && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-[#181d28] border border-amber-500/50 rounded-2xl w-full max-w-md p-6 shadow-2xl space-y-4 animate-in fade-in zoom-in-95">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center border border-amber-500/30 shrink-0">
+                <Lock className="w-5 h-5 text-amber-400" />
+              </div>
+              <div>
+                <h3 className="text-base font-bold text-white flex items-center gap-1.5">
+                  <span>Otorisasi Super Admin</span>
+                  <span className="text-[10px] bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded-full border border-amber-500/30">Master Only</span>
+                </h3>
+                <p className="text-xs text-slate-400">Proteksi Keamanan Identitas &amp; Lisensi Sistem</p>
+              </div>
+            </div>
+
+            <p className="text-xs text-slate-300 leading-relaxed bg-amber-500/10 border border-amber-500/20 p-3 rounded-xl">
+              Pengaturan nama resmi sekolah, logo, dan tema tampilan hanya dapat diubah oleh pemilik sistem / <strong>Super Admin</strong> agar pihak sekolah tidak mengubah identitas tanpa otorisasi resmi.
+            </p>
+
+            <form onSubmit={handleVerifyMasterPassword} className="space-y-3">
+              <div>
+                <label className="block text-xs font-bold text-slate-300 mb-1">
+                  Masukkan Password Master Super Admin:
+                </label>
+                <input
+                  type="password"
+                  value={masterPasswordInput}
+                  onChange={(e) => {
+                    setMasterPasswordInput(e.target.value);
+                    setMasterAuthError('');
+                  }}
+                  placeholder="Ketik password master superadmin..."
+                  className="w-full bg-slate-900 border border-slate-700 focus:border-amber-500 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-hidden"
+                  autoFocus
+                />
+                {masterAuthError && (
+                  <p className="text-[11px] text-rose-400 font-semibold mt-1.5 flex items-center gap-1">
+                    <span>⚠️</span> {masterAuthError}
+                  </p>
+                )}
+              </div>
+
+              <div className="flex items-center justify-end gap-2 pt-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsMasterAuthOpen(false);
+                    setMasterPasswordInput('');
+                    setMasterAuthError('');
+                  }}
+                  className="px-4 py-2 rounded-xl text-xs font-bold text-slate-400 hover:text-slate-200 hover:bg-slate-800 transition-colors cursor-pointer"
+                >
+                  Batal
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 rounded-xl text-xs font-bold bg-amber-500 hover:bg-amber-400 text-slate-950 shadow-md transition-colors cursor-pointer flex items-center gap-1.5"
+                >
+                  <Unlock className="w-3.5 h-3.5" />
+                  <span>Verifikasi &amp; Buka</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

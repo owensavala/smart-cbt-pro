@@ -1062,6 +1062,7 @@ export default function Home() {
           onResetStudent={handleResetStudent}
           onLogout={handleLogout}
           onSwitchView={handleSwitchView}
+          currentUser={authenticatedUser}
         />
       </div>
     );
