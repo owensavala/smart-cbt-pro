@@ -1,0 +1,648 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ==========================================
+// 1. ENUMS
+// ==========================================
+
+enum Role {
+  SUPER_ADMIN
+  OPERATOR
+  TEACHER
+  STUDENT
+}
+
+enum SchoolLevel {
+  SD_MI
+  SMP_MTS
+  SMA_SMK_MA
+  UNIVERSITAS_UMUM
+}
+
+enum Semester {
+  GANJIL
+  GENAP
+}
+
+enum QuestionType {
+  PG // Pilihan Ganda Biasa (Single Choice)
+  PGK // Pilihan Ganda Kompleks (Multi Select / Matrix)
+  MATCHING // Menjodohkan
+  SHORT_ANSWER // Isian Singkat
+  ESSAY // Uraian / Esai AI (Local Semantic NLP v2.0)
+}
+
+enum PgkSubtype {
+  MULTI_SELECT
+  TRUE_FALSE_MATRIX
+}
+
+enum DifficultyLevel {
+  EASY
+  MEDIUM
+  HARD
+}
+
+enum ExamStatus {
+  DRAFT
+  SCHEDULED
+  ACTIVE
+  PAUSED
+  COMPLETED
+  ARCHIVED
+}
+
+enum AttemptStatus {
+  NOT_STARTED
+  IN_PROGRESS
+  SUBMITTED
+  LOCKED
+  DISQUALIFIED
+  RESET
+}
+
+enum ViolationType {
+  TAB_SWITCH
+  WINDOW_BLUR
+  FULLSCREEN_EXIT
+  RIGHT_CLICK
+  DEVTOOLS_OPEN
+  COPY_PASTE
+  KEYBOARD_SHORTCUT
+  GRACE_PERIOD_EXCEEDED
+}
+
+enum SyncSource {
+  INDEXED_DB
+  MANUAL_SAVE
+  AUTO_SAVE
+}
+
+enum ThemeColor {
+  EMERALD // Madrasah Emerald Green
+  BLUE // Kemdikbud Royal Blue
+  INDIGO // Cyber EdTech Indigo
+  SLATE // Titanium Dark Pro
+  ROSE // Patriot Ruby Crimson
+  AMBER // Cendekia Gold
+}
+
+enum LogoType {
+  KEMDIKBUD
+  MADRASAH
+  PESANTREN
+  TECHNO
+  CUSTOM
+}
+
+// ==========================================
+// 2. MODUL PENGGUNA (USERS & ROLES)
+// ==========================================
+
+model User {
+  id          String    @id @default(cuid())
+  username    String    @unique
+  password    String // Bcrypt / Argon2 Hashed Password
+  name        String
+  email       String?   @unique
+  phone       String?
+  role        Role      @default(STUDENT)
+  isActive    Boolean   @default(true)
+  avatarUrl   String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  lastLoginAt DateTime?
+
+  // Profiles berdasarkan Role
+  teacherProfile  Teacher?
+  studentProfile  Student?
+  operatorProfile Operator?
+
+  // Log Aktivitas
+  activityLogs ActivityLog[]
+
+  @@index([role])
+  @@index([username])
+}
+
+model Teacher {
+  id           String   @id @default(cuid())
+  userId       String   @unique
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  nip          String?  @unique
+  title        String?  @default("Guru Mapel") // Jabatan
+  waliKelas    String? // Nama Rombel jika bertindak sebagai wali kelas
+  kajur        String? // Nama program keahlian / jurusan jika ketua jurusan
+  geminiApiKey String? // Optional external LLM fallback key (PRD Sec. 6)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  schoolId String?
+  school   School? @relation(fields: [schoolId], references: [id], onDelete: SetNull)
+
+  assignedSubjects TeacherSubject[]
+  classesAsWali    Class[]
+  questionBanks    QuestionBank[]
+  exams            ExamSchedule[]
+
+  @@index([schoolId])
+}
+
+model Student {
+  id         String   @id @default(cuid())
+  userId     String   @unique
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  noPeserta  String   @unique // Nomor Peserta Ujian (e.g. U-2026-001)
+  nisn       String   @unique // 10 digit NISN
+  nis        String? // Nomor Induk Siswa lokal
+  gender     String? // L / P
+  serverName String?  @default("SERVER-01")
+  photoUrl   String? // Static WebP URL
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  schoolId String?
+  school   School? @relation(fields: [schoolId], references: [id], onDelete: SetNull)
+
+  classId String
+  class   Class  @relation(fields: [classId], references: [id], onDelete: Restrict)
+
+  roomId String?
+  room   Room?   @relation(fields: [roomId], references: [id], onDelete: SetNull)
+
+  sessionId String?
+  session   ExamSession? @relation(fields: [sessionId], references: [id], onDelete: SetNull)
+
+  examAttempts  StudentExamAttempt[]
+  violationLogs ExamViolationLog[]
+
+  @@index([schoolId])
+  @@index([classId])
+  @@index([roomId])
+  @@index([sessionId])
+  @@index([noPeserta])
+  @@index([nisn])
+}
+
+model Operator {
+  id           String   @id @default(cuid())
+  userId       String   @unique
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  nip          String?
+  assignedRoom String? // Ruang lab yang ditugaskan
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  schoolId String?
+  school   School? @relation(fields: [schoolId], references: [id], onDelete: SetNull)
+
+  @@index([schoolId])
+}
+
+// ==========================================
+// 3. DATA MASTER (SEKOLAH, MAPEL, KELAS, RUANG, SESI)
+// ==========================================
+
+model School {
+  id             String      @id @default(cuid())
+  npsn           String      @unique // 8 digit NPSN (Terkunci via Lisensi Kriptografi)
+  name           String // Nama Resmi Sekolah / Madrasah
+  subName        String? // Yayasan / Kemenag / Sub-Institusi
+  level          SchoolLevel @default(SMA_SMK_MA)
+  address        String?
+  village        String? // Desa / Kelurahan
+  district       String? // Kecamatan
+  city           String? // Kabupaten / Kota
+  province       String? // Provinsi
+  postalCode     String?
+  phone          String?
+  email          String?
+  website        String?
+  academicYear   String      @default("2026/2027") // Tahun Pelajaran
+  semester       Semester    @default(GANJIL)
+  headmasterName String? // Nama Kepala Sekolah
+  headmasterNip  String? // NIP Kepala Sekolah
+  proctorName    String? // Nama Proktor Utama
+  proctorNip     String? // NIP Proktor Utama
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+
+  branding      SchoolBranding?
+  teachers      Teacher[]
+  students      Student[]
+  operators     Operator[]
+  subjects      Subject[]
+  classes       Class[]
+  rooms         Room[]
+  sessions      ExamSession[]
+  exams         ExamSchedule[]
+  questionBanks QuestionBank[]
+
+  @@index([npsn])
+}
+
+model Subject {
+  id        String   @id @default(cuid())
+  schoolId  String
+  school    School   @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  code      String // e.g. "MAT-01"
+  name      String // e.g. "Matematika Wajib"
+  level     String // e.g. "X", "XI", "XII"
+  order     Int      @default(0)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  teachers      TeacherSubject[]
+  questionBanks QuestionBank[]
+  exams         ExamSchedule[]
+
+  @@unique([schoolId, code])
+  @@index([schoolId])
+}
+
+model TeacherSubject {
+  id        String   @id @default(cuid())
+  teacherId String
+  teacher   Teacher  @relation(fields: [teacherId], references: [id], onDelete: Cascade)
+  subjectId String
+  subject   Subject  @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([teacherId, subjectId])
+  @@index([teacherId])
+  @@index([subjectId])
+}
+
+model Class {
+  id           String   @id @default(cuid())
+  schoolId     String
+  school       School   @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  name         String // e.g. "X MIPA 1"
+  level        String // e.g. "X"
+  major        String? // Jurusan / Peminatan e.g. "MIPA", "IPS", "RPL"
+  academicYear String   @default("2026/2027")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  waliKelasId String?
+  waliKelas   Teacher? @relation(fields: [waliKelasId], references: [id], onDelete: SetNull)
+
+  students    Student[]
+  examTargets ExamClassTarget[]
+
+  @@unique([schoolId, name, academicYear])
+  @@index([schoolId])
+  @@index([waliKelasId])
+}
+
+model Room {
+  id          String   @id @default(cuid())
+  schoolId    String
+  school      School   @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  code        String // e.g. "LAB-01"
+  name        String // e.g. "Laboratorium Komputer 1"
+  capacity    Int      @default(40)
+  proctorName String?
+  serverName  String?  @default("SERVER-01")
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  students     Student[]
+  examAttempts StudentExamAttempt[]
+
+  @@unique([schoolId, code])
+  @@index([schoolId])
+}
+
+model ExamSession {
+  id            String   @id @default(cuid())
+  schoolId      String
+  school        School   @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  sessionNumber Int // 1, 2, 3
+  name          String // e.g. "Sesi 1 (Pagi)"
+  startTime     String // e.g. "07:30"
+  endTime       String // e.g. "09:30"
+  description   String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  students     Student[]
+  examAttempts StudentExamAttempt[]
+
+  @@unique([schoolId, sessionNumber])
+  @@index([schoolId])
+}
+
+// ==========================================
+// 4. MODUL UJIAN (JADWAL, BANK SOAL, OPSI)
+// ==========================================
+
+model QuestionBank {
+  id             String   @id @default(cuid())
+  schoolId       String
+  school         School   @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  subjectId      String
+  subject        Subject  @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  teacherId      String?
+  teacher        Teacher? @relation(fields: [teacherId], references: [id], onDelete: SetNull)
+  code           String // e.g. "BQ-MAT-X-01"
+  title          String // e.g. "Bank Soal Aljabar & Geometri"
+  level          String // e.g. "X"
+  totalQuestions Int      @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  questions Question[]
+
+  @@unique([schoolId, code])
+  @@index([schoolId])
+  @@index([subjectId])
+  @@index([teacherId])
+}
+
+model ExamSchedule {
+  id                 String     @id @default(cuid())
+  schoolId           String
+  school             School     @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  code               String     @unique // e.g. "PAS-2026-MAT-X"
+  title              String // e.g. "Penilaian Akhir Semester Matematika X"
+  subjectId          String
+  subject            Subject    @relation(fields: [subjectId], references: [id], onDelete: Restrict)
+  teacherId          String
+  teacher            Teacher    @relation(fields: [teacherId], references: [id], onDelete: Restrict)
+  academicYear       String     @default("2026/2027")
+  semester           Semester   @default(GANJIL)
+  examDate           DateTime // Tanggal pelaksanaan
+  startTime          String // e.g. "08:00"
+  endTime            String // e.g. "10:00"
+  durationMinutes    Int        @default(90)
+  sessionNumber      Int?       @default(1)
+  tokenRequired      Boolean    @default(true)
+  activeToken        String? // Token aktif rilis proktor e.g. "WXYZ12"
+  isTokenDynamic     Boolean    @default(false)
+  proctorPin         String?    @default("123456")
+  randomizeQuestions Boolean    @default(true) // Acak butir soal
+  randomizeOptions   Boolean    @default(true) // Acak opsi jawaban (A-E)
+  showResultDirectly Boolean    @default(false) // Delayed Grade Disclosure (FR-SW-05)
+  passScore          Float      @default(75.0) // KKM
+  maxViolations      Int        @default(3) // Batas cheat sebelum auto-lock
+  enableGracePeriod  Boolean    @default(true) // Grace period Window Blur (FR-SW-02)
+  gracePeriodSeconds Int        @default(4) // Durasi toleransi notifikasi (4 detik)
+  enableWatermark    Boolean    @default(true) // Floating anti-camera leak watermark
+  status             ExamStatus @default(DRAFT)
+  createdAt          DateTime   @default(now())
+  updatedAt          DateTime   @updatedAt
+
+  targetClasses ExamClassTarget[]
+  examQuestions ExamQuestion[]
+  attempts      StudentExamAttempt[]
+  violationLogs ExamViolationLog[]
+
+  @@index([schoolId])
+  @@index([subjectId])
+  @@index([teacherId])
+  @@index([status])
+  @@index([code])
+}
+
+model ExamClassTarget {
+  id      String       @id @default(cuid())
+  examId  String
+  exam    ExamSchedule @relation(fields: [examId], references: [id], onDelete: Cascade)
+  classId String
+  class   Class        @relation(fields: [classId], references: [id], onDelete: Cascade)
+
+  @@unique([examId, classId])
+  @@index([examId])
+  @@index([classId])
+}
+
+model Question {
+  id                String          @id @default(cuid())
+  questionBankId    String?
+  questionBank      QuestionBank?   @relation(fields: [questionBankId], references: [id], onDelete: SetNull)
+  type              QuestionType    @default(PG)
+  pgkSubtype        PgkSubtype? // Khusus PGK: MULTI_SELECT / TRUE_FALSE_MATRIX
+  prompt            String          @db.Text // Teks Soal (dukungan MathStudio / LaTeX / HTML)
+  passage           String?         @db.Text // Stimulus / wacana bacaan bersambung
+  imageUrl          String?         @db.Text // URL atau Base64 Gambar Soal (Stimulus Visual)
+  imageCaption      String? // Keterangan Gambar (misal: "Gambar 1. Struktur Sel Hewan")
+  audioUrl          String? // URL listening modul bahasa (Roadmap Fase 4)
+  points            Float           @default(1.0)
+  difficulty        DifficultyLevel @default(MEDIUM)
+  order             Int             @default(0)
+  randomizeOptions  Boolean         @default(true)
+  idealAnswer       String?         @db.Text // Jawaban kunci / acuan esai
+  essayRubric       Json? // Rubrik Local Semantic NLP v2.0 (keyPoints, synonyms, negation, strictness)
+  acceptableAnswers Json? // Array string untuk isian singkat
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+
+  options        QuestionOption[]
+  matchingPairs  MatchingPair[]
+  examQuestions  ExamQuestion[]
+  studentAnswers StudentAnswer[]
+
+  @@index([questionBankId])
+  @@index([type])
+}
+
+model ExamQuestion {
+  id         String       @id @default(cuid())
+  examId     String
+  exam       ExamSchedule @relation(fields: [examId], references: [id], onDelete: Cascade)
+  questionId String
+  question   Question     @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  order      Int          @default(0)
+
+  @@unique([examId, questionId])
+  @@index([examId])
+  @@index([questionId])
+}
+
+model QuestionOption {
+  id          String   @id @default(cuid())
+  questionId  String
+  question    Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  code        String // "A", "B", "C", "D", "E"
+  text        String   @db.Text // Teks opsi jawaban
+  imageUrl    String? // Static WebP URL
+  isCorrect   Boolean  @default(false)
+  scoreWeight Float    @default(1.0) // Bobot parsial PGK
+  statement   String?  @db.Text // Pernyataan untuk baris matriks Benar/Salah
+  order       Int      @default(0)
+
+  @@index([questionId])
+}
+
+model MatchingPair {
+  id         String   @id @default(cuid())
+  questionId String
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  premise    String   @db.Text // Kolom Kiri
+  target     String   @db.Text // Kolom Kanan (Pasangan Benar)
+  order      Int      @default(0)
+
+  @@index([questionId])
+}
+
+// ==========================================
+// 5. HASIL UJIAN (JAWABAN, NILAI, ANTI-CHEAT)
+// ==========================================
+
+model StudentExamAttempt {
+  id                   String        @id @default(cuid())
+  examId               String
+  exam                 ExamSchedule  @relation(fields: [examId], references: [id], onDelete: Cascade)
+  studentId            String
+  student              Student       @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  roomId               String?
+  room                 Room?         @relation(fields: [roomId], references: [id], onDelete: SetNull)
+  sessionId            String?
+  session              ExamSession?  @relation(fields: [sessionId], references: [id], onDelete: SetNull)
+  status               AttemptStatus @default(NOT_STARTED)
+  tokenUsed            String?
+  startTime            DateTime?
+  submitTime           DateTime?
+  endTime              DateTime?
+  remainingSeconds     Int?
+  currentQuestionIndex Int           @default(0)
+  totalScore           Float         @default(0) // Skor Akhir
+  maxPossibleScore     Float         @default(100)
+  percentageScore      Float         @default(0)
+  totalCorrect         Int           @default(0)
+  totalWrong           Int           @default(0)
+  totalUnanswered      Int           @default(0)
+  violationsCount      Int           @default(0)
+  isLocked             Boolean       @default(false)
+  isReset              Boolean       @default(false) // Reset Login 1-Klik (Jawaban dipulihkan)
+  resetCount           Int           @default(0)
+  resetReason          String?
+  isTeacherOverridden  Boolean       @default(false) // Hak Veto Guru (FR-GU-05)
+  teacherNotes         String?       @db.Text
+  ipAddress            String?
+  userAgent            String?
+  deviceInfo           String?
+  lastActive           DateTime      @default(now())
+  createdAt            DateTime      @default(now())
+  updatedAt            DateTime      @updatedAt
+
+  answers       StudentAnswer[]
+  violationLogs ExamViolationLog[]
+
+  @@unique([examId, studentId])
+  @@index([examId])
+  @@index([studentId])
+  @@index([status])
+}
+
+model StudentAnswer {
+  id                  String             @id @default(cuid())
+  attemptId           String
+  attempt             StudentExamAttempt @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+  questionId          String
+  question            Question           @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  isDoubtful          Boolean            @default(false) // Tombol Ragu-ragu
+  selectedOptionId    String? // Single PG
+  selectedOptionIds   Json? // Multi-Select PGK atau Benar/Salah map
+  matchingAnswers     Json? // Menjodohkan map premise -> target
+  shortAnswer         String? // Isian Singkat
+  essayAnswer         String?            @db.Text // Teks Esai Siswa
+  autoScore           Float? // Nilai mesin Local Semantic NLP v2.0
+  finalScore          Float? // Nilai akhir yang diakui
+  nlpEvaluationDetail Json? // Detail evaluasi NLP (poin konsep, typo distance, negation)
+  isOverridden        Boolean            @default(false) // True jika nilai di-override guru
+  teacherScore        Float? // Skor manual guru
+  teacherFeedback     String?            @db.Text
+  syncSource          SyncSource         @default(AUTO_SAVE) // IndexedDB / Auto-Save / Manual
+  answeredAt          DateTime           @default(now())
+  updatedAt           DateTime           @updatedAt
+
+  @@unique([attemptId, questionId])
+  @@index([attemptId])
+  @@index([questionId])
+}
+
+model ExamViolationLog {
+  id            String             @id @default(cuid())
+  attemptId     String
+  attempt       StudentExamAttempt @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+  studentId     String
+  student       Student            @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  examId        String
+  exam          ExamSchedule       @relation(fields: [examId], references: [id], onDelete: Cascade)
+  violationType ViolationType
+  durationMs    Int? // Durasi blur layar / keluar tab
+  details       String? // Keterangan rincian log
+  timestamp     DateTime           @default(now())
+  isDismissed   Boolean            @default(false) // Operator memaafkan insiden
+  dismissedBy   String? // Operator/Proktor User ID
+  dismissReason String?
+
+  @@index([attemptId])
+  @@index([studentId])
+  @@index([examId])
+  @@index([violationType])
+}
+
+// ==========================================
+// 6. KONFIGURASI WHITE-LABEL & LISENSI
+// ==========================================
+
+model SchoolBranding {
+  id                   String     @id @default(cuid())
+  schoolId             String     @unique
+  school               School     @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  appName              String     @default("SmartCBT Pro")
+  appSubName           String     @default("Sistem Asesmen Sekolah Generasi Baru")
+  themeColor           ThemeColor @default(BLUE) // 6 Skema Warna UI (FR-SA-02)
+  logoType             LogoType   @default(KEMDIKBUD)
+  customLogoUrl        String? // Static WebP URL (FR-SA-03)
+  faviconUrl           String?
+  loginHeroTitle       String?    @default("Selamat Datang di Ujian Berbasis Komputer")
+  loginHeroSubtitle    String?    @default("Silakan masuk menggunakan No. Peserta dan Password yang tertera pada Kartu Ujian.")
+  enableWatermark      Boolean    @default(true) // Floating Screen Watermark
+  watermarkOpacity     Float      @default(0.08)
+  watermarkPattern     String     @default("{name} - {nisn} - {ip}")
+  enableFullscreenLock Boolean    @default(true) // Fullscreen Enforcer
+  maxViolationsAllowed Int        @default(3) // Toleransi pelanggaran
+  gracePeriodSeconds   Int        @default(4) // Grace period Window Blur (detik)
+  enableAutoSave       Boolean    @default(true) // Hybrid Delta Auto-Save
+  allowTokenBypass     Boolean    @default(false)
+  hardwareUuid         String? // Server Motherboard UUID / MAC Address (FR-SA-01)
+  licenseKey           String? // Serial lisensi
+  licenseSignature     String?    @db.Text // Cryptographic Signature (.sig)
+  licenseValidUntil    DateTime?
+  isLicenseValid       Boolean    @default(true)
+  backupConfigJson     Json? // JSON Backup Konfigurasi (FR-SA-04)
+  createdAt            DateTime   @default(now())
+  updatedAt            DateTime   @updatedAt
+
+  @@index([schoolId])
+}
+
+// ==========================================
+// 7. AUDIT & ACTIVITY LOGS
+// ==========================================
+
+model ActivityLog {
+  id        String   @id @default(cuid())
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  action    String // e.g. "RESET_LOGIN", "RELEASE_TOKEN", "UPDATE_BRANDING"
+  target    String? // e.g. "Student: U-2026-001"
+  details   Json?
+  ipAddress String?
+  timestamp DateTime @default(now())
+
+  @@index([userId])
+  @@index([action])
+  @@index([timestamp])
+}

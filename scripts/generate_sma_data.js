@@ -1,0 +1,141 @@
+const fs = require('fs');
+const path = require('path');
+
+// 1. 100 REALISTIC STUDENTS FOR SMA (25 in X MIPA 1, 25 in X MIPA 2, 25 in X IPS 1, 25 in X IPS 2)
+const studentRawNames = [
+  // X MIPA 1 (25 siswa, 13 L, 12 P)
+  { name: 'ARJUN', gender: 'L', class: 'X MIPA 1', major: 'IPA', nis: '26001', nisn: '0081234501', user: 'arjun', pass: '12345678', room: 'LAB-01', session: 'Sesi 1 (Pagi)' },
+  { name: 'ABDUL ADZIM', gender: 'L', class: 'X MIPA 1', major: 'IPA', nis: '26002', nisn: '0081234502', user: 'abdul', pass: 'siswa123', room: 'LAB-01', session: 'Sesi 1 (Pagi)' },
+  { name: 'AFHIF U SANGADJI', gender: 'L', class: 'X MIPA 1', major: 'IPA', nis: '26003', nisn: '0081234503', user: 'afhif', pass: 'siswa123', room: 'LAB-01', session: 'Sesi 1 (Pagi)' },
+  { name: 'AHMAD JIBRIL MUHAMMAD', gender: 'L', class: 'X MIPA 1', major: 'IPA', nis: '26004', nisn: '0081234504', user: 'jibril', pass: 'siswa123', room: 'LAB-01', session: 'Sesi 1 (Pagi)' },
+  { name: 'AHMAD SYAMIL AYYASHA', gender: 'L', class: 'X MIPA 1', major: 'IPA', nis: '26005', nisn: '0081234505', user: 'syamil', pass: 'siswa123', room: 'LAB-01', session: 'Sesi 1 (Pagi)' },
+  { name: 'AL HAFIZD DJ. RAIS', gender: 'L', class: 'X MIPA 1', major: 'IPA', nis: '26006', nisn: '0081234506', user: 'hafizd', pass: 'siswa123', room: 'LAB-01', session: 'Sesi 1 (Pagi)' },
+  { name: 'ALYA ZAHIDAH DAENG MAPATO', gender: 'P', class: 'X MIPA 1', major: 'IPA', nis: '26007', nisn: '0081234507', user: 'alya', pass: 'siswa123', room: 'LAB-01', session: 'Sesi 1 (Pagi)' },
+  { name: 'ANDI MUHAMMAD FAIZ', gender: 'L', class: 'X MIPA 1', major: 'IPA', nis: '26008', nisn: '0081234508', user: 'faiz', pass: 'siswa123', room: 'LAB-01', session: 'Sesi 1 (Pagi)' },
+  { name: 'ANNISA NURUL FADHILAH', gender: 'P', class: 'X MIPA 1', major: 'IPA', nis: '26009', nisn: '0081234509', user: 'annisa', pass: 'siswa123', room: 'LAB-01', session: 'Sesi 1 (Pagi)' },
+  { name: 'ARYA FEBRIANSYAH ASRUL', gender: 'L', class: 'X MIPA 1', major: 'IPA', nis: '26010', nisn: '0081234510', user: 'arya.asrul', pass: 'siswa123', room: 'LAB-01', session: 'Sesi 1 (Pagi)' },
+  { name: 'AURELIA ZASKIA PUTRI', gender: 'P', class: 'X MIPA 1', major: 'IPA', nis: '26011', nisn: '0081234511', user: 'aurelia', pass: 'siswa123', room: 'LAB-01', session: 'Sesi 1 (Pagi)' },
+  { name: 'BAGAS DWI CAHYO', gender: 'L', class: 'X MIPA 1', major: 'IPA', nis: '26012', nisn: '0081234512', user: 'bagas', pass: 'siswa123', room: 'LAB-01', session: 'Sesi 1 (Pagi)' },
+  { name: 'BILAL RAMADHAN', gender: 'L', class: 'X MIPA 1', major: 'IPA', nis: '26013', nisn: '0081234513', user: 'bilal', pass: 'siswa123', room: 'LAB-01', session: 'Sesi 1 (Pagi)' },
+  { name: 'CHAYRA FAYYAZA', gender: 'P', class: 'X MIPA 1', major: 'IPA', nis: '26014', nisn: '0081234514', user: 'chayra', pass: 'siswa123', room: 'LAB-01', session: 'Sesi 1 (Pagi)' },
+  { name: 'DAFFA IBNU HAFIDZ', gender: 'L', class: 'X MIPA 1', major: 'IPA', nis: '26015', nisn: '0081234515', user: 'daffa', pass: 'siswa123', room: 'LAB-01', session: 'Sesi 1 (Pagi)' },
+  { name: 'DEWI SARTIKA', gender: 'P', class: 'X MIPA 1', major: 'IPA', nis: '26016', nisn: '0081234516', user: 'dewi.s', pass: 'siswa123', room: 'LAB-01', session: 'Sesi 1 (Pagi)' },
+  { name: 'FADHILAH NUR AZIZAH', gender: 'P', class: 'X MIPA 1', major: 'IPA', nis: '26017', nisn: '0081234517', user: 'fadhilah', pass: 'siswa123', room: 'LAB-01', session: 'Sesi 1 (Pagi)' },
+  { name: 'FAHRI AL BUKHARI', gender: 'L', class: 'X MIPA 1', major: 'IPA', nis: '26018', nisn: '0081234518', user: 'fahri', pass: 'siswa123', room: 'LAB-01', session: 'Sesi 1 (Pagi)' },
+  { name: 'FATIMAH AZ ZAHRA', gender: 'P', class: 'X MIPA 1', major: 'IPA', nis: '26019', nisn: '0081234519', user: 'fatimah', pass: 'siswa123', room: 'LAB-01', session: 'Sesi 1 (Pagi)' },
+  { name: 'HABIBI AL FATIH', gender: 'L', class: 'X MIPA 1', major: 'IPA', nis: '26020', nisn: '0081234520', user: 'habibi', pass: 'siswa123', room: 'LAB-01', session: 'Sesi 1 (Pagi)' },
+  { name: 'HAIDAR AL FARUQ', gender: 'L', class: 'X MIPA 1', major: 'IPA', nis: '26021', nisn: '0081234521', user: 'haidar', pass: 'siswa123', room: 'LAB-01', session: 'Sesi 1 (Pagi)' },
+  { name: 'HANA KHALISHAH', gender: 'P', class: 'X MIPA 1', major: 'IPA', nis: '26022', nisn: '0081234522', user: 'hana', pass: 'siswa123', room: 'LAB-01', session: 'Sesi 1 (Pagi)' },
+  { name: 'IBNU SINA AL RAZI', gender: 'L', class: 'X MIPA 1', major: 'IPA', nis: '26023', nisn: '0081234523', user: 'ibnusina', pass: 'siswa123', room: 'LAB-01', session: 'Sesi 1 (Pagi)' },
+  { name: 'INDAH PERMATASARI', gender: 'P', class: 'X MIPA 1', major: 'IPA', nis: '26024', nisn: '0081234524', user: 'indah.p', pass: 'siswa123', room: 'LAB-01', session: 'Sesi 1 (Pagi)' },
+  { name: 'JALALUDDIN RUMI', gender: 'L', class: 'X MIPA 1', major: 'IPA', nis: '26025', nisn: '0081234525', user: 'rumi', pass: 'siswa123', room: 'LAB-01', session: 'Sesi 1 (Pagi)' },
+
+  // X MIPA 2 (25 siswa)
+  { name: 'KHALID BIN WALID', gender: 'L', class: 'X MIPA 2', major: 'IPA', nis: '26026', nisn: '0081234526', user: 'khalid', pass: 'siswa123', room: 'LAB-02', session: 'Sesi 1 (Pagi)' },
+  { name: 'LATHIFAH AINUN', gender: 'P', class: 'X MIPA 2', major: 'IPA', nis: '26027', nisn: '0081234527', user: 'lathifah', pass: 'siswa123', room: 'LAB-02', session: 'Sesi 1 (Pagi)' },
+  { name: 'MUHAMMAD ADITYA PRATAMA', gender: 'L', class: 'X MIPA 2', major: 'IPA', nis: '26028', nisn: '0081234528', user: 'aditya', pass: 'siswa123', room: 'LAB-02', session: 'Sesi 1 (Pagi)' },
+  { name: 'MUHAMMAD AL FATHIR', gender: 'L', class: 'X MIPA 2', major: 'IPA', nis: '26029', nisn: '0081234529', user: 'fathir', pass: 'siswa123', room: 'LAB-02', session: 'Sesi 1 (Pagi)' },
+  { name: 'MUHAMMAD AZKA AL GHIFFARI', gender: 'L', class: 'X MIPA 2', major: 'IPA', nis: '26030', nisn: '0081234530', user: 'azka', pass: 'siswa123', room: 'LAB-02', session: 'Sesi 1 (Pagi)' },
+  { name: 'MUHAMMAD FATHURRAHMAN', gender: 'L', class: 'X MIPA 2', major: 'IPA', nis: '26031', nisn: '0081234531', user: 'fathur', pass: 'siswa123', room: 'LAB-02', session: 'Sesi 1 (Pagi)' },
+  { name: 'MUHAMMAD IHSANUDDIN', gender: 'L', class: 'X MIPA 2', major: 'IPA', nis: '26032', nisn: '0081234532', user: 'ihsan', pass: 'siswa123', room: 'LAB-02', session: 'Sesi 1 (Pagi)' },
+  { name: 'MUHAMMAD NABIL AS SHIDDIQ', gender: 'L', class: 'X MIPA 2', major: 'IPA', nis: '26033', nisn: '0081234533', user: 'nabil', pass: 'siswa123', room: 'LAB-02', session: 'Sesi 1 (Pagi)' },
+  { name: 'MUHAMMAD RAYYAN', gender: 'L', class: 'X MIPA 2', major: 'IPA', nis: '26034', nisn: '0081234534', user: 'rayyan', pass: 'siswa123', room: 'LAB-02', session: 'Sesi 1 (Pagi)' },
+  { name: 'NABILA ZAHRA PUTRI', gender: 'P', class: 'X MIPA 2', major: 'IPA', nis: '26035', nisn: '0081234535', user: 'nabila', pass: 'siswa123', room: 'LAB-02', session: 'Sesi 1 (Pagi)' },
+  { name: 'NADIA SAFIRA', gender: 'P', class: 'X MIPA 2', major: 'IPA', nis: '26036', nisn: '0081234536', user: 'nadia.s', pass: 'siswa123', room: 'LAB-02', session: 'Sesi 1 (Pagi)' },
+  { name: 'NAUFAL ABDILLAH', gender: 'L', class: 'X MIPA 2', major: 'IPA', nis: '26037', nisn: '0081234537', user: 'naufal', pass: 'siswa123', room: 'LAB-02', session: 'Sesi 1 (Pagi)' },
+  { name: 'NAYLA PUTRI AZZAHRA', gender: 'P', class: 'X MIPA 2', major: 'IPA', nis: '26038', nisn: '0081234538', user: 'nayla', pass: 'siswa123', room: 'LAB-02', session: 'Sesi 1 (Pagi)' },
+  { name: 'NURUL AULIA RAHMA', gender: 'P', class: 'X MIPA 2', major: 'IPA', nis: '26039', nisn: '0081234539', user: 'nurul', pass: 'siswa123', room: 'LAB-02', session: 'Sesi 1 (Pagi)' },
+  { name: 'PUTRI AYU LESTARI', gender: 'P', class: 'X MIPA 2', major: 'IPA', nis: '26040', nisn: '0081234540', user: 'putri.ayu', pass: 'siswa123', room: 'LAB-02', session: 'Sesi 1 (Pagi)' },
+  { name: 'RADITYA PRATAMA', gender: 'L', class: 'X MIPA 2', major: 'IPA', nis: '26041', nisn: '0081234541', user: 'raditya', pass: 'siswa123', room: 'LAB-02', session: 'Sesi 1 (Pagi)' },
+  { name: 'RAFAEL AL GHAZALI', gender: 'L', class: 'X MIPA 2', major: 'IPA', nis: '26042', nisn: '0081234542', user: 'rafael', pass: 'siswa123', room: 'LAB-02', session: 'Sesi 1 (Pagi)' },
+  { name: 'RAIHAN SURYA DINATA', gender: 'L', class: 'X MIPA 2', major: 'IPA', nis: '26043', nisn: '0081234543', user: 'raihan', pass: 'siswa123', room: 'LAB-02', session: 'Sesi 1 (Pagi)' },
+  { name: 'RANIA AMIRA', gender: 'P', class: 'X MIPA 2', major: 'IPA', nis: '26044', nisn: '0081234544', user: 'rania', pass: 'siswa123', room: 'LAB-02', session: 'Sesi 1 (Pagi)' },
+  { name: 'RAYHAN ARDIANSYAH', gender: 'L', class: 'X MIPA 2', major: 'IPA', nis: '26045', nisn: '0081234545', user: 'rayhan.a', pass: 'siswa123', room: 'LAB-02', session: 'Sesi 1 (Pagi)' },
+  { name: 'RIZKY ALAMSYAH', gender: 'L', class: 'X MIPA 2', major: 'IPA', nis: '26046', nisn: '0081234546', user: 'rizky.a', pass: 'siswa123', room: 'LAB-02', session: 'Sesi 1 (Pagi)' },
+  { name: 'SALSABILA MAULIDA', gender: 'P', class: 'X MIPA 2', major: 'IPA', nis: '26047', nisn: '0081234547', user: 'salsabila', pass: 'siswa123', room: 'LAB-02', session: 'Sesi 1 (Pagi)' },
+  { name: 'SITI AISYAH NUR', gender: 'P', class: 'X MIPA 2', major: 'IPA', nis: '26048', nisn: '0081234548', user: 'aisyah', pass: 'siswa123', room: 'LAB-02', session: 'Sesi 1 (Pagi)' },
+  { name: 'SITI NURHALIZA PUTRI', gender: 'P', class: 'X MIPA 2', major: 'IPA', nis: '26049', nisn: '0081234549', user: 'siti.nur', pass: 'siswa123', room: 'LAB-02', session: 'Sesi 1 (Pagi)' },
+  { name: 'SYIFA SYAUQIYAH HI. TAHA', gender: 'P', class: 'X MIPA 2', major: 'IPA', nis: '26050', nisn: '0081234550', user: 'syifa', pass: 'siswa123', room: 'LAB-02', session: 'Sesi 1 (Pagi)' },
+
+  // X IPS 1 (25 siswa)
+  { name: 'ADAM MALIK HIDAYAT', gender: 'L', class: 'X IPS 1', major: 'IPS', nis: '26051', nisn: '0081234551', user: 'adam', pass: 'siswa123', room: 'LAB-01', session: 'Sesi 2 (Siang)' },
+  { name: 'ADINDA KUSUMA DEWI', gender: 'P', class: 'X IPS 1', major: 'IPS', nis: '26052', nisn: '0081234552', user: 'adinda', pass: 'siswa123', room: 'LAB-01', session: 'Sesi 2 (Siang)' },
+  { name: 'AHMAD SYAIFULLAH', gender: 'L', class: 'X IPS 1', major: 'IPS', nis: '26053', nisn: '0081234553', user: 'syaifullah', pass: 'siswa123', room: 'LAB-01', session: 'Sesi 2 (Siang)' },
+  { name: 'ALDI PRATAMA', gender: 'L', class: 'X IPS 1', major: 'IPS', nis: '26054', nisn: '0081234554', user: 'aldi', pass: 'siswa123', room: 'LAB-01', session: 'Sesi 2 (Siang)' },
+  { name: 'ALICIA MAHARANI', gender: 'P', class: 'X IPS 1', major: 'IPS', nis: '26055', nisn: '0081234555', user: 'alicia', pass: 'siswa123', room: 'LAB-01', session: 'Sesi 2 (Siang)' },
+  { name: 'ANGGA SAPUTRA', gender: 'L', class: 'X IPS 1', major: 'IPS', nis: '26056', nisn: '0081234556', user: 'angga', pass: 'siswa123', room: 'LAB-01', session: 'Sesi 2 (Siang)' },
+  { name: 'AQILA BILQIS', gender: 'P', class: 'X IPS 1', major: 'IPS', nis: '26057', nisn: '0081234557', user: 'aqila', pass: 'siswa123', room: 'LAB-01', session: 'Sesi 2 (Siang)' },
+  { name: 'ARDIANSYAH RAMADHANI', gender: 'L', class: 'X IPS 1', major: 'IPS', nis: '26058', nisn: '0081234558', user: 'ardiansyah', pass: 'siswa123', room: 'LAB-01', session: 'Sesi 2 (Siang)' },
+  { name: 'ARYA WIJAYA', gender: 'L', class: 'X IPS 1', major: 'IPS', nis: '26059', nisn: '0081234559', user: 'arya.w', pass: 'siswa123', room: 'LAB-01', session: 'Sesi 2 (Siang)' },
+  { name: 'BAYU ANUGRAH', gender: 'L', class: 'X IPS 1', major: 'IPS', nis: '26060', nisn: '0081234560', user: 'bayu', pass: 'siswa123', room: 'LAB-01', session: 'Sesi 2 (Siang)' },
+  { name: 'CANTIKA PUTRI', gender: 'P', class: 'X IPS 1', major: 'IPS', nis: '26061', nisn: '0081234561', user: 'cantika', pass: 'siswa123', room: 'LAB-01', session: 'Sesi 2 (Siang)' },
+  { name: 'DANIEL PRATAMA', gender: 'L', class: 'X IPS 1', major: 'IPS', nis: '26062', nisn: '0081234562', user: 'daniel', pass: 'siswa123', room: 'LAB-01', session: 'Sesi 2 (Siang)' },
+  { name: 'DINA MARIANA', gender: 'P', class: 'X IPS 1', major: 'IPS', nis: '26063', nisn: '0081234563', user: 'dina', pass: 'siswa123', room: 'LAB-01', session: 'Sesi 2 (Siang)' },
+  { name: 'EKA PRASETYA', gender: 'L', class: 'X IPS 1', major: 'IPS', nis: '26064', nisn: '0081234564', user: 'eka', pass: 'siswa123', room: 'LAB-01', session: 'Sesi 2 (Siang)' },
+  { name: 'FAUZAN HAKIM', gender: 'L', class: 'X IPS 1', major: 'IPS', nis: '26065', nisn: '0081234565', user: 'fauzan', pass: 'siswa123', room: 'LAB-01', session: 'Sesi 2 (Siang)' },
+  { name: 'GILANG RAMADHAN', gender: 'L', class: 'X IPS 1', major: 'IPS', nis: '26066', nisn: '0081234566', user: 'gilang', pass: 'siswa123', room: 'LAB-01', session: 'Sesi 2 (Siang)' },
+  { name: 'HAFIDZ ARSYAD', gender: 'L', class: 'X IPS 1', major: 'IPS', nis: '26067', nisn: '0081234567', user: 'hafidz.a', pass: 'siswa123', room: 'LAB-01', session: 'Sesi 2 (Siang)' },
+  { name: 'HENDRA WIJAYA', gender: 'L', class: 'X IPS 1', major: 'IPS', nis: '26068', nisn: '0081234568', user: 'hendra', pass: 'siswa123', room: 'LAB-01', session: 'Sesi 2 (Siang)' },
+  { name: 'ILHAM KURNIAWAN', gender: 'L', class: 'X IPS 1', major: 'IPS', nis: '26069', nisn: '0081234569', user: 'ilham', pass: 'siswa123', room: 'LAB-01', session: 'Sesi 2 (Siang)' },
+  { name: 'JASMINE NADIRA', gender: 'P', class: 'X IPS 1', major: 'IPS', nis: '26070', nisn: '0081234570', user: 'jasmine', pass: 'siswa123', room: 'LAB-01', session: 'Sesi 2 (Siang)' },
+  { name: 'KEVIN ADITYA', gender: 'L', class: 'X IPS 1', major: 'IPS', nis: '26071', nisn: '0081234571', user: 'kevin', pass: 'siswa123', room: 'LAB-01', session: 'Sesi 2 (Siang)' },
+  { name: 'LARASATI INDAH', gender: 'P', class: 'X IPS 1', major: 'IPS', nis: '26072', nisn: '0081234572', user: 'larasati', pass: 'siswa123', room: 'LAB-01', session: 'Sesi 2 (Siang)' },
+  { name: 'MIKO ARDIAN', gender: 'L', class: 'X IPS 1', major: 'IPS', nis: '26073', nisn: '0081234573', user: 'miko', pass: 'siswa123', room: 'LAB-01', session: 'Sesi 2 (Siang)' },
+  { name: 'NADIRA AYUNINGTYAS', gender: 'P', class: 'X IPS 1', major: 'IPS', nis: '26074', nisn: '0081234574', user: 'nadira', pass: 'siswa123', room: 'LAB-01', session: 'Sesi 2 (Siang)' },
+  { name: 'OLIVIA CANDRA', gender: 'P', class: 'X IPS 1', major: 'IPS', nis: '26075', nisn: '0081234575', user: 'olivia', pass: 'siswa123', room: 'LAB-01', session: 'Sesi 2 (Siang)' },
+
+  // X IPS 2 (25 siswa)
+  { name: 'PANJI ASMARA', gender: 'L', class: 'X IPS 2', major: 'IPS', nis: '26076', nisn: '0081234576', user: 'panji', pass: 'siswa123', room: 'LAB-02', session: 'Sesi 2 (Siang)' },
+  { name: 'QORI NUR AZIZAH', gender: 'P', class: 'X IPS 2', major: 'IPS', nis: '26077', nisn: '0081234577', user: 'qori', pass: 'siswa123', room: 'LAB-02', session: 'Sesi 2 (Siang)' },
+  { name: 'RADEN MAS FACHRI', gender: 'L', class: 'X IPS 2', major: 'IPS', nis: '26078', nisn: '0081234578', user: 'fachri', pass: 'siswa123', room: 'LAB-02', session: 'Sesi 2 (Siang)' },
+  { name: 'RENDI SAPUTRA', gender: 'L', class: 'X IPS 2', major: 'IPS', nis: '26079', nisn: '0081234579', user: 'rendi', pass: 'siswa123', room: 'LAB-02', session: 'Sesi 2 (Siang)' },
+  { name: 'RIFQI PRADITYA', gender: 'L', class: 'X IPS 2', major: 'IPS', nis: '26080', nisn: '0081234580', user: 'rifqi', pass: 'siswa123', room: 'LAB-02', session: 'Sesi 2 (Siang)' },
+  { name: 'RIO FERDINAND', gender: 'L', class: 'X IPS 2', major: 'IPS', nis: '26081', nisn: '0081234581', user: 'rio', pass: 'siswa123', room: 'LAB-02', session: 'Sesi 2 (Siang)' },
+  { name: 'SALMA SALSABILA', gender: 'P', class: 'X IPS 2', major: 'IPS', nis: '26082', nisn: '0081234582', user: 'salma', pass: 'siswa123', room: 'LAB-02', session: 'Sesi 2 (Siang)' },
+  { name: 'SATRIA PAMUNGKAS', gender: 'L', class: 'X IPS 2', major: 'IPS', nis: '26083', nisn: '0081234583', user: 'satria', pass: 'siswa123', room: 'LAB-02', session: 'Sesi 2 (Siang)' },
+  { name: 'SEPTIAN NUGROHO', gender: 'L', class: 'X IPS 2', major: 'IPS', nis: '26084', nisn: '0081234584', user: 'septian', pass: 'siswa123', room: 'LAB-02', session: 'Sesi 2 (Siang)' },
+  { name: 'SULTAN AL QUSYAIRY ASRA', gender: 'L', class: 'X IPS 2', major: 'IPS', nis: '26085', nisn: '0081234585', user: 'sultan', pass: 'siswa123', room: 'LAB-02', session: 'Sesi 2 (Siang)' },
+  { name: 'SURYA DHARMA', gender: 'L', class: 'X IPS 2', major: 'IPS', nis: '26086', nisn: '0081234586', user: 'surya.d', pass: 'siswa123', room: 'LAB-02', session: 'Sesi 2 (Siang)' },
+  { name: 'TEUKU UMAR FARUQ', gender: 'L', class: 'X IPS 2', major: 'IPS', nis: '26087', nisn: '0081234587', user: 'teuku', pass: 'siswa123', room: 'LAB-02', session: 'Sesi 2 (Siang)' },
+  { name: 'TIARA ANDINI', gender: 'P', class: 'X IPS 2', major: 'IPS', nis: '26088', nisn: '0081234588', user: 'tiara', pass: 'siswa123', room: 'LAB-02', session: 'Sesi 2 (Siang)' },
+  { name: 'UTSMAN SYAHIDUL HAQI HADI', gender: 'L', class: 'X IPS 2', major: 'IPS', nis: '26089', nisn: '0081234589', user: 'utsman', pass: 'siswa123', room: 'LAB-02', session: 'Sesi 2 (Siang)' },
+  { name: 'VINA PANDUWINATA', gender: 'P', class: 'X IPS 2', major: 'IPS', nis: '26090', nisn: '0081234590', user: 'vina', pass: 'siswa123', room: 'LAB-02', session: 'Sesi 2 (Siang)' },
+  { name: 'WAHYU HIDAYAT', gender: 'L', class: 'X IPS 2', major: 'IPS', nis: '26091', nisn: '0081234591', user: 'wahyu', pass: 'siswa123', room: 'LAB-02', session: 'Sesi 2 (Siang)' },
+  { name: 'WILDAN MUKHALLADUN', gender: 'L', class: 'X IPS 2', major: 'IPS', nis: '26092', nisn: '0081234592', user: 'wildan', pass: 'siswa123', room: 'LAB-02', session: 'Sesi 2 (Siang)' },
+  { name: 'XENA NATALIA', gender: 'P', class: 'X IPS 2', major: 'IPS', nis: '26093', nisn: '0081234593', user: 'xena', pass: 'siswa123', room: 'LAB-02', session: 'Sesi 2 (Siang)' },
+  { name: 'YOGA PRATAMA', gender: 'L', class: 'X IPS 2', major: 'IPS', nis: '26094', nisn: '0081234594', user: 'yoga', pass: 'siswa123', room: 'LAB-02', session: 'Sesi 2 (Siang)' },
+  { name: 'YUDHA PRAWIRA', gender: 'L', class: 'X IPS 2', major: 'IPS', nis: '26095', nisn: '0081234595', user: 'yudha', pass: 'siswa123', room: 'LAB-02', session: 'Sesi 2 (Siang)' },
+  { name: 'YUSUF AL BASHIR', gender: 'L', class: 'X IPS 2', major: 'IPS', nis: '26096', nisn: '0081234596', user: 'yusuf', pass: 'siswa123', room: 'LAB-02', session: 'Sesi 2 (Siang)' },
+  { name: 'ZAHRATUL SITA', gender: 'P', class: 'X IPS 2', major: 'IPS', nis: '26097', nisn: '0081234597', user: 'zahratul', pass: 'siswa123', room: 'LAB-02', session: 'Sesi 2 (Siang)' },
+  { name: 'ZAINAL ABIDIN', gender: 'L', class: 'X IPS 2', major: 'IPS', nis: '26098', nisn: '0081234598', user: 'zainal', pass: 'siswa123', room: 'LAB-02', session: 'Sesi 2 (Siang)' },
+  { name: 'ZAKARIA AL ANSHARI', gender: 'L', class: 'X IPS 2', major: 'IPS', nis: '26099', nisn: '0081234599', user: 'zakaria', pass: 'siswa123', room: 'LAB-02', session: 'Sesi 2 (Siang)' },
+  { name: 'ZULFA KHAIRUNNISA', gender: 'P', class: 'X IPS 2', major: 'IPS', nis: '26100', nisn: '0081234600', user: 'zulfa', pass: 'siswa123', room: 'LAB-02', session: 'Sesi 2 (Siang)' },
+];
+
+console.log('Total students to generate:', studentRawNames.length);
+
+const mockStudents = studentRawNames.map((s, idx) => {
+  const classCode = s.class.includes('MIPA 1') ? '0101' : s.class.includes('MIPA 2') ? '0102' : s.class.includes('IPS 1') ? '0201' : '0202';
+  const numStr = String((idx % 25) + 1).padStart(4, '0');
+  const noPeserta = `26-27-04-1-${classCode}-${numStr}`;
+  const id = s.user === 'arjun' ? 'std_arjun' : s.user === 'abdul' ? 'std_abdul' : `std_${s.user.replace(/[^a-z0-9]/gi, '_')}`;
+
+  return {
+    id,
+    noPeserta,
+    name: s.name,
+    nisn: s.nisn,
+    nis: s.nis,
+    level: 'X',
+    className: s.class,
+    jurusan: s.major,
+    username: s.user,
+    passwordText: s.pass,
+    room: s.room,
+    session: s.session,
+    server: 'SERVER-01',
+    isActive: true,
+  };
+});
+
+module.exports = { mockStudents, studentRawNames };

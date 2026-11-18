@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="50%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#0284c7"/>
+    </linearGradient>
+    <linearGradient id="capGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#2563eb"/>
+    </linearGradient>
+    <linearGradient id="checkGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#34d399"/>
+      <stop offset="100%" stop-color="#10b981"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#000000" flood-opacity="0.5"/>
+    </filter>
+  </defs>
+
+  <!-- Background rounded squircle -->
+  <rect width="512" height="512" rx="112" fill="url(#bgGrad)"/>
+  
+  <!-- Outer subtle border -->
+  <rect width="504" height="504" x="4" y="4" rx="108" fill="none" stroke="#38bdf8" stroke-width="4" stroke-opacity="0.3"/>
+
+  <!-- Academic Graduation Cap (CBT / Education Symbol) -->
+  <g filter="url(#shadow)">
+    <!-- Cap Rhombus -->
+    <polygon points="256,96 448,192 256,288 64,192" fill="url(#capGrad)"/>
+    <!-- Cap Underbody -->
+    <path d="M128,228 L128,310 C128,368 256,396 256,396 C256,396 384,368 384,310 L384,228 L256,292 Z" fill="#1d4ed8"/>
+    <!-- Tassel -->
+    <path d="M410,200 L430,270 L420,330" fill="none" stroke="#fbbf24" stroke-width="8" stroke-linecap="round"/>
+    <circle cx="410" cy="200" r="8" fill="#f59e0b"/>
+    <rect x="414" y="324" width="12" height="24" rx="4" fill="#fbbf24"/>
+  </g>
+
+  <!-- Inner Digital Display Screen / Tablet Frame -->
+  <g filter="url(#shadow)">
+    <rect x="140" y="270" width="232" height="150" rx="18" fill="#0f172a" stroke="#38bdf8" stroke-width="6"/>
+    <!-- Screen Header Bar -->
+    <rect x="146" y="276" width="220" height="26" rx="12" fill="#1e293b"/>
+    <circle cx="166" cy="289" r="4" fill="#ef4444"/>
+    <circle cx="180" cy="289" r="4" fill="#f59e0b"/>
+    <circle cx="194" cy="289" r="4" fill="#10b981"/>
+
+    <!-- Green Success / Verified Checkmark Inside Screen -->
+    <circle cx="256" cy="355" r="36" fill="url(#checkGrad)"/>
+    <path d="M242,356 L252,366 L272,344" fill="none" stroke="#ffffff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+
+  <!-- Small text / indicator at bottom -->
+  <text x="256" y="470" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="28" font-weight="900" fill="#94a3b8" letter-spacing="4">SMART CBT</text>
+</svg>
