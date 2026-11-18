@@ -31,6 +31,7 @@ import {
 import { Student, ExamSchedule, StudentSession, SchoolBrandingSettings } from '../lib/types';
 import { getResolvedThemeColors } from '../lib/theme-palettes';
 import StudentExamPlayer from './StudentExamPlayer';
+import HelpTutorialModal from './common/HelpTutorialModal';
 
 interface StudentPortalProps {
   currentStudent: Student;
@@ -66,6 +67,7 @@ export default function StudentPortal({
 
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [showSettingsModal, setShowSettingsModal] = useState(false);
+  const [isHelpOpen, setIsHelpOpen] = useState(false);
 
   // Hari untuk kolom Jadwal Ujian Tersedia (Sesuai Screenshot: SENIN, SELASA, RABU, KAMIS)
   const days = ['SENIN', 'SELASA', 'RABU', 'KAMIS'] as const;
@@ -337,6 +339,15 @@ export default function StudentPortal({
 
         {/* User Profile Badge Siswa di Kanan Topbar */}
         <div className="flex items-center gap-3">
+          <button
+            onClick={() => setIsHelpOpen(true)}
+            className="px-2.5 py-1.5 rounded-full bg-white/10 hover:bg-white/20 transition-colors text-white font-bold cursor-pointer flex items-center gap-1.5 text-xs border border-white/15 shadow-xs"
+            title="Buku Panduan Ujian Siswa"
+          >
+            <HelpCircle className="w-3.5 h-3.5 text-amber-300" />
+            <span className="hidden sm:inline">Panduan Ujian</span>
+          </button>
+
           <button
             onClick={() => setShowSettingsModal(true)}
             className="p-1.5 rounded-full hover:bg-black/15 transition-colors text-white/90 hover:text-white cursor-pointer"
@@ -1077,6 +1088,18 @@ export default function StudentPortal({
           </div>
         </div>
       )}
+
+      {/* MODAL PANDUAN SISWA */}
+      <HelpTutorialModal
+        isOpen={isHelpOpen}
+        onClose={() => setIsHelpOpen(false)}
+        defaultRole="STUDENT"
+        onNavigateTab={(tab) => {
+          if (tab === 'siswa_ujian') setActiveMenu('UJIAN_HARI_INI');
+          else if (tab === 'siswa_jadwal') setActiveMenu('JADWAL');
+          else if (tab === 'siswa_nilai') setActiveMenu('NILAI');
+        }}
+      />
     </div>
   );
 }

@@ -4408,10 +4408,15 @@ export default function OperatorDashboard({
         defaultRole="OPERATOR"
         onNavigateTab={(tab) => {
           if (tab === 'superadmin_branding') setIsBrandingModalOpen(true);
-          else if (tab === 'operator_students') setActiveMenu('daftarPeserta');
-          else if (tab === 'operator_cetak') setActiveMenu('cetakKartu');
-          else if (tab === 'operator_jadwal') setActiveMenu('jadwalUjian');
-          else if (tab === 'operator_monitor') setActiveMenu('statusPeserta');
+          else if (tab === 'operator_master') navigateToMenu('importMaster');
+          else if (tab === 'operator_students') navigateToMenu('pesertaUjian');
+          else if (tab === 'operator_cetak') navigateToMenu('cetakKartu');
+          else if (tab === 'operator_jadwal' || tab === 'guru_jadwal') navigateToMenu('jadwalUjian');
+          else if (tab === 'operator_monitor') navigateToMenu('ubkStatus');
+          else if (tab === 'operator_nilai' || tab === 'guru_nilai') navigateToMenu('nilaiHasil');
+          else if (tab === 'guru_banksoal' || tab === 'operator_banksoal') navigateToMenu('bankSoal');
+          else if (tab === 'guru_mathstudio' || tab === 'operator_mathstudio') navigateToMenu('mathStudio');
+          else if (tab === 'guru_analisis') navigateToMenu('analisaPerSoal');
         }}
       />
     </div>

@@ -1915,8 +1915,14 @@ export default function TeacherPortal({
         defaultRole="TEACHER"
         onNavigateTab={(tab) => {
           if (tab === 'guru_banksoal') navigateToMenu('bankSoal');
+          else if (tab === 'guru_mathstudio') navigateToMenu('mathStudio');
+          else if (tab === 'guru_simulator') setIsAiEssaySimulatorOpen(true);
           else if (tab === 'guru_jadwal') navigateToMenu('jadwalUjian');
-          else if (tab === 'guru_analisis') navigateToMenu('analisaSoal');
+          else if (tab === 'guru_analisis') navigateToMenu('analisaPerSoal');
+          else if (tab === 'guru_nilai') navigateToMenu('nilaiHasil');
+          else if (tab === 'operator_monitor') navigateToMenu('ubkStatus');
+          else if (tab === 'operator_cetak') navigateToMenu('ubkCetakKartu');
+          else if (tab === 'operator_students') navigateToMenu('pesertaUjian');
         }}
       />
 

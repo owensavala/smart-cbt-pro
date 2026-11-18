@@ -38,6 +38,7 @@ import {
 import { SchoolBrandingSettings, ThemeColorKey } from '@/lib/types';
 import { DEFAULT_BRANDING_SETTINGS } from '@/lib/mock-data';
 import { THEME_PALETTES, ThemePalettePreset, getResolvedThemeColors, isColorDark } from '@/lib/theme-palettes';
+import HelpTutorialModal from './common/HelpTutorialModal';
 
 interface SuperAdminPortalProps {
   branding: SchoolBrandingSettings;
@@ -70,6 +71,7 @@ export default function SuperAdminPortal({
   const [formData, setFormData] = useState<SchoolBrandingSettings>({ ...branding });
   const [isSavedAlert, setIsSavedAlert] = useState(false);
   const [saveMessage, setSaveMessage] = useState('Kombinasi 4 warna, identitas sekolah, dan logo berhasil diterapkan global!');
+  const [isHelpOpen, setIsHelpOpen] = useState(false);
 
   // Resolve dynamic colors based on current formData draft
   const currentTheme = getResolvedThemeColors(formData);
@@ -306,6 +308,15 @@ export default function SuperAdminPortal({
               <span>Siswa</span>
             </button>
           </div>
+
+          <button
+            onClick={() => setIsHelpOpen(true)}
+            className="px-3 py-2 rounded-xl bg-white/15 hover:bg-white/25 text-white font-extrabold text-xs flex items-center gap-1.5 border border-white/20 transition-all cursor-pointer"
+            title="Pusat Panduan & Tutorial"
+          >
+            <HelpCircle className="w-4 h-4 text-amber-300" />
+            <span className="hidden sm:inline">Panduan</span>
+          </button>
 
           <button
             onClick={handleSave}
@@ -2266,6 +2277,13 @@ export default function SuperAdminPortal({
           &copy; {new Date().getFullYear()} {formData.schoolName} &bull; SmartCBT Pro Multi-Layer Architecture
         </p>
       </footer>
+
+      {/* MODAL PANDUAN SUPER ADMIN */}
+      <HelpTutorialModal
+        isOpen={isHelpOpen}
+        onClose={() => setIsHelpOpen(false)}
+        defaultRole="SUPER_ADMIN"
+      />
     </div>
   );
 }

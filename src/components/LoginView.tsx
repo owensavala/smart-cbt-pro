@@ -36,6 +36,7 @@ import {
   emergencyResetPasswordAction,
 } from '../app/actions/auth-actions';
 import { getResolvedThemeColors } from '../lib/theme-palettes';
+import HelpTutorialModal from './common/HelpTutorialModal';
 
 interface LoginViewProps {
   onLogin: (role: Role, username: string, sessionUser?: any) => void;
@@ -99,6 +100,7 @@ export default function LoginView({ onLogin, branding }: LoginViewProps) {
 
   // State Modal Bantuan Password Siswa
   const [isStudentHelpOpen, setIsStudentHelpOpen] = useState(false);
+  const [isHelpTutorialOpen, setIsHelpTutorialOpen] = useState(false);
 
   // Handler Request OTP
   const handleRequestOtp = async (e: React.FormEvent) => {
@@ -1573,6 +1575,24 @@ export default function LoginView({ onLogin, branding }: LoginViewProps) {
           </div>
         </div>
       )}
+
+      {/* Tombol Melayang Buka Panduan & Tutorial */}
+      <button
+        type="button"
+        onClick={() => setIsHelpTutorialOpen(true)}
+        className="fixed bottom-5 right-5 z-40 bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 hover:from-blue-500 hover:to-indigo-500 text-white font-black text-xs px-4 py-2.5 rounded-full shadow-2xl flex items-center gap-2 border border-blue-400/50 cursor-pointer transform hover:scale-105 transition-all"
+        title="Buka Pusat Panduan & Tutorial Resmi"
+      >
+        <BookOpen className="w-4 h-4 text-amber-300" />
+        <span>Buku Panduan &amp; Tutorial</span>
+      </button>
+
+      {/* MODAL PANDUAN RESMI SMARTCBT */}
+      <HelpTutorialModal
+        isOpen={isHelpTutorialOpen}
+        onClose={() => setIsHelpTutorialOpen(false)}
+        defaultRole="OPERATOR"
+      />
     </div>
   );
 }
