@@ -280,29 +280,33 @@ export default function SuperAdminPortal({
           </div>
         </div>
 
-        {/* Quick Portal Switcher & Action Buttons */}
+        {/* Quick Portal Switcher & Action Buttons (Option B: Explicit Role Simulation) */}
         <div className="flex items-center gap-2 md:gap-3">
-          <div className="hidden lg:flex items-center gap-1.5 bg-black/20 backdrop-blur-md p-1 rounded-xl border border-white/20 text-xs">
+          <div className="hidden lg:flex items-center gap-1 bg-black/30 backdrop-blur-md px-2.5 py-1 rounded-xl border border-white/20 text-xs shadow-inner">
+            <span className="text-[10px] font-black tracking-wider uppercase text-amber-200/90 flex items-center gap-1.5 pr-2 border-r border-white/20 select-none">
+              <Eye className="w-3.5 h-3.5 text-amber-300 animate-pulse" />
+              <span>Simulasi Peran:</span>
+            </span>
             <button
               onClick={() => onSwitchView('OPERATOR')}
-              className="px-2.5 py-1.5 rounded-lg text-white/90 hover:text-white hover:bg-white/10 font-bold transition-all cursor-pointer flex items-center gap-1.5"
-              title="Buka Portal Operator"
+              className="px-2.5 py-1 rounded-lg text-white/90 hover:text-white hover:bg-white/15 font-bold transition-all cursor-pointer flex items-center gap-1.5 active:scale-95"
+              title="Simulasi Tampilan sebagai Operator/Proktor Lab"
             >
               <Monitor className="w-3.5 h-3.5 text-blue-300" />
               <span>Operator</span>
             </button>
             <button
               onClick={() => onSwitchView('GURU')}
-              className="px-2.5 py-1.5 rounded-lg text-white/90 hover:text-white hover:bg-white/10 font-bold transition-all cursor-pointer flex items-center gap-1.5"
-              title="Buka Portal Guru"
+              className="px-2.5 py-1 rounded-lg text-white/90 hover:text-white hover:bg-white/15 font-bold transition-all cursor-pointer flex items-center gap-1.5 active:scale-95"
+              title="Simulasi Tampilan sebagai Guru Pengampu"
             >
               <GraduationCap className="w-3.5 h-3.5 text-emerald-300" />
               <span>Guru</span>
             </button>
             <button
               onClick={() => onSwitchView('SISWA')}
-              className="px-2.5 py-1.5 rounded-lg text-white/90 hover:text-white hover:bg-white/10 font-bold transition-all cursor-pointer flex items-center gap-1.5"
-              title="Buka Portal Siswa"
+              className="px-2.5 py-1 rounded-lg text-white/90 hover:text-white hover:bg-white/15 font-bold transition-all cursor-pointer flex items-center gap-1.5 active:scale-95"
+              title="Simulasi Ujian sebagai Siswa"
             >
               <Users className="w-3.5 h-3.5 text-amber-300" />
               <span>Siswa</span>

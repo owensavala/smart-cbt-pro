@@ -97,14 +97,6 @@ import AnalisaPerSoalView from './analisa/AnalisaPerSoalView';
 import AnalisaNilaiMapelView from './analisa/AnalisaNilaiMapelView';
 import AnalisaNilaiRankingView from './analisa/AnalisaNilaiRankingView';
 import PerbaikanNilaiView from './analisa/PerbaikanNilaiView';
-import CetakKartuView from './cetak/CetakKartuView';
-import StatusPesertaView from './ubk/StatusPesertaView';
-import PindahNilaiView from './ubk/PindahNilaiView';
-import ResetLoginView from './ubk/ResetLoginView';
-import RilisTokenView from './ubk/RilisTokenView';
-import PengacakSoalView from './ubk/PengacakSoalView';
-import BelumUjianView from './ubk/BelumUjianView';
-import LaporanPelanggaranView from './ubk/LaporanPelanggaranView';
 import HasilNilaiView from './nilai/HasilNilaiView';
 import HasilNilaiPerMapelView from './nilai/HasilNilaiPerMapelView';
 import HistoryNilaiView from './nilai/HistoryNilaiView';
@@ -165,21 +157,15 @@ export default function TeacherPortal({
   const [isHelpTutorialOpen, setIsHelpTutorialOpen] = useState(false);
   const [isAiEssaySimulatorOpen, setIsAiEssaySimulatorOpen] = useState(false);
 
-  // Navigation Menu: 'beranda' | 'mathStudio' | 'analisaPerSoal' | 'analisaMapel' | 'analisaRanking' | 'analisaPerbaikan' | 'pesertaUjian' | 'profilSaya' | 'pengumuman' | 'bankSoal' | 'jadwalUjian' | 'ubkStatus' | 'nilaiHasil'
+  // Navigation Menu: 'beranda' | 'bankSoal' | 'mathStudio' | 'jadwalUjian' | 'nilaiHasil' | 'nilaiPerMapel' | 'nilaiHistory' | 'analisaPerSoal' | 'analisaMapel' | 'analisaRanking' | 'analisaPerbaikan' | 'pengumuman' | 'profilSaya'
   const [activeMenu, setActiveMenu] = useState<string>('beranda');
   const [openSubmenus, setOpenSubmenus] = useState<Record<string, boolean>>({
     analisa: false,
-    ubk: false,
     nilai: false,
   });
 
   // Dropdown Profil Guru di Topbar
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
-
-  // State Peserta Ujian (Screenshot 1)
-  const [studentSearchTerm, setStudentSearchTerm] = useState('');
-  const [studentEntriesPerPage, setStudentEntriesPerPage] = useState(10);
-  const [studentCurrentPage, setStudentCurrentPage] = useState(1);
 
   // State Profil Saya (Screenshot 2)
   const [profileName, setProfileName] = useState(currentTeacher?.name || 'Dermawan Surya Kencana, S. Sos');
@@ -249,25 +235,6 @@ export default function TeacherPortal({
   const myAssignedSubjects = useMemo(() => {
     return subjects.filter((s) => currentTeacher?.assignedSubjectIds?.includes(s.id));
   }, [subjects, currentTeacher]);
-
-  // Filtered & Paginated Students (Matching Screenshot 1)
-  const filteredStudents = useMemo(() => {
-    return students.filter((s) => {
-      const q = studentSearchTerm.toLowerCase();
-      return (
-        s.name.toLowerCase().includes(q) ||
-        (s.noPeserta && s.noPeserta.toLowerCase().includes(q)) ||
-        (s.username && s.username.toLowerCase().includes(q)) ||
-        (s.className && s.className.toLowerCase().includes(q))
-      );
-    });
-  }, [students, studentSearchTerm]);
-
-  const totalStudentPages = Math.ceil(filteredStudents.length / studentEntriesPerPage) || 1;
-  const paginatedStudents = useMemo(() => {
-    const start = (studentCurrentPage - 1) * studentEntriesPerPage;
-    return filteredStudents.slice(start, start + studentEntriesPerPage);
-  }, [filteredStudents, studentCurrentPage, studentEntriesPerPage]);
 
   const handlePublishAnnouncement = (e: React.FormEvent) => {
     e.preventDefault();
@@ -354,7 +321,6 @@ export default function TeacherPortal({
       const willOpen = !prev[key];
       return {
         analisa: false,
-        ubk: false,
         nilai: false,
         [key]: willOpen,
       };
@@ -367,15 +333,6 @@ export default function TeacherPortal({
     analisaRanking: 'analisa',
     analisaPerbaikan: 'analisa',
 
-    ubkCetakKartu: 'ubk',
-    ubkStatus: 'ubk',
-    ubkPindahNilai: 'ubk',
-    ubkResetLogin: 'ubk',
-    ubkToken: 'ubk',
-    ubkPengacak: 'ubk',
-    ubkBelumUjian: 'ubk',
-    ubkPelanggaran: 'ubk',
-
     nilaiHasil: 'nilai',
     nilaiPerMapel: 'nilai',
     nilaiHistory: 'nilai',
@@ -386,7 +343,6 @@ export default function TeacherPortal({
     const parent = parentSubmenu || submenuParentMap[key];
     setOpenSubmenus({
       analisa: parent === 'analisa',
-      ubk: parent === 'ubk',
       nilai: parent === 'nilai',
     });
   };
@@ -466,7 +422,7 @@ export default function TeacherPortal({
             <span className="text-[9px] bg-black/20 px-1.5 py-0.5 rounded font-bold">PORTAL GURU</span>
           </div>
 
-          {/* DAFTAR MENU SIDEBAR GURU (Image 1 & 4) */}
+          {/* DAFTAR MENU SIDEBAR GURU (PEDAGOGIS & AKADEMIK) */}
           <nav className="p-2 space-y-0.5 text-slate-300">
             {/* 1. Beranda */}
             <button
@@ -481,7 +437,25 @@ export default function TeacherPortal({
               <span>Beranda</span>
             </button>
 
-            {/* 2. Math Studio */}
+            {/* 2. Bank Soal (AKM & Esai AI) */}
+            <button
+              onClick={() => navigateToMenu('bankSoal')}
+              className={`w-full flex items-center justify-between px-3 py-2 rounded-lg font-medium transition-colors cursor-pointer ${
+                activeMenu === 'bankSoal'
+                  ? 'bg-blue-600 text-white font-bold shadow-xs'
+                  : 'hover:bg-slate-800/60 hover:text-white'
+              }`}
+            >
+              <div className="flex items-center gap-2.5">
+                <Layers className="w-4 h-4 text-sky-400" />
+                <span>Bank Soal</span>
+              </div>
+              <span className="text-[9px] bg-emerald-500/20 text-emerald-300 px-1.5 py-0.5 rounded font-black border border-emerald-500/30">
+                AKM + AI
+              </span>
+            </button>
+
+            {/* 3. Math Studio */}
             <button
               onClick={() => navigateToMenu('mathStudio')}
               className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg font-medium transition-colors cursor-pointer ${
@@ -494,7 +468,87 @@ export default function TeacherPortal({
               <span>Math Studio</span>
             </button>
 
-            {/* 3. Analisa (Dropdown with 4 Submenus - Image 4) */}
+            {/* 4. Jadwal Ujian */}
+            <button
+              onClick={() => navigateToMenu('jadwalUjian')}
+              className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg font-medium transition-colors cursor-pointer ${
+                activeMenu === 'jadwalUjian'
+                  ? 'bg-blue-600 text-white font-bold shadow-xs'
+                  : 'hover:bg-slate-800/60 hover:text-white'
+              }`}
+            >
+              <Calendar className="w-4 h-4 text-amber-400" />
+              <span>Jadwal Ujian</span>
+            </button>
+
+            {/* 5. Nilai & Koreksi AI (Dropdown 3 Submenu) */}
+            <div>
+              <button
+                onClick={() => toggleSubmenu('nilai')}
+                className="w-full flex items-center justify-between px-3 py-2 rounded-lg font-medium hover:bg-slate-800/60 hover:text-white transition-colors cursor-pointer text-slate-300"
+              >
+                <div className="flex items-center gap-2.5">
+                  <Award className="w-4 h-4 text-purple-400" />
+                  <span>Nilai & Koreksi AI</span>
+                </div>
+                {openSubmenus.nilai ? (
+                  <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
+                ) : (
+                  <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
+                )}
+              </button>
+
+              {openSubmenus.nilai && (
+                <div className="relative bg-[#191c25] border-t border-b border-slate-800/80 py-1 pl-3.5 my-0.5">
+                  <div className="absolute left-5 top-0 bottom-0 w-[2px] bg-slate-500/80" />
+                  <div className="space-y-0.5 relative z-10">
+                    {/* 1. Hasil Nilai */}
+                    <button
+                      onClick={() => setActiveMenu('nilaiHasil')}
+                      className={`relative w-full text-left py-1.5 pl-6 pr-2.5 rounded-md transition-colors cursor-pointer flex items-center gap-2 text-xs ${
+                        activeMenu === 'nilaiHasil'
+                          ? 'bg-blue-600/30 text-blue-300 font-bold border border-blue-500/30'
+                          : 'text-slate-300 hover:text-white hover:bg-slate-800/50'
+                      }`}
+                    >
+                      <span className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-[2px] bg-slate-500/80" />
+                      <FileText className="w-3.5 h-3.5 text-rose-400 shrink-0" />
+                      <span>Hasil Nilai & Veto AI</span>
+                    </button>
+
+                    {/* 2. Nilai Per Mapel */}
+                    <button
+                      onClick={() => setActiveMenu('nilaiPerMapel')}
+                      className={`relative w-full text-left py-1.5 pl-6 pr-2.5 rounded-md transition-colors cursor-pointer flex items-center gap-2 text-xs ${
+                        activeMenu === 'nilaiPerMapel'
+                          ? 'bg-blue-600/30 text-blue-300 font-bold border border-blue-500/30'
+                          : 'text-slate-300 hover:text-white hover:bg-slate-800/50'
+                      }`}
+                    >
+                      <span className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-[2px] bg-slate-500/80" />
+                      <BarChart3 className="w-3.5 h-3.5 text-sky-400 shrink-0" />
+                      <span>Nilai Per Mapel</span>
+                    </button>
+
+                    {/* 3. History Jawaban */}
+                    <button
+                      onClick={() => setActiveMenu('nilaiHistory')}
+                      className={`relative w-full text-left py-1.5 pl-6 pr-2.5 rounded-md transition-colors cursor-pointer flex items-center gap-2 text-xs ${
+                        activeMenu === 'nilaiHistory'
+                          ? 'bg-blue-600/30 text-blue-300 font-bold border border-blue-500/30'
+                          : 'text-slate-300 hover:text-white hover:bg-slate-800/50'
+                      }`}
+                    >
+                      <span className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-[2px] bg-slate-500/80" />
+                      <Clock className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                      <span>History Jawaban</span>
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* 6. Analisa (Dropdown with 4 Submenus - Image 4) */}
             <div>
               <button
                 onClick={() => toggleSubmenu('analisa')}
@@ -502,7 +556,7 @@ export default function TeacherPortal({
               >
                 <div className="flex items-center gap-2.5">
                   <BarChart3 className="w-4 h-4 text-cyan-400" />
-                  <span>Analisa</span>
+                  <span>Analisa Butir Soal</span>
                 </div>
                 {openSubmenus.analisa ? (
                   <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
@@ -558,39 +612,13 @@ export default function TeacherPortal({
                     }`}
                   >
                     <Settings className="w-3.5 h-3.5 text-slate-400" />
-                    <span>Perbaikan Nilai</span>
+                    <span>Perbaikan Nilai (Remedial)</span>
                   </button>
                 </div>
               )}
             </div>
 
-            {/* 4. Peserta Ujian */}
-            <button
-              onClick={() => navigateToMenu('pesertaUjian')}
-              className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg font-medium transition-colors cursor-pointer ${
-                activeMenu === 'pesertaUjian'
-                  ? 'bg-blue-600 text-white font-bold shadow-xs'
-                  : 'hover:bg-slate-800/60 hover:text-white'
-              }`}
-            >
-              <Users className="w-4 h-4 text-emerald-400" />
-              <span>Peserta Ujian</span>
-            </button>
-
-            {/* 5. Profil Saya */}
-            <button
-              onClick={() => navigateToMenu('profilSaya')}
-              className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg font-medium transition-colors cursor-pointer ${
-                activeMenu === 'profilSaya'
-                  ? 'bg-blue-600 text-white font-bold shadow-xs'
-                  : 'hover:bg-slate-800/60 hover:text-white'
-              }`}
-            >
-              <User className="w-4 h-4 text-amber-400" />
-              <span>Profil Saya</span>
-            </button>
-
-            {/* 6. Pengumuman */}
+            {/* 7. Pengumuman */}
             <button
               onClick={() => navigateToMenu('pengumuman')}
               className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg font-medium transition-colors cursor-pointer ${
@@ -603,235 +631,18 @@ export default function TeacherPortal({
               <span>Pengumuman</span>
             </button>
 
-            {/* 7. Bank Soal */}
+            {/* 8. Profil Saya */}
             <button
-              onClick={() => navigateToMenu('bankSoal')}
+              onClick={() => navigateToMenu('profilSaya')}
               className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg font-medium transition-colors cursor-pointer ${
-                activeMenu === 'bankSoal'
+                activeMenu === 'profilSaya'
                   ? 'bg-blue-600 text-white font-bold shadow-xs'
                   : 'hover:bg-slate-800/60 hover:text-white'
               }`}
             >
-              <Layers className="w-4 h-4 text-sky-400" />
-              <span>Bank Soal</span>
+              <User className="w-4 h-4 text-amber-400" />
+              <span>Profil Saya</span>
             </button>
-
-            {/* 8. Jadwal Ujian */}
-            <button
-              onClick={() => navigateToMenu('jadwalUjian')}
-              className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg font-medium transition-colors cursor-pointer ${
-                activeMenu === 'jadwalUjian'
-                  ? 'bg-blue-600 text-white font-bold shadow-xs'
-                  : 'hover:bg-slate-800/60 hover:text-white'
-              }`}
-            >
-              <Calendar className="w-4 h-4 text-purple-400" />
-              <span>Jadwal Ujian</span>
-            </button>
-
-            {/* 9. UBK (Dropdown 8 Submenu Matching Screenshot 3) */}
-            <div>
-              <button
-                onClick={() => toggleSubmenu('ubk')}
-                className="w-full flex items-center justify-between px-3 py-2 rounded-lg font-medium hover:bg-slate-800/60 hover:text-white transition-colors cursor-pointer text-slate-300"
-              >
-                <div className="flex items-center gap-2.5">
-                  <Monitor className="w-4 h-4 text-rose-400" />
-                  <span>UBK</span>
-                </div>
-                {openSubmenus.ubk ? (
-                  <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
-                ) : (
-                  <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
-                )}
-              </button>
-
-              {openSubmenus.ubk && (
-                <div className="relative bg-[#191c25] border-t border-b border-slate-800/80 py-1 pl-3.5 my-0.5">
-                  <div className="absolute left-5 top-0 bottom-0 w-[2px] bg-slate-500/80" />
-                  <div className="space-y-0.5 relative z-10">
-                    {/* 1. Cetak Kartu */}
-                    <button
-                      onClick={() => setActiveMenu('ubkCetakKartu')}
-                      className={`relative w-full text-left py-1.5 pl-6 pr-2.5 rounded-md transition-colors cursor-pointer flex items-center gap-2 text-xs ${
-                        activeMenu === 'ubkCetakKartu'
-                          ? 'bg-blue-600/30 text-blue-300 font-bold border border-blue-500/30'
-                          : 'text-slate-300 hover:text-white hover:bg-slate-800/50'
-                      }`}
-                    >
-                      <span className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-[2px] bg-slate-500/80" />
-                      <CreditCard className="w-3.5 h-3.5 text-sky-400 shrink-0" />
-                      <span>Cetak Kartu</span>
-                    </button>
-
-                    {/* 2. Status Peserta */}
-                    <button
-                      onClick={() => setActiveMenu('ubkStatus')}
-                      className={`relative w-full text-left py-1.5 pl-6 pr-2.5 rounded-md transition-colors cursor-pointer flex items-center gap-2 text-xs ${
-                        activeMenu === 'ubkStatus'
-                          ? 'bg-blue-600/30 text-blue-300 font-bold border border-blue-500/30'
-                          : 'text-slate-300 hover:text-white hover:bg-slate-800/50'
-                      }`}
-                    >
-                      <span className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-[2px] bg-slate-500/80" />
-                      <Users className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                      <span>Status Peserta</span>
-                    </button>
-
-                    {/* 3. Pindah Nilai */}
-                    <button
-                      onClick={() => setActiveMenu('ubkPindahNilai')}
-                      className={`relative w-full text-left py-1.5 pl-6 pr-2.5 rounded-md transition-colors cursor-pointer flex items-center gap-2 text-xs ${
-                        activeMenu === 'ubkPindahNilai'
-                          ? 'bg-blue-600/30 text-blue-300 font-bold border border-blue-500/30'
-                          : 'text-slate-300 hover:text-white hover:bg-slate-800/50'
-                      }`}
-                    >
-                      <span className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-[2px] bg-slate-500/80" />
-                      <FolderSync className="w-3.5 h-3.5 text-sky-400 shrink-0" />
-                      <span>Pindah Nilai</span>
-                    </button>
-
-                    {/* 4. Reset Login */}
-                    <button
-                      onClick={() => setActiveMenu('ubkResetLogin')}
-                      className={`relative w-full text-left py-1.5 pl-6 pr-2.5 rounded-md transition-colors cursor-pointer flex items-center gap-2 text-xs ${
-                        activeMenu === 'ubkResetLogin'
-                          ? 'bg-blue-600/30 text-blue-300 font-bold border border-blue-500/30'
-                          : 'text-slate-300 hover:text-white hover:bg-slate-800/50'
-                      }`}
-                    >
-                      <span className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-[2px] bg-slate-500/80" />
-                      <RotateCcw className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                      <span>Reset Login</span>
-                    </button>
-
-                    {/* 5. Token Ujian */}
-                    <button
-                      onClick={() => setActiveMenu('ubkToken')}
-                      className={`relative w-full text-left py-1.5 pl-6 pr-2.5 rounded-md transition-colors cursor-pointer flex items-center gap-2 text-xs ${
-                        activeMenu === 'ubkToken'
-                          ? 'bg-blue-600/30 text-blue-300 font-bold border border-blue-500/30'
-                          : 'text-slate-300 hover:text-white hover:bg-slate-800/50'
-                      }`}
-                    >
-                      <span className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-[2px] bg-slate-500/80" />
-                      <Bell className="w-3.5 h-3.5 text-rose-400 shrink-0" />
-                      <span>Token Ujian</span>
-                    </button>
-
-                    {/* 6. Pengacak Soal */}
-                    <button
-                      onClick={() => setActiveMenu('ubkPengacak')}
-                      className={`relative w-full text-left py-1.5 pl-6 pr-2.5 rounded-md transition-colors cursor-pointer flex items-center gap-2 text-xs ${
-                        activeMenu === 'ubkPengacak'
-                          ? 'bg-blue-600/30 text-blue-300 font-bold border border-blue-500/30'
-                          : 'text-slate-300 hover:text-white hover:bg-slate-800/50'
-                      }`}
-                    >
-                      <span className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-[2px] bg-slate-500/80" />
-                      <Shuffle className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                      <span>Pengacak Soal</span>
-                    </button>
-
-                    {/* 7. Siswa Tidak Ikut Ujian */}
-                    <button
-                      onClick={() => setActiveMenu('ubkBelumUjian')}
-                      className={`relative w-full text-left py-1.5 pl-6 pr-2.5 rounded-md transition-colors cursor-pointer flex items-center gap-2 text-xs ${
-                        activeMenu === 'ubkBelumUjian'
-                          ? 'bg-blue-600/30 text-blue-300 font-bold border border-blue-500/30'
-                          : 'text-slate-300 hover:text-white hover:bg-slate-800/50'
-                      }`}
-                    >
-                      <span className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-[2px] bg-slate-500/80" />
-                      <AlertTriangle className="w-3.5 h-3.5 text-rose-500 shrink-0" />
-                      <span>Siswa Tidak Ikut Ujian</span>
-                    </button>
-
-                    {/* 8. Laporan Pelanggaran */}
-                    <button
-                      onClick={() => setActiveMenu('ubkPelanggaran')}
-                      className={`relative w-full text-left py-1.5 pl-6 pr-2.5 rounded-md transition-colors cursor-pointer flex items-center gap-2 text-xs ${
-                        activeMenu === 'ubkPelanggaran'
-                          ? 'bg-blue-600/30 text-blue-300 font-bold border border-blue-500/30'
-                          : 'text-slate-300 hover:text-white hover:bg-slate-800/50'
-                      }`}
-                    >
-                      <span className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-[2px] bg-slate-500/80" />
-                      <ShieldAlert className="w-3.5 h-3.5 text-purple-400 shrink-0" />
-                      <span>Laporan Pelanggaran</span>
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* 10. Nilai (Dropdown 3 Submenu Matching Screenshot 4) */}
-            <div>
-              <button
-                onClick={() => toggleSubmenu('nilai')}
-                className="w-full flex items-center justify-between px-3 py-2 rounded-lg font-medium hover:bg-slate-800/60 hover:text-white transition-colors cursor-pointer text-slate-300"
-              >
-                <div className="flex items-center gap-2.5">
-                  <Award className="w-4 h-4 text-purple-400" />
-                  <span>Nilai</span>
-                </div>
-                {openSubmenus.nilai ? (
-                  <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
-                ) : (
-                  <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
-                )}
-              </button>
-
-              {openSubmenus.nilai && (
-                <div className="relative bg-[#191c25] border-t border-b border-slate-800/80 py-1 pl-3.5 my-0.5">
-                  <div className="absolute left-5 top-0 bottom-0 w-[2px] bg-slate-500/80" />
-                  <div className="space-y-0.5 relative z-10">
-                    {/* 1. Hasil Nilai */}
-                    <button
-                      onClick={() => setActiveMenu('nilaiHasil')}
-                      className={`relative w-full text-left py-1.5 pl-6 pr-2.5 rounded-md transition-colors cursor-pointer flex items-center gap-2 text-xs ${
-                        activeMenu === 'nilaiHasil'
-                          ? 'bg-blue-600/30 text-blue-300 font-bold border border-blue-500/30'
-                          : 'text-slate-300 hover:text-white hover:bg-slate-800/50'
-                      }`}
-                    >
-                      <span className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-[2px] bg-slate-500/80" />
-                      <FileText className="w-3.5 h-3.5 text-rose-400 shrink-0" />
-                      <span>Hasil Nilai</span>
-                    </button>
-
-                    {/* 2. Nilai Per Mapel */}
-                    <button
-                      onClick={() => setActiveMenu('nilaiPerMapel')}
-                      className={`relative w-full text-left py-1.5 pl-6 pr-2.5 rounded-md transition-colors cursor-pointer flex items-center gap-2 text-xs ${
-                        activeMenu === 'nilaiPerMapel'
-                          ? 'bg-blue-600/30 text-blue-300 font-bold border border-blue-500/30'
-                          : 'text-slate-300 hover:text-white hover:bg-slate-800/50'
-                      }`}
-                    >
-                      <span className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-[2px] bg-slate-500/80" />
-                      <BarChart3 className="w-3.5 h-3.5 text-sky-400 shrink-0" />
-                      <span>Nilai Per Mapel</span>
-                    </button>
-
-                    {/* 3. History Jawaban */}
-                    <button
-                      onClick={() => setActiveMenu('nilaiHistory')}
-                      className={`relative w-full text-left py-1.5 pl-6 pr-2.5 rounded-md transition-colors cursor-pointer flex items-center gap-2 text-xs ${
-                        activeMenu === 'nilaiHistory'
-                          ? 'bg-blue-600/30 text-blue-300 font-bold border border-blue-500/30'
-                          : 'text-slate-300 hover:text-white hover:bg-slate-800/50'
-                      }`}
-                    >
-                      <span className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-[2px] bg-slate-500/80" />
-                      <Clock className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-                      <span>History Jawaban</span>
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
           </nav>
         </div>
 
@@ -1028,10 +839,10 @@ export default function TeacherPortal({
                     <p className="text-xs font-bold mt-1 opacity-90">Jumlah Siswa</p>
                   </div>
                   <button
-                    onClick={() => navigateToMenu('pesertaUjian')}
+                    onClick={() => navigateToMenu('nilaiHasil', 'nilai')}
                     className="mt-3 text-[10px] text-white/80 hover:text-white font-bold flex items-center gap-1 cursor-pointer"
                   >
-                    More Info &rarr;
+                    Hasil Nilai &rarr;
                   </button>
                 </div>
 
@@ -1063,7 +874,7 @@ export default function TeacherPortal({
                     onClick={() => navigateToMenu('bankSoal')}
                     className="mt-3 text-[10px] text-white/80 hover:text-white font-bold flex items-center gap-1 cursor-pointer"
                   >
-                    More Info &rarr;
+                    Bank Soal &rarr;
                   </button>
                 </div>
 
@@ -1074,10 +885,10 @@ export default function TeacherPortal({
                     <p className="text-xs font-bold mt-1 opacity-90">Jumlah Kelas</p>
                   </div>
                   <button
-                    onClick={() => navigateToMenu('pesertaUjian')}
+                    onClick={() => navigateToMenu('jadwalUjian')}
                     className="mt-3 text-[10px] text-white/80 hover:text-white font-bold flex items-center gap-1 cursor-pointer"
                   >
-                    More Info &rarr;
+                    Jadwal Ujian &rarr;
                   </button>
                 </div>
 
@@ -1090,10 +901,10 @@ export default function TeacherPortal({
                     <p className="text-xs font-bold mt-2 opacity-90">Jumlah Siswa Per Sesi</p>
                   </div>
                   <button
-                    onClick={() => navigateToMenu('pesertaUjian')}
+                    onClick={() => navigateToMenu('jadwalUjian')}
                     className="mt-3 text-[10px] text-white/80 hover:text-white font-bold flex items-center gap-1 cursor-pointer"
                   >
-                    More Info &rarr;
+                    Jadwal &rarr;
                   </button>
                 </div>
 
@@ -1107,7 +918,7 @@ export default function TeacherPortal({
                     onClick={() => navigateToMenu('profilSaya')}
                     className="mt-3 text-[10px] text-white/80 hover:text-white font-bold flex items-center gap-1 cursor-pointer"
                   >
-                    More Info &rarr;
+                    Profil Guru &rarr;
                   </button>
                 </div>
 
@@ -1118,10 +929,10 @@ export default function TeacherPortal({
                     <p className="text-xs font-bold mt-1 opacity-90">Jumlah Ruang</p>
                   </div>
                   <button
-                    onClick={() => navigateToMenu('pesertaUjian')}
+                    onClick={() => navigateToMenu('jadwalUjian')}
                     className="mt-3 text-[10px] text-white/80 hover:text-white font-bold flex items-center gap-1 cursor-pointer"
                   >
-                    More Info &rarr;
+                    Jadwal &rarr;
                   </button>
                 </div>
 
@@ -1135,24 +946,27 @@ export default function TeacherPortal({
                     onClick={() => navigateToMenu('bankSoal')}
                     className="mt-3 text-[10px] text-white/80 hover:text-white font-bold flex items-center gap-1 cursor-pointer"
                   >
-                    More Info &rarr;
+                    Bank Soal &rarr;
                   </button>
                 </div>
               </div>
 
               {/* 2 BARIS BANNER AKTIF matching Image 1 */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {/* Active Monitoring */}
-                <div className="bg-[#ef4444] text-white p-5 rounded-xl shadow-lg flex items-center justify-between">
+                {/* AI Essay Simulator Banner */}
+                <div className="bg-gradient-to-r from-emerald-600 to-teal-700 text-white p-5 rounded-xl shadow-lg flex items-center justify-between">
                   <div>
-                    <span className="text-4xl font-black block">0</span>
-                    <p className="text-xs opacity-90 mt-1">Peserta Sedang Ujian (Active Monitoring)</p>
+                    <span className="text-xl md:text-2xl font-black block flex items-center gap-2">
+                      <Cpu className="w-6 h-6 text-emerald-200" />
+                      <span>Simulator Esai AI</span>
+                    </span>
+                    <p className="text-xs opacity-90 mt-1 font-medium">Uji Coba Bobot Konsep, Sinonim & Koreksi NLP Otomatis</p>
                   </div>
                   <button
-                    onClick={() => navigateToMenu('ubkStatus', 'ubk')}
-                    className="px-4 py-2 bg-black/20 hover:bg-black/30 text-white rounded-lg text-xs font-bold transition-colors cursor-pointer flex items-center gap-1"
+                    onClick={() => setIsAiEssaySimulatorOpen(true)}
+                    className="px-4 py-2 bg-black/25 hover:bg-black/40 text-white rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 shadow-xs shrink-0"
                   >
-                    <span>Monitoring Realtime</span>
+                    <span>Buka Simulator</span>
                     <ArrowRight className="w-3.5 h-3.5" />
                   </button>
                 </div>
@@ -1460,174 +1274,6 @@ export default function TeacherPortal({
           
 
           {/* ============================================================== */}
-          {/* VIEW 5: PESERTA UJIAN (MATCHING SCREENSHOT 1)                  */}
-          {/* ============================================================== */}
-          {activeMenu === 'pesertaUjian' && (
-            <div className="space-y-4">
-              {/* Header Title */}
-              <div>
-                <h1 className="text-xl md:text-2xl font-bold text-white tracking-tight">
-                  Daftar Seluruh Peserta Ujian
-                </h1>
-              </div>
-
-              {/* Main Container Card */}
-              <div className="bg-[#141724] border border-slate-800/80 rounded-2xl p-5 md:p-6 shadow-xl space-y-4">
-                {/* Card Title & Refresh Button */}
-                <div className="flex items-center justify-between pb-3 border-b border-slate-800">
-                  <div className="flex items-center gap-2 text-white font-bold text-sm">
-                    <Users className="w-4 h-4 text-cyan-400" />
-                    <span>Daftar Seluruh Peserta Ujian</span>
-                  </div>
-                  <button
-                    onClick={() => {
-                      setStudentSearchTerm('');
-                      setStudentCurrentPage(1);
-                    }}
-                    className="px-3 py-1.5 rounded-lg bg-slate-800/80 hover:bg-slate-700 text-slate-200 font-semibold text-xs flex items-center gap-1.5 transition-colors cursor-pointer border border-slate-700/60"
-                  >
-                    <RefreshCw className="w-3.5 h-3.5" />
-                    <span>Refresh</span>
-                  </button>
-                </div>
-
-                {/* Table Controls (Show Entries & Search) */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-slate-400">
-                  <div className="flex items-center gap-2">
-                    <span>Show</span>
-                    <select
-                      value={studentEntriesPerPage}
-                      onChange={(e) => {
-                        setStudentEntriesPerPage(Number(e.target.value));
-                        setStudentCurrentPage(1);
-                      }}
-                      className="bg-[#10131d] border border-slate-700 text-slate-200 text-xs rounded-lg px-2.5 py-1 focus:outline-none focus:border-blue-500"
-                    >
-                      <option value={10}>10</option>
-                      <option value={25}>25</option>
-                      <option value={50}>50</option>
-                    </select>
-                    <span>entries</span>
-                  </div>
-
-                  <div className="flex items-center gap-2">
-                    <span>Search:</span>
-                    <input
-                      type="text"
-                      value={studentSearchTerm}
-                      onChange={(e) => {
-                        setStudentSearchTerm(e.target.value);
-                        setStudentCurrentPage(1);
-                      }}
-                      placeholder="Cari nomor / nama peserta..."
-                      className="bg-[#10131d] border border-slate-700 text-slate-200 text-xs rounded-lg px-3 py-1 placeholder-slate-500 focus:outline-none focus:border-blue-500 w-48 sm:w-60"
-                    />
-                  </div>
-                </div>
-
-                {/* Table with 11 Columns matching Screenshot 1 */}
-                <div className="overflow-x-auto rounded-lg border border-slate-800">
-                  <table className="w-full text-left text-xs">
-                    <thead className="bg-[#10131d] text-slate-300 uppercase tracking-wider font-semibold border-b border-slate-800 select-none">
-                      <tr>
-                        <th className="py-3 px-3 w-10 text-center text-slate-400"># &#8645;</th>
-                        <th className="py-3 px-3">NO_PESERTA &#8645;</th>
-                        <th className="py-3 px-3">NAMA &#8645;</th>
-                        <th className="py-3 px-3 text-center">LEVEL &#8645;</th>
-                        <th className="py-3 px-3 text-center">KELAS &#8645;</th>
-                        <th className="py-3 px-3 text-center">JURUSAN &#8645;</th>
-                        <th className="py-3 px-3 text-center">SESI &#8645;</th>
-                        <th className="py-3 px-3 text-center">RUANG &#8645;</th>
-                        <th className="py-3 px-3">USERNAME &#8645;</th>
-                        <th className="py-3 px-3">PASSWORD &#8645;</th>
-                        <th className="py-3 px-3 text-center">SERVER &#8645;</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-slate-800/80 bg-[#121622]">
-                      {paginatedStudents.length === 0 ? (
-                        <tr>
-                          <td colSpan={11} className="py-8 text-center text-slate-500">
-                            Tidak ada data peserta ditemukan.
-                          </td>
-                        </tr>
-                      ) : (
-                        paginatedStudents.map((s, idx) => {
-                          const rowIndex = (studentCurrentPage - 1) * studentEntriesPerPage + idx + 1;
-                          const hashSeed = Math.abs((s.name.charCodeAt(0) * 31 + s.id.charCodeAt(s.id.length - 1) * 7)).toString(36);
-                          const mockHash = `$2y$10$${hashSeed}${s.name.slice(0, 3).toLowerCase()}...`;
-                          return (
-                            <tr key={s.id} className="hover:bg-slate-800/40 transition-colors">
-                              <td className="py-2.5 px-3 text-center text-slate-400">{rowIndex}</td>
-                              <td className="py-2.5 px-3 font-mono text-slate-200">
-                                {s.noPeserta || `26-27-01-1-0508-${String(rowIndex).padStart(4, '0')}`}
-                              </td>
-                              <td className="py-2.5 px-3 font-bold text-white tracking-wide">
-                                {s.name.toUpperCase()}
-                              </td>
-                              <td className="py-2.5 px-3 text-center text-slate-200">{s.level || 'X'}</td>
-                              <td className="py-2.5 px-3 text-center text-slate-200">{s.className || 'X MIPA 1'}</td>
-                              <td className="py-2.5 px-3 text-center text-slate-200">{s.jurusan || 'IPA'}</td>
-                              <td className="py-2.5 px-3 text-center text-slate-200">{s.session?.replace(/[^0-9]/g, '') || '1'}</td>
-                              <td className="py-2.5 px-3 text-center text-slate-200">{s.room || 'LAB-01'}</td>
-                              <td className="py-2.5 px-3 font-mono font-medium text-rose-400">
-                                {s.username || s.name.split(' ')[0].toUpperCase()}
-                              </td>
-                              <td className="py-2.5 px-3 font-mono text-[11px] text-rose-500">
-                                {mockHash}
-                              </td>
-                              <td className="py-2.5 px-3 text-center text-slate-200 font-semibold">{s.server || 'MH'}</td>
-                            </tr>
-                          );
-                        })
-                      )}
-                    </tbody>
-                  </table>
-                </div>
-
-                {/* Table Pagination Matching Screenshot 1 */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-slate-400 pt-2">
-                  <div>
-                    Showing {filteredStudents.length > 0 ? (studentCurrentPage - 1) * studentEntriesPerPage + 1 : 0} to{' '}
-                    {Math.min(studentCurrentPage * studentEntriesPerPage, filteredStudents.length)} of{' '}
-                    {filteredStudents.length} entries
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <button
-                      onClick={() => setStudentCurrentPage((p) => Math.max(1, p - 1))}
-                      disabled={studentCurrentPage === 1}
-                      className="px-3 py-1 rounded bg-slate-800 text-slate-300 disabled:opacity-40 hover:bg-slate-700 transition-colors cursor-pointer"
-                    >
-                      Previous
-                    </button>
-                    {Array.from({ length: totalStudentPages }, (_, i) => i + 1).map((pg) => (
-                      <button
-                        key={pg}
-                        onClick={() => setStudentCurrentPage(pg)}
-                        className={`w-7 h-7 rounded text-xs font-semibold transition-colors cursor-pointer ${
-                          studentCurrentPage === pg
-                            ? 'bg-blue-600 text-white font-bold'
-                            : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
-                        }`}
-                      >
-                        {pg}
-                      </button>
-                    ))}
-                    <button
-                      onClick={() => setStudentCurrentPage((p) => Math.min(totalStudentPages, p + 1))}
-                      disabled={studentCurrentPage === totalStudentPages}
-                      className="px-3 py-1 rounded bg-slate-800 text-slate-300 disabled:opacity-40 hover:bg-slate-700 transition-colors cursor-pointer"
-                    >
-                      Next
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-
-          
-
-          {/* ============================================================== */}
           {/* VIEW 6: DATA BANK SOAL (FULL CRUD, LIHAT SOAL & BUTIR SOAL)    */}
           {/* ============================================================== */}
           {activeMenu === 'bankSoal' && (
@@ -1639,7 +1285,7 @@ export default function TeacherPortal({
               majors={DEFAULT_MAJORS}
               initialQuestionBanks={localQuestionBanks}
               onQuestionBanksChange={setLocalQuestionBanks}
-              onOpenPrint={() => navigateToMenu('ubkCetakKartu', 'ubk')}
+              onOpenPrint={() => window.print()}
             />
           )}
 
@@ -1660,7 +1306,7 @@ export default function TeacherPortal({
               onAddSchedule={handleAddSchedule}
               onUpdateSchedule={handleUpdateSchedule}
               onDeleteSchedule={handleDeleteSchedule}
-              onNavigateToLiveMonitor={() => navigateToMenu('ubkStatus', 'ubk')}
+              onNavigateToLiveMonitor={() => navigateToMenu('nilaiHasil', 'nilai')}
             />
           )}
 
@@ -1842,59 +1488,6 @@ export default function TeacherPortal({
 
           
           {/* ============================================================== */}
-          {/* UBK SUBVIEWS (MATCHING SCREENSHOT 3)                           */}
-          {/* ============================================================== */}
-          {activeMenu === 'ubkCetakKartu' && (
-            <CetakKartuView students={students} classes={classes} branding={branding} />
-          )}
-
-          {activeMenu === 'ubkStatus' && (
-            <StatusPesertaView
-              students={students}
-              studentSessions={studentSessions}
-              schedules={localSchedules.length > 0 ? localSchedules : schedules}
-              classes={classes}
-              onResetStudentSession={onResetStudent}
-              onBlockStudentSession={onResetStudent}
-              onFinishStudentSession={onResetStudent}
-              onNavigateToToken={() => navigateToMenu('ubkToken', 'ubk')}
-              onNavigateToReset={() => navigateToMenu('ubkResetLogin', 'ubk')}
-              onNavigateToPelanggaran={() => navigateToMenu('ubkPelanggaran', 'ubk')}
-              onNavigateToNilai={() => navigateToMenu('nilaiHasil', 'nilai')}
-            />
-          )}
-
-          {activeMenu === 'ubkPindahNilai' && <PindahNilaiView />}
-
-          {activeMenu === 'ubkResetLogin' && (
-            <ResetLoginView
-              students={students}
-              onResetLogin={(id) => {
-                if (onResetStudent) {
-                  onResetStudent(id);
-                } else {
-                  alert(`Reset login siswa ${id} berhasil!`);
-                }
-              }}
-            />
-          )}
-
-          {activeMenu === 'ubkToken' && (
-            <RilisTokenView
-              activeToken={activeToken}
-              tokenRequired={tokenRequired}
-            />
-          )}
-
-          {activeMenu === 'ubkPengacak' && <PengacakSoalView students={students} />}
-
-          {activeMenu === 'ubkBelumUjian' && <BelumUjianView students={students} />}
-
-          {activeMenu === 'ubkPelanggaran' && (
-            <LaporanPelanggaranView students={students} />
-          )}
-
-          {/* ============================================================== */}
           {/* NILAI SUBVIEWS (MATCHING SCREENSHOT 4)                         */}
           {/* ============================================================== */}
           {activeMenu === 'nilaiHasil' && (
@@ -1927,9 +1520,6 @@ export default function TeacherPortal({
           else if (tab === 'guru_jadwal') navigateToMenu('jadwalUjian');
           else if (tab === 'guru_analisis') navigateToMenu('analisaPerSoal');
           else if (tab === 'guru_nilai') navigateToMenu('nilaiHasil');
-          else if (tab === 'operator_monitor') navigateToMenu('ubkStatus');
-          else if (tab === 'operator_cetak') navigateToMenu('ubkCetakKartu');
-          else if (tab === 'operator_students') navigateToMenu('pesertaUjian');
         }}
       />
 
